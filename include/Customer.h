@@ -2,9 +2,9 @@
 #ifndef CUSTOMER_H
 #define CUSTOMER_H
 
-#include <Drink.h>
-#include <DynamicArray.h>
 #include <Arduino.h>
+#include <DynamicArray.h>
+#include <Drink.h>
 
 class Customer {
   public:

@@ -1,8 +1,8 @@
 
 #include <Arduino.h>
+#include <DynamicArray.h>
 #include <RFID.h>
 #include <Customer.h>
-#include <DynamicArray.h>
 #include <Pitches.h>
 #include <Drink.h>
 
@@ -11,7 +11,8 @@
 int numOz; 
 bool readError;
 String readTag;
-DynamicArray<Customer> customers;
+Customer Bob;
+DynamicArray<Customer> customers(1);
 
 unsigned long currentMillis; 
 
