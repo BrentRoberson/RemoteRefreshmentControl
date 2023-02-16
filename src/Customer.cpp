@@ -21,7 +21,7 @@ void Customer::print() {
   {
     
     Serial.print("Drink Number: ");
-    Serial.print(i);
+    Serial.print(i+1);
     Serial.print(" Ounces purchased: ");
     Serial.print(drinks->array[i].getOunces());
     Serial.print(" Time Purchased: ");
