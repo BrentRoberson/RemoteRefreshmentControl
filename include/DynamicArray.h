@@ -7,11 +7,11 @@
 template <typename T> 
 class DynamicArray {
   private:
-    T* array = NULL;
-
     int size;
 
     int capacity;
+    
+    T* array = NULL;
 
   public:
     DynamicArray();

@@ -23,7 +23,10 @@ void setup() {
 }
 
 void loop() {
-  // DynamicArray<Customer> customers;
+  DynamicArray<Customer> customers;
+  DynamicArray<Customer> drinks;
+
+
   // readTag = waitForTag();
   // if(readTag!=""){
   //   int customerIndex = customers.search(readTag);

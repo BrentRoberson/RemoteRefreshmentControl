@@ -4,7 +4,7 @@
 template <typename T> 
 DynamicArray<T>::DynamicArray()
 {
-    capacity = 1;
+    capacity = 10;
     size = 0;
     array= new T[capacity];
 }
@@ -13,8 +13,8 @@ template <typename T>
 DynamicArray<T>::DynamicArray(int capacity)
 {
     this->capacity = capacity;
-    array= new T[capacity];
-    size = 0;
+    this->array= new T[capacity];
+    this->size = 0;
 }
 
 template <typename T> 

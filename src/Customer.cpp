@@ -1,14 +1,14 @@
 #include <Customer.h>
-#include <DynamicArray.h>
+
 
 
 Customer::Customer(String id, float oz) {
-  ID = id;
-  ozLeft = oz;
-  drinks = new DynamicArray<Drink>();
+  this -> ID = id;
+  this -> ozLeft = oz;
+  this -> drinks = new DynamicArray<Drink>(10);
 }
 
-void Customer :: print() {
+void Customer::print() {
   Serial.print("ID: ");
   Serial.print(this->ID);
   Serial.print(" Ounces Left: ");

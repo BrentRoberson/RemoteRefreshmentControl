@@ -2,7 +2,7 @@
 #ifndef CUSTOMER_H
 #define CUSTOMER_H
 
-#include <DynamicArray.h>
+#include "DynamicArray.cpp"
 #include <Drink.h>
 
 
