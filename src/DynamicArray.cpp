@@ -1,5 +1,3 @@
-#include <Arduino.h>
-#include <Customer.h>
 #include <DynamicArray.h>
 
  
@@ -8,14 +6,14 @@ DynamicArray<T>::DynamicArray()
 {
     capacity = 1;
     size = 0;
-    array= new T [capacity];
+    array= new T[capacity];
 }
 
 template <typename T> 
 DynamicArray<T>::DynamicArray(int capacity)
 {
     this->capacity = capacity;
-    array= new T [capacity];
+    array= new T[capacity];
     size = 0;
 }
 
@@ -38,7 +36,7 @@ void DynamicArray<T>::push_back(T value)
 template <typename T> 
 void DynamicArray<T>::pop_back()
 {
-    array[size - 1] = Customer();
+    array[size - 1] = T();
     size--;
     if (size == (capacity / 2)) {
         shrinkArray();
@@ -48,7 +46,7 @@ void DynamicArray<T>::pop_back()
 template <typename T> 
 void DynamicArray<T>::growArray()
 {
-    Customer* temp = new Customer[capacity * 2];
+    T* temp = new T[capacity * 2];
     capacity = capacity * 2;
     for (int i = 0; i < size; i++) {
         temp[i] = array[i];
@@ -63,7 +61,7 @@ void DynamicArray<T>::shrinkArray()
 {
 
     capacity = size;
-    Customer* temp = new Customer[capacity];
+    T* temp = new T[capacity];
     for (int i = 0; i < size; i++) {
         temp[i] = array[i];
     }
@@ -102,7 +100,7 @@ void DynamicArray<T>::deleteAt(int index)
     for (int i = index; i < size; i++) {
         array[i] = array[i + 1];
     }
-    array[size - 1] = Customer();
+    array[size - 1] = T();
     size--;
     if (size == (capacity / 2)) {
         shrinkArray();

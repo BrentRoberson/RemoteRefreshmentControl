@@ -1,10 +1,8 @@
-
 #include <Arduino.h>
-#include <DynamicArray.h>
 #include <RFID.h>
+#include <Drink.h>
 #include <Customer.h>
 #include <Pitches.h>
-#include <Drink.h>
 
 #define solenoid 2
 #define buzzerPin 4
@@ -12,7 +10,7 @@ int numOz;
 bool readError;
 String readTag;
 Customer Bob;
-DynamicArray<Customer> customers(1);
+
 
 unsigned long currentMillis; 
 
@@ -25,6 +23,7 @@ void setup() {
 }
 
 void loop() {
+  // DynamicArray<Customer> customers;
   // readTag = waitForTag();
   // if(readTag!=""){
   //   int customerIndex = customers.search(readTag);

@@ -1,11 +1,8 @@
 #ifndef DYNAMIC_ARRAY_H
 #define DYNAMIC_ARRAY_H
 
-#include <iostream>
 #include <Arduino.h>
-#include <Customer.h>
 
-using namespace std;
 
 template <typename T> 
 class DynamicArray {

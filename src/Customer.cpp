@@ -1,10 +1,11 @@
 #include <Customer.h>
+#include <DynamicArray.h>
 
 
 Customer::Customer(String id, float oz) {
   ID = id;
   ozLeft = oz;
-  drinks = new DynamicArray<Drink>[1];
+  drinks = new DynamicArray<Drink>();
 }
 
 void Customer :: print() {
