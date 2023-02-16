@@ -121,8 +121,19 @@ void DynamicArray<T>::printArrayDetails()
     Serial.print(size); 
     Serial.print(", Capacity of array:");  
     Serial.print(capacity);  
-    Serial.println(); 
+    Serial.println();
 }
+
+template <typename T> 
+T& DynamicArray<T>:: DynamicArray::operator[](int index)
+{
+    if (index >= size) {
+        Serial.println("Array index out of bound, exiting");
+        exit(0);
+    }
+    return array[index];
+}
+
 
 template <typename T> 
 bool DynamicArray<T>::isEmpty()

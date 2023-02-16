@@ -1,6 +1,5 @@
 #include <Customer.h>
-
-
+#include <Drink.h>
 
 Customer::Customer(String id, float oz) {
   this -> ID = id;
@@ -9,11 +8,24 @@ Customer::Customer(String id, float oz) {
 }
 
 void Customer::print() {
+  Serial.println();
+  Serial.println();
+  Serial.println();
+  Serial.println();
   Serial.print("ID: ");
   Serial.print(this->ID);
   Serial.print(" Ounces Left: ");
-  Serial.print(this->ozLeft);
-  Serial.print(" Total Drinks Purchased: ");
-  Serial.println(this->drinks->getSize());
+  Serial.println(this->ozLeft);
+
+  for(int i = 0; i<this->drinks->getSize(); i++ )
+  {
+    
+    Serial.print("Drink Number: ");
+    Serial.print(i);
+    Serial.print(" Ounces purchased: ");
+    Serial.print(drinks->array[i].getOunces());
+    Serial.print(" Time Purchased: ");
+    Serial.println(drinks->array[i].getTime());
+  }
 }
 

@@ -11,11 +11,12 @@ class DynamicArray {
 
     int capacity;
     
-    T* array = NULL;
+    
 
   public:
+    T* array = NULL;
+    
     DynamicArray();
-
     DynamicArray(int capacity);
 
     int getSize();
@@ -37,6 +38,8 @@ class DynamicArray {
     void deleteAt(int index);
 
     void printArrayDetails();
+
+    T& operator[](int index);
 
     bool isEmpty();
 };
