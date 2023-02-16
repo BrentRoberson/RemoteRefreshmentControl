@@ -9,8 +9,8 @@
 int numOz; 
 bool readError;
 String readTag;
-Customer Bob;
-
+DynamicArray<Customer> customers;
+DynamicArray<Customer> drinks;
 
 unsigned long currentMillis; 
 
@@ -23,36 +23,33 @@ void setup() {
 }
 
 void loop() {
-  DynamicArray<Customer> customers;
-  DynamicArray<Customer> drinks;
-
-
-  // readTag = waitForTag();
-  // if(readTag!=""){
-  //   int customerIndex = customers.search(readTag);
+  readTag = waitForTag();
+  if(readTag!=""){
+    int customerIndex = customers.search(readTag);
     
-  //   if(customerIndex>-1)
-  //   {
-  //     rfidGoodTap();
-  //     //editCustomer/buy drink
-  //     Serial.println("Customer already added: ");
-  //   }
-  //   else{
-  //     rfidBadTap();
-  //     Serial.print("Customer not added, please go to check in to add your card. ");
-  //     Serial.println("For testing purposes, customer is added: ");
-  //     customers.push_back(Customer(readTag, 0));
-  //   }
-  //   Serial.println(readTag);
+    if(customerIndex>-1)
+    {
+      rfidGoodTap();
+      //editCustomer/buy drink
+      customers[customerIndex].drinks->push_back(Drink(rand()%24, rand()%2000));
+      customers[customerIndex].print();
+    }
+    else{
+      rfidBadTap();
+      Serial.print("Customer not added, please go to check in to add your card. ");
+      Serial.println("For testing purposes, customer is added: ");
+      customers.push_back(Customer(readTag, 0));
+    }
+    Serial.println(readTag);
 
-  //   // Serial.println("How many oz would you like?");
-  //   // numOz = Serial.parseInt();
-  //   // dispense(numOz, inputTag);
-  //   // Serial.println("Finished dispensing, thank you!");
-  //   if (customers.getSize() >5)
-  //   {
-  //     customers.printArrayDetails();
-  //   }
-  // }
+    // Serial.println("How many oz would you like?");
+    // numOz = Serial.parseInt();
+    // dispense(numOz, inputTag);
+    // Serial.println("Finished dispensing, thank you!");
+    // if (customers.getSize() >3)
+    // {
+    //   customers.printArrayDetails();
+    // }
+  }
   
 }
