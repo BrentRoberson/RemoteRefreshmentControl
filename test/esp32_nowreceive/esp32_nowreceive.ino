@@ -1,97 +1,61 @@
 /*
-  Rui Santos
-  Complete project details at https://RandomNerdTutorials.com/esp-now-two-way-communication-esp32/
+  ESP-NOW Demo - Receive
+  esp-now-demo-rcv.ino
+  Reads data from Initiator
   
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files.
-  
-  The above copyright notice and this permission notice shall be included in all
-  copies or substantial portions of the Software.
+  DroneBot Workshop 2022
+  https://dronebotworkshop.com
 */
-
+ 
+// Include Libraries
 #include <esp_now.h>
 #include <WiFi.h>
-
-#include <Wire.h>
-
-const int button1 = 36;
-
-
-// REPLACE WITH THE MAC Address of your receiver 
-uint8_t broadcastAddress[] = {0x94, 0xB9, 0x7E, 0xE9, 0xA2, 0xE8};
-
-uint8_t rcvd_data;
-
-// Variable to store if sending data was successful
-String success;
-
-//Structure example to send data
-//Must match the receiver structure
+ 
+// Define a data structure
 typedef struct struct_message {
-    uint8_t buttons;
+  char a[32];
+  int b;
+  float c;
+  bool d;
 } struct_message;
-
-// Create a struct_message to hold incoming sensor readings
-struct_message incomingReadings;
-struct_message outputData;
-
-
-// Callback when data is sent
-void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
-  Serial.print("\r\nLast Packet Send Status:\t");
-  Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
-  if (status ==0){
-    success = "Delivery Success :)";
-  }
-  else{
-    success = "Delivery Fail :(";
-  }
-}
-
-// Callback when data is received
+ 
+// Create a structured object
+struct_message myData;
+ 
+ 
+// Callback function executed when data is received
 void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
-  memcpy(&incomingReadings, incomingData, sizeof(incomingReadings));
-  rcvd_data = incomingReadings.buttons;
+  memcpy(&myData, incomingData, sizeof(myData));
   Serial.print("Data received: ");
-  Serial.println(rcvd_data);
+  Serial.println(len);
+  Serial.print("Character Value: ");
+  Serial.println(myData.a);
+  Serial.print("Integer Value: ");
+  Serial.println(myData.b);
+  Serial.print("Float Value: ");
+  Serial.println(myData.c);
+  Serial.print("Boolean Value: ");
+  Serial.println(myData.d);
+  Serial.println();
 }
  
 void setup() {
-  // Init Serial Monitor
+  // Set up Serial Monitor
   Serial.begin(115200);
-
-  pinMode(button1, INPUT);
- 
-  // Set device as a Wi-Fi Station
+  
+  // Set ESP32 as a Wi-Fi Station
   WiFi.mode(WIFI_STA);
-
-  // Init ESP-NOW
+ 
+  // Initilize ESP-NOW
   if (esp_now_init() != ESP_OK) {
     Serial.println("Error initializing ESP-NOW");
     return;
   }
-
-  // Once ESPNow is successfully Init, we will register for Send CB to
-  // get the status of Trasnmitted packet
-  //esp_now_register_send_cb(OnDataSent);
   
-  // Register peer
-  esp_now_peer_info_t peerInfo;
-  memcpy(peerInfo.peer_addr, broadcastAddress, 6);
-  peerInfo.channel = 0;  
-  peerInfo.encrypt = false;
-  
-  // Add peer        
-  if (esp_now_add_peer(&peerInfo) != ESP_OK){
-    Serial.println("Failed to add peer");
-    return;
-  }
-  // Register for a callback function that will be called when data is received
+  // Register callback function
   esp_now_register_recv_cb(OnDataRecv);
 }
  
 void loop() {
-
-  Serial.println("Waiting for Data");
-  delay(1000);
+ 
 }
