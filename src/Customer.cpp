@@ -1,9 +1,10 @@
 #include <Customer.h>
 #include <Drink.h>
+#include <Globals.h>
 
-Customer::Customer(String id, float oz) {
+Customer::Customer(String id, double balance) {
   this -> ID = id;
-  this -> ozLeft = oz;
+  this -> balance = balance;
   this -> drinks = new DynamicArray<Drink>(10);
 }
 
@@ -15,7 +16,7 @@ void Customer::print() {
   Serial.print("ID: ");
   Serial.print(this->ID);
   Serial.print(" Ounces Left: ");
-  Serial.println(this->ozLeft);
+  Serial.println(this->balance);
 
   for(int i = 0; i<this->drinks->getSize(); i++ )
   {
@@ -29,3 +30,19 @@ void Customer::print() {
   }
 }
 
+void Customer::lcdPrint(LiquidCrystal_I2C lcd) {
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Balance: $");
+  lcd.print(this->balance);
+  lcd.setCursor(0, 1);
+  lcd.print("Price/oz: $");
+  lcd.print(pricePerOunce);
+  lcd.setCursor(0, 2);
+  lcd.print("Ounces Left:");
+  lcd.print(this->balance/pricePerOunce);
+  lcd.setCursor(0, 3);
+  lcd.print("Drinks Purchased: ");
+  lcd.print(this->drinks->getSize());
+
+}

@@ -3,15 +3,18 @@
 #include <Drink.h>
 #include <Customer.h>
 #include <Pitches.h>
+#include <LiquidCrystal_I2C.h>
 
-#define solenoid 2
+#define SOLENOID 2
 #define buzzerPin 4
+#define LCDCOL 16;
+#define  LCDROW 4;
+
 int numOz; 
 bool readError;
 String readTag;
 DynamicArray<Customer> customers;
 DynamicArray<Customer> drinks;
-
 unsigned long currentMillis; 
 
 void setup() {

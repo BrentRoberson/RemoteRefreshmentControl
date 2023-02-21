@@ -14,7 +14,7 @@
 // class Jug {
 //   public:
 //     float startingGallons = 0;
-//     float ozLeft = 0;
+//     float balance = 0;
 //     int drinksLeft = 0;
 //     float drinkSize = 0;
 // };
@@ -60,7 +60,7 @@
 //         jug.startingGallons += encoderValue * 0.1;
 //         break;
 //       case 1:
-//         jug.ozLeft += encoderValue;
+//         jug.balance += encoderValue;
 //         break;
 //       case 2:
 //         jug.drinksLeft += encoderValue;
@@ -81,7 +81,7 @@
 //     case 1:
 //       lcd.print("Oz Left:");
 //       lcd.setCursor(0, 1);
-//       lcd.print(jug.ozLeft);
+//       lcd.print(jug.balance);
 //       break;
 //     case 2:
 //       lcd.print("Drinks Left:");
