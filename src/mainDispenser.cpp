@@ -7,7 +7,10 @@
 #include <Customer.h>
 #include <Pitches.h>
 #include <LiquidCrystal_I2C.h>
-
+#include <Menu.h>
+#define CLK_PIN 14
+#define DT_PIN 26
+#define SW_PIN 13
 
 #define SOLENOID 2
 #define buzzerPin 4
@@ -17,7 +20,7 @@ String readTag;
 DynamicArray<Customer> customers;
 // Create a structured object
 struct_message myData;
- 
+Menu menu(CLK_PIN,DT_PIN,SW_PIN);
 LiquidCrystal_I2C lcd(0x27, 16, 4);  
 
 // Callback function executed when data is received
@@ -58,6 +61,7 @@ void setup() {
 
 
 void loop() {
+  menu.run(lcd);
   readTag = waitForTag();
     if(readTag!=""){
       int customerIndex = customers.search(readTag);

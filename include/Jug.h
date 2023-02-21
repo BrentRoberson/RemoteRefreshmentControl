@@ -6,6 +6,7 @@ struct {
     double totalGallons;
     double ozLeft;
     int drinksLeft;
+    int maxDrinks;
     
 } jug;
 
