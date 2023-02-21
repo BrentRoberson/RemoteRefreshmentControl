@@ -2,9 +2,11 @@
 #define JUG_H
 
 struct {
-    float totalGallons;
-    float ozLeft;
+    double startingGallons;
+    double totalGallons;
+    double ozLeft;
     int drinksLeft;
+    
 } jug;
 
 
