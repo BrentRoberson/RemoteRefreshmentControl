@@ -47,6 +47,7 @@ void setup() {
   
   // Register callback function
   esp_now_register_recv_cb(OnDataRecv);
+  Serial.println("Dispenser steup");
 }
 
 

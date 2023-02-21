@@ -11,7 +11,6 @@
 MFRC522 rfid(SS_PIN, RST_PIN);
 
 void RFIDsetup() {
-  Serial.begin(9600);
   SPI.begin(); // init SPI bus
   rfid.PCD_Init(); // init MFRC522
   pinMode(solenoid, OUTPUT);
