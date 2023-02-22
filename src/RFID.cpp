@@ -14,7 +14,6 @@ MFRC522 rfid(SS_PIN, RST_PIN);
 void RFIDsetup() {
   SPI.begin(); // init SPI bus
   rfid.PCD_Init(); // init MFRC522
-  pinMode(solenoid, OUTPUT);
   Serial.println("Tap an RFID/NFC tag on the RFID-RC522 reader");
   
 }

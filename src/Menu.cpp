@@ -8,17 +8,19 @@ const int Menu::numOfScreens = 6;
 int Menu::currentScreen = -1;
 bool Menu::updateScreen = true;
 
-Menu::Menu() {}
+Menu::Menu(){}
 
 
-void Menu::setup() {
+void Menu::setup()  {
   pinMode(BUTTON_PIN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), Menu :: triggerMenu, FALLING);
-  // initScreen();
+  encoder.attachHalfQuad(DT, CLK);
+  encoder.setCount(-999);
+  //initScreen();
 }
 
 void Menu::run() {
-  long newPosition = myEnc.read();
+  long newPosition = encoder.getCount();
   if (newPosition != oldPosition && newPosition % 2 == 0) {
     Serial.println(newPosition);
     printPosition(newPosition / 2);
@@ -42,7 +44,7 @@ void Menu::run() {
       currentScreen = -1;
       Serial.println("Init pos:");
       Serial.println(initPosition);
-      myEnc.write(initPosition);
+      encoder.setCount(initPosition);
       oldPosition = initPosition;
       newPosition = initPosition;
       initPosition = -999;
@@ -62,10 +64,9 @@ void Menu::run() {
 
 void Menu::initScreen() {
   
-  lcd.init();
-  lcd.init(); // double init clears any previous text
+  lcd.clear();
+// double init clears any previous text
   // Print a message to the LCD.
-  lcd.backlight();
   lcd.setCursor(3,0);
   lcd.print("Jungle Juice Sluice");
   lcd.setCursor(4,1);

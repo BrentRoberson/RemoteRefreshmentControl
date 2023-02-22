@@ -13,28 +13,25 @@
 #define DT_PIN 26
 #define SW_PIN 13
 
-#define SOLENOID 2
-#define buzzerPin 4
 
 double pricePerOunce = .40;
 double ouncesLeft = 640;
 double drinksLeft = ouncesLeft/12;
-
+ESP32Encoder encoder;
 bool readError;
 String readTag;
 DynamicArray<Customer> customers;
 struct_message myData;
 LiquidCrystal_I2C lcd(0x27, 16, 4);
-Encoder myEnc(ENC_DATA,ENC_CLOCK);
 String screens[NUM_SCREENS][2] = {
-  {"Ignition Time","Minutes"}, 
-  {"Stabilization", "Minutes"}, 
-  {"Cleaning","Minutes"},
-  {"Start dose","Seconds"}, 
-  {"Cut-off Temperature","Celsius"}, 
+  {"Drinks Left: ",""}, 
+  {"Total Customers", ""}, 
+  {"Edit Quarts","total Quarts"},
+  {"Drink Limit","Drinks"}, 
+  {"Edit Customers",""}, 
 };
 int parameters[NUM_SCREENS];
-//Menu menu;
+Menu menu;
 
 // Callback function executed when data is received
 // When data is received from the other controller this function will run automatically
@@ -53,19 +50,21 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
 void setup() {
   // Set up Serial Monitor
   Serial.begin(115200);
-  //menu.setup();
+  menu.setup();
+  
+
   // Set ESP32 as a Wi-Fi Station
-  //WiFi.mode(WIFI_STA);
+  WiFi.mode(WIFI_STA);
  
   // Initilize ESP-NOW
-  // if (esp_now_init() != ESP_OK) {
-  //   Serial.println("Error initializing ESP-NOW");
-  //   return;
-  // }
+  if (esp_now_init() != ESP_OK) {
+    Serial.println("Error initializing ESP-NOW");
+    return;
+  }
   RFIDsetup();
   lcd.init();
   lcd.backlight();
-  esp_now_register_recv_cb(OnDataRecv);
+  // esp_now_register_recv_cb(OnDataRecv);
   Serial.println("Dispenser steup");
   lcd.print("Startup Completed!");
   startup();

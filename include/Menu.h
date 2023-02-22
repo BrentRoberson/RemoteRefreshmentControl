@@ -4,7 +4,7 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
-#include <Encoder.h>
+#include <ESP32Encoder.h>
 #include <Globals.h>
 
 //https://www.youtube.com/watch?v=P36GIB0dYks&list=PLfwpK3RIxFR39m27Q8C6zjnj9kOjJz3VV&index=5
@@ -19,7 +19,7 @@ class Menu {
     static const int numOfScreens;
     static int currentScreen;
     static bool updateScreen;
-
+    
   public:
     Menu();
     void setup();
