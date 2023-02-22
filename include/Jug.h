@@ -6,14 +6,10 @@
 
 class Jug {
   private: 
-    double startingGallons;
-    double totalGallons;
-    double ozLeft;
-    int drinksLeft;
-    int maxDrinks;
 
   public:
     friend class Menu;
+    Jug();
 
     // add any public member functions here
 };

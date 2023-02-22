@@ -15,10 +15,9 @@
 
 
 double pricePerOunce = .40;
-double ouncesLeft = 640;
-double drinksLeft = ouncesLeft/12;
+double totalQuarts = 20;
+int maxDrinks = 6;
 String drinkOTD = "NA";
-
 ESP32Encoder encoder;
 bool readError;
 DynamicArray<Customer> customers;

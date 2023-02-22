@@ -18,11 +18,10 @@
 #define SOLENOID 5
 
 class Customer;
-
 extern String drinkOTD;
 extern double pricePerOunce; // = .40;
-extern double ouncesLeft; // = 640;
-extern double drinksLeft; // = ouncesLeft/12;
+extern double totalQuarts; // = 640;
+extern int maxDrinks; // = ouncesLeft/12;
 extern LiquidCrystal_I2C lcd;
 extern ESP32Encoder encoder;
 extern String screens[NUM_SCREENS];
