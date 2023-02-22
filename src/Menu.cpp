@@ -12,12 +12,7 @@ bool waiting = false;
 
 Menu::Menu(){}
 
-void Menu::setup()  {
-  pinMode(BUTTON_PIN, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), Menu :: triggerMenu, FALLING);
-  encoder.attachHalfQuad(DT, CLK);
-  encoder.setCount(-999);
-    
+void lcdWelcome(){
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("Welcome to RRC!");
@@ -32,6 +27,16 @@ void Menu::setup()  {
   lcd.print(ouncesLeft);
   lcd.print("oz");
 }
+
+void Menu::setup()  {
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), Menu :: triggerMenu, FALLING);
+  encoder.attachHalfQuad(DT, CLK);
+  encoder.setCount(-999);
+  lcdWelcome();
+}
+
+
 
 void Menu::run() {
   if(menuTriggeredTime != 0 && currentScreen != -1) {
@@ -53,26 +58,14 @@ void Menu::run() {
   delay(10);
 }
 
+
 void Menu::waitScreen() {
   waiting = true;
-  lcd.clear();
-  lcd.setCursor(0,0);
-  lcd.print("Welcome to RRC!");
-  lcd.setCursor(0, 1);
-  lcd.print("Today's Drink: ");
-  lcd.print(drinkOTD);
-  lcd.setCursor(0, 2);
-  lcd.print("Price/Oz: $");
-  lcd.print(pricePerOunce);
-  lcd.setCursor(0, 3);
-  lcd.print("Oz Left: ");
-  lcd.print(ouncesLeft);
-  lcd.print("oz");
-
+  lcdWelcome();
   //rfid code so RFID still works
-  Serial.print(menuTriggeredTime);
-  Serial.print(rfidTriggerTime);
   while(menuTriggeredTime=0){
+    Serial.print(menuTriggeredTime);
+    Serial.print(rfidTriggerTime);
     readTag = waitForTag();
     if(readTag!=""){
       int customerIndex = customers.search(readTag);
