@@ -34,7 +34,7 @@ String screens[NUM_SCREENS][2] = {
   {"Cut-off Temperature","Celsius"}, 
 };
 int parameters[NUM_SCREENS];
-//Menu menu(NUM_SCREENS, lcd)
+//Menu menu;
 
 // Callback function executed when data is received
 // When data is received from the other controller this function will run automatically
@@ -53,15 +53,15 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
 void setup() {
   // Set up Serial Monitor
   Serial.begin(115200);
-  
+  //menu.setup();
   // Set ESP32 as a Wi-Fi Station
-  WiFi.mode(WIFI_STA);
+  //WiFi.mode(WIFI_STA);
  
   // Initilize ESP-NOW
-  if (esp_now_init() != ESP_OK) {
-    Serial.println("Error initializing ESP-NOW");
-    return;
-  }
+  // if (esp_now_init() != ESP_OK) {
+  //   Serial.println("Error initializing ESP-NOW");
+  //   return;
+  // }
   RFIDsetup();
   lcd.init();
   lcd.backlight();
@@ -74,6 +74,7 @@ void setup() {
 
 
 void loop() {
+  //menu.run();
   readTag = waitForTag();
     if(readTag!=""){
       int customerIndex = customers.search(readTag);

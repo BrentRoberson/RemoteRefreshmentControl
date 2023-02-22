@@ -1,21 +1,20 @@
 #include "Menu.h"
 
+// Static member variable definitions
+long Menu::oldPosition = -999;
+long Menu::initPosition = -999;
+unsigned long Menu::menuTriggeredTime = 0;
+const int Menu::numOfScreens = 6;
+int Menu::currentScreen = -1;
+bool Menu::updateScreen = true;
 
-Menu::Menu() 
-{
-  oldPosition = -999;
-  initPosition = -999;
-  menuTriggeredTime = 0;
-  currentScreen = -1;
-  updateScreen = true;
-}
+Menu::Menu() {}
+
 
 void Menu::setup() {
   pinMode(BUTTON_PIN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), Menu :: triggerMenu, FALLING);
-  initScreen();
-  // initTime();
-  delay(2000);
+  // initScreen();
 }
 
 void Menu::run() {
