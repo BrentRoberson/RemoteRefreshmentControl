@@ -74,7 +74,7 @@ void loop() {
       if(customerIndex>-1)
       {
         rfidGoodTap();
-        customers[customerIndex].lcdPrint(lcd);
+        customers[customerIndex].lcdPrint();
         //print "press green button to dispense
         //enter drink menueditCustomer/buy drink
         customers[customerIndex].drinks->push_back(Drink(rand()%24, rand()%2000));

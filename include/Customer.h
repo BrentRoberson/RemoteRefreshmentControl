@@ -5,6 +5,7 @@
 #include <DynamicArray.cpp>
 #include <Drink.h>
 #include <LiquidCrystal_I2C.h>
+#include <Globals.h>
 
 class Customer {
   public:
@@ -12,7 +13,7 @@ class Customer {
     String ID;
     double balance;
     DynamicArray<Drink>* drinks;
-    void lcdPrint(LiquidCrystal_I2C & lcd);
+    void lcdPrint();
     void print();
 };
 
