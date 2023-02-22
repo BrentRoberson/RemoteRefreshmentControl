@@ -6,7 +6,9 @@
 #include <LiquidCrystal_I2C.h>
 #include <ESP32Encoder.h>
 #include <Globals.h>
-
+#include <Customer.h>
+#include <RFID.h>
+#include <Pitches.h>
 //https://www.youtube.com/watch?v=P36GIB0dYks&list=PLfwpK3RIxFR39m27Q8C6zjnj9kOjJz3VV&index=5
 //heavily relied on this menu system^
 
@@ -14,18 +16,17 @@
 class Menu {
   private:
     static long oldPosition;
+    static long newPosition;
     static long initPosition;
     static unsigned long menuTriggeredTime;
-    static const int numOfScreens;
     static int currentScreen;
-    static bool updateScreen;
+    static bool updateEntireScreen;
     
   public:
     Menu();
     void setup();
     void run();
-    void initScreen();
-    void printPosition(long pos);
+    void waitScreen();
     void clearLCDLine(int line);
     static void triggerMenu();
     void displayMenu();

@@ -1,13 +1,13 @@
 #include "Menu.h"
 
 // Static member variable definitions
-long Menu::oldPosition = -999;
-long Menu::initPosition = -999;
+long Menu::oldPosition = 0;
+long Menu::newPosition = 0;
+long Menu::initPosition = 0;
 unsigned long Menu::menuTriggeredTime = 0;
-const int Menu::numOfScreens = 6;
 int Menu::currentScreen = -1;
-bool Menu::updateScreen = true;
-
+bool Menu::updateEntireScreen = true;
+String readTag;
 Menu::Menu(){}
 
 
@@ -16,74 +16,78 @@ void Menu::setup()  {
   attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), Menu :: triggerMenu, FALLING);
   encoder.attachHalfQuad(DT, CLK);
   encoder.setCount(-999);
-  //initScreen();
+  waitScreen();
+  startup();
 }
 
 void Menu::run() {
-  long newPosition = encoder.getCount();
-  if (newPosition != oldPosition && newPosition % 2 == 0) {
-    Serial.println(newPosition);
-    printPosition(newPosition / 2);
-    if(menuTriggeredTime != 0 && currentScreen != -1) {
-      if(newPosition > oldPosition) {
-        parameters[currentScreen]++;
-      } else {
-        parameters[currentScreen]--;
-      }
-      //reset menu trigger time on parameter change
-      menuTriggeredTime = millis();
-      updateScreen = true;
-    }
-    oldPosition = newPosition;
-  }
-
+  
   if(menuTriggeredTime != 0 && currentScreen != -1) {
     displayMenu();
     if(menuTriggeredTime + 4000 < millis()) {
       menuTriggeredTime = 0;
       currentScreen = -1;
-      Serial.println("Init pos:");
-      Serial.println(initPosition);
       encoder.setCount(initPosition);
       oldPosition = initPosition;
       newPosition = initPosition;
       initPosition = -999;
-      printPosition(oldPosition / 2);
-      clearLCDLine(2);
-      lcd.setCursor(5,2);
-      lcd.print("Subscribe!");
-      lcd.setCursor(3,3);
-      lcd.print("Taste The Code");
+      waitScreen();
     }
-  } else {
-    //time
   }
-
   delay(10);
 }
 
-void Menu::initScreen() {
+void Menu::waitScreen() {
   
   lcd.clear();
-// double init clears any previous text
-  // Print a message to the LCD.
-  lcd.setCursor(3,0);
-  lcd.print("Jungle Juice Sluice");
-  lcd.setCursor(4,1);
-  lcd.print("LCD Test");
-  lcd.setCursor(5,2);
-  lcd.print("Does it work????");
-  lcd.setCursor(3,3);
-  lcd.print("Pls make it work");
-}
+  lcd.setCursor(0,0);
+  lcd.print("Welcome to RRC!");
+  lcd.setCursor(0, 1);
+  lcd.print("Today's Drink: ");
+  lcd.print(drinkOTD);
+  lcd.setCursor(0, 2);
+  lcd.print("Price/Oz: $");
+  lcd.print(pricePerOunce);
+  lcd.setCursor(0, 3);
+  lcd.print("Oz Left: ");
+  lcd.print(ouncesLeft);
+  lcd.print("oz");
 
-void Menu::printPosition(long pos) {
-  clearLCDLine(1);
-  lcd.setCursor(0,1);
-  lcd.print("Position: ");
-  lcd.print(pos);
-}
+  //rfid code so RFID still works
+  while(currentScreen = -1 ){
+    readTag = waitForTag();
+    if(readTag!=""){
+      int customerIndex = customers.search(readTag);
+      
+      if(customerIndex>-1)
+      {
+        rfidGoodTap();
+        customers[customerIndex].lcdPrint();
+        //print "press green button to dispense
+        //enter drink menueditCustomer/buy drink
+        //make this a public function in the customer class, make the array private var
+        customers[customerIndex].drinks->push_back(Drink(rand()%24, rand()%2000));
+        customers[customerIndex].balance -= rand()%6;
+        customers[customerIndex].print();
+      }
+      else{
+        rfidBadTap();
+        lcd.clear();
+        lcd.setCursor(0,0);
+        lcd.print("Card Unrecognized");
+        lcd.setCursor(2,2);
+        lcd.print("Please check in");
+        lcd.setCursor(3,3);
+        lcd.print("at front desk");
+        Serial.print("Customer not added, please go to check in to add your card. ");
+        Serial.println("For testing purposes, customer is added: ");
+        customers.push_back(Customer(readTag, rand()%50));
+      }
+      Serial.println(readTag);
+    }
 
+  }
+}
 
 void Menu::clearLCDLine(int line)
 {               
@@ -96,29 +100,44 @@ void Menu::clearLCDLine(int line)
 
 void Menu:: triggerMenu()
 {
-  if(menuTriggeredTime + 50 < millis()){
+  if(menuTriggeredTime + 100 < millis()){
     if(menuTriggeredTime == 0) {
       initPosition = oldPosition;
     }
     menuTriggeredTime = millis();
     currentScreen++;
-    if(currentScreen >= numOfScreens) {
+    if(currentScreen >= NUM_SCREENS) {
       currentScreen = 0;
     }
-    updateScreen = true;
+    updateEntireScreen = true;
   }
 }
 
 void Menu:: displayMenu() {
-  if(updateScreen) {
+  //parameter editing
+  // long newPosition = encoder.getCount();
+  // if (newPosition != oldPosition && newPosition % 2 == 0) {
+  //   Serial.println(newPosition);
+  //   if(menuTriggeredTime != 0 && currentScreen != -1) {
+  //     if(newPosition > oldPosition) {
+  //       parameters[currentScreen]++;
+  //     } else {
+  //       parameters[currentScreen]--;
+  //     }
+  //     //reset menu trigger time on parameter change
+  //     menuTriggeredTime = millis();
+  //     updateEntireScreen = true;
+  //   }
+  //   oldPosition = newPosition;
+  // }
+
+  if(updateEntireScreen) {
     lcd.clear();
+    lcd.setCursor(0,0);
     lcd.print(" ***  SETTINGS  *** ");
     lcd.setCursor(0,1);
-    lcd.print(screens[currentScreen][0]);
-    lcd.setCursor(0,2);
-    lcd.print(parameters[currentScreen]);
-    lcd.print(" ");
-    lcd.print(screens[currentScreen][1]);
-    updateScreen = false;
+    lcd.print(currentScreen);
+    
+    updateEntireScreen = false;
   }
 }

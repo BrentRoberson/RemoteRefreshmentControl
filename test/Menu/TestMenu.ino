@@ -65,7 +65,6 @@ void loop() {
       oldPosition = initPosition;
       newPosition = initPosition;
       initPosition = -999;
-      printPosition(oldPosition / 2);
       clearLCDLine(2);
       lcd.setCursor(5,2);
       lcd.print("Subscribe!");

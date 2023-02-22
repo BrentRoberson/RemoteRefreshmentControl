@@ -6,6 +6,7 @@
 #include <Drink.h>
 #include <LiquidCrystal_I2C.h>
 #include <Globals.h>
+#include <Menu.h>
 
 class Customer {
   public:
@@ -15,6 +16,7 @@ class Customer {
     DynamicArray<Drink>* drinks;
     void lcdPrint();
     void print();
+    friend class Menu;
 };
 
 
