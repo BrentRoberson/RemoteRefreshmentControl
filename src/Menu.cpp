@@ -1,7 +1,7 @@
 #include "Menu.h"
 
 
-Menu::Menu(int numOfScr, LiquidCrystal_I2C & LCD) : lcd(LCD)
+Menu::Menu(int numOfScr) 
 {
   oldPosition = -999;
   initPosition = -999;

@@ -13,7 +13,6 @@
 
 class Menu {
   private:
-    LiquidCrystal_I2C lcd;
     static long oldPosition;
     static long initPosition;
     static unsigned long menuTriggeredTime;
@@ -24,7 +23,7 @@ class Menu {
     static bool updateScreen;
 
   public:
-    Menu(int numOfScr, LiquidCrystal_I2C & LCD);
+    Menu(int numOfScr);
     void setup();
     void run();
     void initScreen();
