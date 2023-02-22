@@ -18,12 +18,10 @@ class Menu {
     static unsigned long menuTriggeredTime;
     static const int numOfScreens;
     static int currentScreen;
-    String ** screens;
-    int * parameters;
     static bool updateScreen;
 
   public:
-    Menu(int numOfScr);
+    Menu();
     void setup();
     void run();
     void initScreen();

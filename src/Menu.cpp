@@ -1,15 +1,13 @@
 #include "Menu.h"
 
 
-Menu::Menu(int numOfScr) 
+Menu::Menu() 
 {
   oldPosition = -999;
   initPosition = -999;
   menuTriggeredTime = 0;
   currentScreen = -1;
-  screens = new String*[numOfScr];
   updateScreen = true;
-  parameters = new int[numOfScr];
 }
 
 void Menu::setup() {

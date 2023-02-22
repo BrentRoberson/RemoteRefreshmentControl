@@ -26,7 +26,14 @@ DynamicArray<Customer> customers;
 struct_message myData;
 LiquidCrystal_I2C lcd(0x27, 16, 4);
 Encoder myEnc(ENC_DATA,ENC_CLOCK);
-
+String screens[NUM_SCREENS][2] = {
+  {"Ignition Time","Minutes"}, 
+  {"Stabilization", "Minutes"}, 
+  {"Cleaning","Minutes"},
+  {"Start dose","Seconds"}, 
+  {"Cut-off Temperature","Celsius"}, 
+};
+int parameters[NUM_SCREENS];
 //Menu menu(NUM_SCREENS, lcd)
 
 // Callback function executed when data is received
