@@ -12,7 +12,7 @@ class Customer {
     String ID;
     double balance;
     DynamicArray<Drink>* drinks;
-    void lcdPrint(LiquidCrystal_I2C lcd);
+    void lcdPrint(LiquidCrystal_I2C & lcd);
     void print();
 };
 

@@ -7,6 +7,7 @@
 #include <Customer.h>
 #include <Pitches.h>
 #include <LiquidCrystal_I2C.h>
+#include <Menu.h>
 
 #define CLK_PIN 14
 #define DT_PIN 26
@@ -14,13 +15,19 @@
 
 #define SOLENOID 2
 #define buzzerPin 4
-int numOz; 
+
+double pricePerOunce = .40;
+double ouncesLeft = 640;
+double drinksLeft = ouncesLeft/12;
+
 bool readError;
 String readTag;
 DynamicArray<Customer> customers;
-// Create a structured object
 struct_message myData;
-LiquidCrystal_I2C lcd(0x27, 16, 4);  
+LiquidCrystal_I2C lcd(0x27, 16, 4);
+Encoder myEnc(ENC_DATA,ENC_CLOCK);
+
+//Menu menu(NUM_SCREENS, lcd)
 
 // Callback function executed when data is received
 // When data is received from the other controller this function will run automatically
@@ -70,7 +77,6 @@ void loop() {
         customers[customerIndex].lcdPrint(lcd);
         //print "press green button to dispense
         //enter drink menueditCustomer/buy drink
-
         customers[customerIndex].drinks->push_back(Drink(rand()%24, rand()%2000));
         customers[customerIndex].balance -= rand()%6;
         customers[customerIndex].print();

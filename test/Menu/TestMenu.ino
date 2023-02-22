@@ -164,7 +164,6 @@ void clearLCDLine(int line)
 //   }
 // }
 
-#define countof(a) (sizeof(a) / sizeof(a[0]))
 
 // String returnDateTime(const RtcDateTime& dt)
 // {
@@ -196,7 +195,7 @@ void triggerMenu()
   }
 }
 
-void displayMenu() {
+static void displayMenu() {
   if(updateScreen) {
     lcd.clear();
     lcd.print(" ***  SETTINGS  *** ");

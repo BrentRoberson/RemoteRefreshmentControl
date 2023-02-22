@@ -30,7 +30,7 @@ void Customer::print() {
   }
 }
 
-void Customer::lcdPrint(LiquidCrystal_I2C lcd) {
+void Customer::lcdPrint(LiquidCrystal_I2C & lcd) {
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("Balance: $");
