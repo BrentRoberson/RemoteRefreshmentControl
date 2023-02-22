@@ -9,6 +9,8 @@ bool updateEntireScreen = true;
 String readTag = "";
 long rfidTriggerTime = 0;
 bool waiting = false;
+bool scanTimeout = false;
+bool tagRead;
 
 Menu::Menu(){}
 
@@ -58,50 +60,58 @@ void Menu::run() {
   delay(10);
 }
 
+void rfidScanner(){
+  // Serial.print(menuTriggeredTime);
+  // Serial.print(rfidTriggerTime);
+  readTag = waitForTag();
+  if(readTag!=""){
+    int customerIndex = customers.search(readTag);
+    rfidTriggerTime = millis();
+    tagRead = true;
+    if(customerIndex>-1)
+    {
+      rfidGoodTap();
+      customers[customerIndex].lcdPrint();
+      //print "press green button to dispense
+      //enter drink menueditCustomer/buy drink
+      //make this a public function in the customer class, make the array private var
+      customers[customerIndex].drinks->push_back(Drink(rand()%24, rand()%2000));
+      customers[customerIndex].balance -= rand()%6;
+      customers[customerIndex].print();
+    }
+    else{
+      rfidBadTap();
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("Card Unrecognized");
+      lcd.setCursor(2,2);
+      lcd.print("Please check in");
+      lcd.setCursor(3,3);
+      lcd.print("at front desk");
+      Serial.print("Customer not added, please go to check in to add your card. ");
+      Serial.println("For testing purposes, customer is added: ");
+      customers.push_back(Customer(readTag, rand()%50));
+    }
+    Serial.println(readTag);
+    
+  }
+}
 
 void Menu::waitScreen() {
   waiting = true;
   lcdWelcome();
-  //rfid code so RFID still works
-  while(menuTriggeredTime=0){
-    Serial.print(menuTriggeredTime);
-    Serial.print(rfidTriggerTime);
-    readTag = waitForTag();
-    if(readTag!=""){
-      int customerIndex = customers.search(readTag);
-      rfidTriggerTime = millis();
-      if(customerIndex>-1)
-      {
-        rfidGoodTap();
-        customers[customerIndex].lcdPrint();
-        //print "press green button to dispense
-        //enter drink menueditCustomer/buy drink
-        //make this a public function in the customer class, make the array private var
-        customers[customerIndex].drinks->push_back(Drink(rand()%24, rand()%2000));
-        customers[customerIndex].balance -= rand()%6;
-        customers[customerIndex].print();
-      }
-      else{
-        rfidBadTap();
-        lcd.clear();
-        lcd.setCursor(0,0);
-        lcd.print("Card Unrecognized");
-        lcd.setCursor(2,2);
-        lcd.print("Please check in");
-        lcd.setCursor(3,3);
-        lcd.print("at front desk");
-        Serial.print("Customer not added, please go to check in to add your card. ");
-        Serial.println("For testing purposes, customer is added: ");
-        customers.push_back(Customer(readTag, rand()%50));
-      }
-      Serial.println(readTag);
-      readTag = "";
+
+  while(menuTriggeredTime==0 ){
+    rfidScanner();
+    Serial.println(readTag);
+    
+    if(rfidTriggerTime + 4000 < millis() && tagRead){
+      lcdWelcome();
+      tagRead = false;
+
     }
     //get off of purchase screen
-    // if(rfidTriggerTime+4000<millis()){
-    //   break;
-    // }
-
+    delay(500);
   }
 }
 
