@@ -1,27 +1,39 @@
 #include "Menu.h"
 
-// Static member variable definitions
-long Menu::oldPosition = 0;
-long Menu::newPosition = 0;
-long Menu::initPosition = 0;
-unsigned long Menu::menuTriggeredTime = 0;
-int Menu::currentScreen = -1;
-bool Menu::updateEntireScreen = true;
-String readTag;
-Menu::Menu(){}
+long oldPosition = 0;
+long newPosition = 0;
+long initPosition = 0;
+unsigned long menuTriggeredTime = 0;
+int currentScreen = -1;
+bool updateEntireScreen = true;
+String readTag = "";
+long rfidTriggerTime = 0;
+bool waiting = false;
 
+Menu::Menu(){}
 
 void Menu::setup()  {
   pinMode(BUTTON_PIN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), Menu :: triggerMenu, FALLING);
   encoder.attachHalfQuad(DT, CLK);
   encoder.setCount(-999);
-  waitScreen();
-  startup();
+    
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Welcome to RRC!");
+  lcd.setCursor(0, 1);
+  lcd.print("Today's Drink: ");
+  lcd.print(drinkOTD);
+  lcd.setCursor(0, 2);
+  lcd.print("Price/Oz: $");
+  lcd.print(pricePerOunce);
+  lcd.setCursor(0, 3);
+  lcd.print("Oz Left: ");
+  lcd.print(ouncesLeft);
+  lcd.print("oz");
 }
 
 void Menu::run() {
-  
   if(menuTriggeredTime != 0 && currentScreen != -1) {
     displayMenu();
     if(menuTriggeredTime + 4000 < millis()) {
@@ -32,13 +44,17 @@ void Menu::run() {
       newPosition = initPosition;
       initPosition = -999;
       waitScreen();
+      
     }
+  }
+  else if(!waiting){
+    waitScreen();
   }
   delay(10);
 }
 
 void Menu::waitScreen() {
-  
+  waiting = true;
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("Welcome to RRC!");
@@ -54,11 +70,13 @@ void Menu::waitScreen() {
   lcd.print("oz");
 
   //rfid code so RFID still works
-  while(currentScreen = -1 ){
+  Serial.print(menuTriggeredTime);
+  Serial.print(rfidTriggerTime);
+  while(menuTriggeredTime=0){
     readTag = waitForTag();
     if(readTag!=""){
       int customerIndex = customers.search(readTag);
-      
+      rfidTriggerTime = millis();
       if(customerIndex>-1)
       {
         rfidGoodTap();
@@ -84,7 +102,12 @@ void Menu::waitScreen() {
         customers.push_back(Customer(readTag, rand()%50));
       }
       Serial.println(readTag);
+      readTag = "";
     }
+    //get off of purchase screen
+    // if(rfidTriggerTime+4000<millis()){
+    //   break;
+    // }
 
   }
 }

@@ -65,10 +65,10 @@ void setup() {
   // esp_now_register_recv_cb(OnDataRecv);
   Serial.println("Dispenser steup");
   lcd.print("Startup Completed!");
-  menu.setup();
 
   startup();
 
+  menu.setup();
 }
 
 

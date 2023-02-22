@@ -14,14 +14,7 @@
 
 
 class Menu {
-  private:
-    static long oldPosition;
-    static long newPosition;
-    static long initPosition;
-    static unsigned long menuTriggeredTime;
-    static int currentScreen;
-    static bool updateEntireScreen;
-    
+ 
   public:
     Menu();
     void setup();
