@@ -17,6 +17,7 @@ class Customer {
     void lcdPrint();
     void print();
     friend class Menu;
+    bool manager;
 };
 
 

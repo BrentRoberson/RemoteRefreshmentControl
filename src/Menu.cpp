@@ -12,6 +12,7 @@ long rfidTriggerTime = 0;
 bool waiting = false;
 bool scanTimeout = false;
 bool tagRead;
+int validationTurns = 0;
 Customer lastScannedCustomer;
 
 Menu::Menu(){}
@@ -133,19 +134,16 @@ void Menu:: triggerMenu()
     if(currentScreen >= NUM_SCREENS) {
       currentScreen = 0;
     }
+    validationTurns = 0;
     updateEntireScreen = true;
   }
 }
 
 template <typename T>
 void processEncoderInput(T & value) {
-  
   newPosition = encoder.getCount();
-
-
   if (newPosition != oldPosition && newPosition % 2 == 0) {
     Serial.println(newPosition);
-
     if(menuTriggeredTime != 0 && currentScreen != -1) {
       if(newPosition > oldPosition) {
         value++;
@@ -176,6 +174,15 @@ void displaySetting(const char* title, T value) {
     updateEntireScreen = false;
   }
 }
+
+bool validated(){
+  Serial.print("Here  ");
+  Serial.println(validationTurns);
+  processEncoderInput(validationTurns);
+  //if turned 5 times, return true for validated
+  return(validationTurns>=5 || validationTurns<=-5);
+}
+
 void Menu::displayMenu() {
   switch (currentScreen) {
     case 0:
@@ -192,11 +199,16 @@ void Menu::displayMenu() {
       break;
     case 3:
       if (updateEntireScreen) {
+        printSettingTitle();
         lcd.setCursor(0, 1);
-        lcd.print("Last scanned:");
+        lcd.print("Last ID scanned:");
         lcd.setCursor(0, 2);
         if (customers.getSize() > 0) {
-          lastScannedCustomer.lcdPrint();
+          lcd.print("Balance: $");
+          lcd.print(lastScannedCustomer.balance);
+          lcd.setCursor(0, 3);
+          lcd.print("Drinks Purchased: $");
+          lcd.print(lastScannedCustomer.drinks->getSize());
         } else {
           lcd.print("No Customers Scanned");
         }
@@ -205,16 +217,35 @@ void Menu::displayMenu() {
       }
     case 4:
       if (updateEntireScreen) {
+        printSettingTitle();
         lcd.setCursor(0, 1);
-        lcd.print("All Customers");
+        lcd.print("Make Last Manager");
         lcd.setCursor(0, 2);
         if (customers.getSize() > 0) {
-          lastScannedCustomer.lcdPrint();
+          lcd.print("Balance: $");
+          lcd.print(lastScannedCustomer.balance);
+          lcd.setCursor(0, 3);
+          // lcd.print("validate with ");
+          lcd.print(5-abs(validationTurns));
+          lcd.print(" turns");
+          
+
         } else {
           lcd.print("No Customers Scanned");
         }
+        updateEntireScreen = false;
       }
-    updateEntireScreen = false;
+      if(validated()){
+        lcd.clear();
+        lcd.setCursor(3, 1);
+        lcd.print("Last Customer");
+        lcd.setCursor(3, 2);
+        lcd.print("Made Manager");
+        lastScannedCustomer.manager = true;
+        validationTurns = 0;
+        updateEntireScreen = false;
+        menuTriggeredTime-=2000;
+      };
     break;
   }
 }

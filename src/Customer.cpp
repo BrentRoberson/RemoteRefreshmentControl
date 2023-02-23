@@ -5,7 +5,8 @@
 Customer::Customer(String id, double balance) {
   this -> ID = id;
   this -> balance = balance;
-  this -> drinks = new DynamicArray<Drink>(10);
+  this -> drinks = new DynamicArray<Drink>(maxDrinks);
+  this -> manager = false;
 }
 
 void Customer::print() {
