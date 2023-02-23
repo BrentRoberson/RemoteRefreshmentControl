@@ -154,50 +154,40 @@ void processEncoderInput(T & value) {
       }
       //reset menu trigger time on parameter change
       menuTriggeredTime = millis();
-      updateJustVal = true;
+      updateEntireScreen = true;
     }
     oldPosition = newPosition;
   }
 }
-
-
-
-void Menu::displayMenu() {
-  if (updateEntireScreen) {
+void printSettingTitle(){
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print(" ***  SETTINGS  *** ");
-  }
+}
 
+template <typename T>
+void displaySetting(const char* title, T value) {
+  if (updateEntireScreen) {
+    printSettingTitle();
+    lcd.setCursor(0, 1);
+    lcd.print(title);
+    lcd.setCursor(0, 2);
+    lcd.print(value);
+    updateEntireScreen = false;
+  }
+}
+void Menu::displayMenu() {
   switch (currentScreen) {
     case 0:
-      if (updateEntireScreen) {
-        lcd.setCursor(0, 1);
-        lcd.print("Total Quarts:");
-        lcd.setCursor(0, 2);
-        lcd.print(totalQuarts);
-        updateEntireScreen = false;
-      }
+      displaySetting("Total Quarts:", totalQuarts);
       processEncoderInput(totalQuarts);
       break;
     case 1:
-      if (updateEntireScreen) {
-        lcd.setCursor(0, 1);
-        lcd.print("Price per ounce:");
-        lcd.setCursor(0, 2);
-        lcd.print(pricePerOunce);
-        updateEntireScreen = false;
-      }
+      displaySetting("Price per ounce:", pricePerOunce);
       processEncoderInput(pricePerOunce);
       break;
     case 2:
-      if (updateEntireScreen) {
-        lcd.setCursor(0, 1);
-        lcd.print("Max drinks:");
-        lcd.setCursor(0, 2);
-        lcd.print(maxDrinks);
-        updateEntireScreen = false;
-      }
+      displaySetting("Max drinks:", maxDrinks);
       processEncoderInput(maxDrinks);
       break;
     case 3:
@@ -212,7 +202,6 @@ void Menu::displayMenu() {
         }
         updateEntireScreen = false;
       }
-      break;
     case 4:
       if (updateEntireScreen) {
         lcd.setCursor(0, 1);
@@ -224,9 +213,9 @@ void Menu::displayMenu() {
           lcd.print("No Customers Scanned");
         }
       }
-      updateEntireScreen = false;
-      break;
+    updateEntireScreen = false;
+    break;
   }
-
-  
 }
+
+
