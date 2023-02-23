@@ -1,8 +1,8 @@
 // Include Libraries
-#include <esp_now.h>
 #include <RFID.h>
 #include <WiFi.h>
 #include <message.h>
+#include <ESPNow.h>
  
 // Variables for test data
 int int_value;
@@ -19,8 +19,6 @@ uint8_t broadcastAddress[] = {0xCC, 0xDB, 0xA7, 0x14, 0xF4, 0x58};
 // Create a structured object
 struct_message myData;
 
-// Peer info
-esp_now_peer_info_t peerInfo;
 
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
   Serial.print("\r\nLast Packet Send Status:\t");
@@ -33,38 +31,15 @@ void setup() {
   // Set up Serial Monitor
   Serial.begin(115200);
 
- 
-  // Set ESP32 as a Wi-Fi Station
-  WiFi.mode(WIFI_STA);
-  
-
-  // Initilize ESP-NOW
-  if (esp_now_init() != ESP_OK) {
-    Serial.println("Error initializing ESP-NOW");
-    return;
-  }
-
-  // rfid init 
+ // rfid init 
   RFIDsetup();
   // Register the send callback
-  esp_now_register_send_cb(OnDataSent);
-  Serial.println("Register setup1");
-
-
-  
-  // Register peer
-  memcpy(peerInfo.peer_addr, broadcastAddress, 6);
-  peerInfo.channel = 0;  
-  peerInfo.encrypt = false;
-  
-  Serial.println("Register setup2");
-  
-  // Add peer        
-  if (esp_now_add_peer(&peerInfo) != ESP_OK){
-    Serial.println("Failed to add peer");
-    return;
-  }
-  Serial.println("Register setup");
+  // Set ESP32 as a Wi-Fi Station
+  WiFi.mode(WIFI_STA);
+  ESP32NOW espNow;
+  espNow.init();
+  espNow.addPeer(broadcastAddress);
+  espNow.registerDataSentCallback(OnDataSent);
 }
 
 

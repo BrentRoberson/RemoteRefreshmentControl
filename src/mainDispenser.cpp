@@ -1,4 +1,3 @@
-#include <esp_now.h>
 #include <WiFi.h>
 #include <message.h>
 #include <Arduino.h>
@@ -8,6 +7,7 @@
 #include <Pitches.h>
 #include <LiquidCrystal_I2C.h>
 #include <Menu.h>
+#include <ESPNow.h>
 
 #define CLK_PIN 14
 #define DT_PIN 26
@@ -32,6 +32,8 @@ String screens[NUM_SCREENS] = {
 
 Menu menu;
 
+uint8_t broadcastAddress[] = {0xCC, 0xDB, 0xA7, 0x14, 0xF4, 0x58};
+
 // Callback function executed when data is received
 // When data is received from the other controller this function will run automatically
 void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
@@ -43,6 +45,7 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   Serial.print("Amount Transfered Value: ");
   Serial.println(myData.amount);
   int customer_index = customers.search(myData.rfid);
+  // if theres a new customer 
   customers[customer_index].balance += myData.amount; 
 }
 
@@ -52,12 +55,12 @@ void setup() {
 
   // Set ESP32 as a Wi-Fi Station
   WiFi.mode(WIFI_STA);
+  ESP32NOW espNow;
+  espNow.init();
+  espNow.addPeer(broadcastAddress);
+  espNow.registerDataReceivedCallback(OnDataRecv);
  
-  // Initilize ESP-NOW
-  if (esp_now_init() != ESP_OK) {
-    Serial.println("Error initializing ESP-NOW");
-    return;
-  }
+
   RFIDsetup();
   lcd.init();
   lcd.backlight();
