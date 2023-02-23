@@ -4,7 +4,7 @@
 template <typename T> 
 DynamicArray<T>::DynamicArray()
 {
-    capacity = 1;
+    capacity = 10;
     size = 0;
     array= new T[capacity];
 }
@@ -13,8 +13,8 @@ template <typename T>
 DynamicArray<T>::DynamicArray(int capacity)
 {
     this->capacity = capacity;
-    array= new T[capacity];
-    size = 0;
+    this->array= new T[capacity];
+    this->size = 0;
 }
 
 template <typename T> 
@@ -121,8 +121,19 @@ void DynamicArray<T>::printArrayDetails()
     Serial.print(size); 
     Serial.print(", Capacity of array:");  
     Serial.print(capacity);  
-    Serial.println(); 
+    Serial.println();
 }
+
+template <typename T> 
+T& DynamicArray<T>:: DynamicArray::operator[](int index)
+{
+    if (index >= size) {
+        Serial.println("Array index out of bound, exiting");
+        exit(0);
+    }
+    return array[index];
+}
+
 
 template <typename T> 
 bool DynamicArray<T>::isEmpty()

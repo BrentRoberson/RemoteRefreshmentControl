@@ -1,19 +1,17 @@
 #ifndef JUG_H
 #define JUG_H
 
-struct {
-    float totalGallons;
-    float ozLeft;
-    int drinksLeft;
-} jug;
+#include <Arduino.h>
+#include <Menu.h>
 
+class Jug {
+  private: 
 
+  public:
+    friend class Menu;
+    Jug();
 
-
-
-
-
-
-
+    // add any public member functions here
+};
 
 #endif

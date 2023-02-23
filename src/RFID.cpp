@@ -7,14 +7,13 @@
  */
 
 #include<RFID.h>
+#include <LiquidCrystal_I2C.h>
 
 MFRC522 rfid(SS_PIN, RST_PIN);
 
 void RFIDsetup() {
-  Serial.begin(9600);
   SPI.begin(); // init SPI bus
   rfid.PCD_Init(); // init MFRC522
-  pinMode(solenoid, OUTPUT);
   Serial.println("Tap an RFID/NFC tag on the RFID-RC522 reader");
   
 }
@@ -35,15 +34,15 @@ String waitForTag() {
 }
 
 
-void printTag(MFRC522 rfid){
-  Serial.print("RFID/NFC Tag Type: ");
-  // print UID in Serial Monitor in the hex format
-  Serial.print("UID:");
-  for (int i = 0; i < rfid.uid.size; i++) {
-    Serial.print(rfid.uid.uidByte[i] );
-  }
-  Serial.println();
+// void printTag(MFRC522 rfid,LiquidCrystal_I2C lcd ){
+//   // print UID in Serial Monitor in the hex format
+//   Serial.print("UID:");
+//   lcd.print("UID:");
+//   for (int i = 0; i < rfid.uid.size; i++) {
+//     Serial.print(rfid.uid.uidByte[i] );
+//   }
+//   Serial.println();
   
-  rfid.PICC_HaltA(); // halt PICC
-  rfid.PCD_StopCrypto1(); // stop encryption on PCD
-}
+//   rfid.PICC_HaltA(); // halt PICC
+//   rfid.PCD_StopCrypto1(); // stop encryption on PCD
+// }

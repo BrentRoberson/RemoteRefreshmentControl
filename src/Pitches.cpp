@@ -1,6 +1,5 @@
 #include <Pitches.h>
 
-#define buzzerPin  4 // ESP32 pin GIOP18 connected to piezo buzzer
 
 int goodTapFrequencies[] = {2255, 3000, 5000, 6000, 8000};
 int badTapFrequencies[] = {2255, 1200, 600, 300, 150};

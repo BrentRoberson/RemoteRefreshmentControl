@@ -2,17 +2,22 @@
 #ifndef CUSTOMER_H
 #define CUSTOMER_H
 
-#include <DynamicArray.h>
+#include <DynamicArray.cpp>
 #include <Drink.h>
-
+#include <LiquidCrystal_I2C.h>
+#include <Globals.h>
+#include <Menu.h>
 
 class Customer {
   public:
-    Customer(String id = "", float oz = 0);
+    Customer(String id = "", double balance = 0);
     String ID;
-    float ozLeft;
+    double balance;
     DynamicArray<Drink>* drinks;
+    void lcdPrint();
     void print();
+    friend class Menu;
+    bool manager;
 };
 
 

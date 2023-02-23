@@ -7,15 +7,16 @@
 template <typename T> 
 class DynamicArray {
   private:
-    T* array = NULL;
-
     int size;
 
     int capacity;
+    
+    
 
   public:
+    T* array = NULL;
+    
     DynamicArray();
-
     DynamicArray(int capacity);
 
     int getSize();
@@ -37,6 +38,8 @@ class DynamicArray {
     void deleteAt(int index);
 
     void printArrayDetails();
+
+    T& operator[](int index);
 
     bool isEmpty();
 };
