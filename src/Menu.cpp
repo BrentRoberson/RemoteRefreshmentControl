@@ -22,14 +22,13 @@ void lcdWelcome(){
   lcd.setCursor(0,0);
   lcd.print("Welcome to RRC!");
   lcd.setCursor(0, 1);
-  lcd.print("Today's Drink: ");
-  lcd.print(drinkOTD);
+  lcd.print(" Scan to Begin!");
   lcd.setCursor(0, 2);
   lcd.print("Price/Oz: $");
   lcd.print(pricePerOunce);
   lcd.setCursor(0, 3);
   lcd.print("Oz Left: ");
-  lcd.print(totalQuarts/32.0);
+  lcd.print(totalQuarts*32.0);
   lcd.print("oz");
 }
 
@@ -213,8 +212,8 @@ void Menu::displayMenu() {
           lcd.print("No Customers Scanned");
         }
       updateEntireScreen = false;
-      break;
       }
+      break;
     case 4:
       if (updateEntireScreen) {
         printSettingTitle();
@@ -246,7 +245,7 @@ void Menu::displayMenu() {
         updateEntireScreen = false;
         menuTriggeredTime-=2000;
       };
-    break;
+      break;
   }
 }
 
