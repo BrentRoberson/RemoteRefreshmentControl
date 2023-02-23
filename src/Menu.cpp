@@ -196,6 +196,7 @@ void Menu::displayMenu() {
       displaySetting("Max drinks:", maxDrinks);
       processEncoderInput(maxDrinks);
       break;
+    //delete customer
     case 3:
       if (updateEntireScreen) {
         printSettingTitle();
@@ -214,6 +215,7 @@ void Menu::displayMenu() {
       updateEntireScreen = false;
       }
       break;
+    //make manager  
     case 4:
       if (updateEntireScreen) {
         printSettingTitle();
@@ -234,18 +236,21 @@ void Menu::displayMenu() {
         }
         updateEntireScreen = false;
       }
-      if(validated()){
-        lcd.clear();
-        lcd.setCursor(3, 1);
-        lcd.print("Last Customer");
-        lcd.setCursor(3, 2);
-        lcd.print("Made Manager");
-        lastScannedCustomer.manager = true;
-        validationTurns = 0;
-        updateEntireScreen = false;
-        menuTriggeredTime-=2000;
-      };
+      if (customers.getSize() > 0) {
+        if(validated()){
+          lcd.clear();
+          lcd.setCursor(3, 1);
+          lcd.print("Last Customer");
+          lcd.setCursor(3, 2);
+          lcd.print("Made Manager");
+          lastScannedCustomer.manager = true;
+          validationTurns = 0;
+          updateEntireScreen = false;
+          menuTriggeredTime-=2000;
+        }
+      }
       break;
+      //make a case to resetAll
   }
 }
 
