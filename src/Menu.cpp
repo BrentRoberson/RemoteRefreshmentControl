@@ -200,7 +200,8 @@ void Menu::displayMenu() {
         } else {
           lcd.print("No Customers Scanned");
         }
-        updateEntireScreen = false;
+      updateEntireScreen = false;
+      break;
       }
     case 4:
       if (updateEntireScreen) {
