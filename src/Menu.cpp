@@ -6,6 +6,7 @@ long initPosition = 0;
 unsigned long menuTriggeredTime = 0;
 int currentScreen = -1;
 bool updateEntireScreen = true;
+bool updateJustVal = true;
 String readTag = "";
 long rfidTriggerTime = 0;
 bool waiting = false;
@@ -35,7 +36,7 @@ void Menu::setup()  {
   pinMode(BUTTON_PIN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), Menu :: triggerMenu, FALLING);
   encoder.attachHalfQuad(DT, CLK);
-  encoder.setCount(-999);
+  encoder.setCount(0);
   lcdWelcome();
 }
 
@@ -50,14 +51,13 @@ void Menu::run() {
       encoder.setCount(initPosition);
       oldPosition = initPosition;
       newPosition = initPosition;
-      initPosition = -999;
+      initPosition = 0;
       waitScreen();
     }
   }
   else if(!waiting){
     waitScreen();
   }
-  delay(10);
 }
 
 void rfidScanner(){
@@ -104,14 +104,12 @@ void Menu::waitScreen() {
 
   while(menuTriggeredTime==0 ){
     rfidScanner();
-    Serial.println(readTag);
 
     if(rfidTriggerTime + 4000 < millis() && tagRead){
       lcdWelcome();
       tagRead = false;
     }
-    //get off of purchase screen
-    delay(500);
+
   }
 }
 
@@ -139,73 +137,96 @@ void Menu:: triggerMenu()
   }
 }
 
-void Menu:: displayMenu() {
-  //parameter editing
-  // long newPosition = encoder.getCount();
-  // if (newPosition != oldPosition && newPosition % 2 == 0) {
-  //   Serial.println(newPosition);
-  //   if(menuTriggeredTime != 0 && currentScreen != -1) {
-  //     if(newPosition > oldPosition) {
-  //       parameters[currentScreen]++;
-  //     } else {
-  //       parameters[currentScreen]--;
-  //     }
-  //     //reset menu trigger time on parameter change
-  //     menuTriggeredTime = millis();
-  //     updateEntireScreen = true;
-  //   }
-  //   oldPosition = newPosition;
-  // }
+template <typename T>
+void processEncoderInput(T & value) {
+  
+  newPosition = encoder.getCount();
 
-  if(updateEntireScreen) {
-    Serial.print(currentScreen);
+
+  if (newPosition != oldPosition && newPosition % 2 == 0) {
+    Serial.println(newPosition);
+
+    if(menuTriggeredTime != 0 && currentScreen != -1) {
+      if(newPosition > oldPosition) {
+        value++;
+      } else {
+        value--;
+      }
+      //reset menu trigger time on parameter change
+      menuTriggeredTime = millis();
+      updateJustVal = true;
+    }
+    oldPosition = newPosition;
+  }
+}
+
+
+
+void Menu::displayMenu() {
+  if (updateEntireScreen) {
     lcd.clear();
-    lcd.setCursor(0,0);
+    lcd.setCursor(0, 0);
     lcd.print(" ***  SETTINGS  *** ");
-     switch (currentScreen) {
-      case 0:
+  }
+
+  switch (currentScreen) {
+    case 0:
+      if (updateEntireScreen) {
         lcd.setCursor(0, 1);
         lcd.print("Total Quarts:");
         lcd.setCursor(0, 2);
         lcd.print(totalQuarts);
-        break;
-      case 1:
+        updateEntireScreen = false;
+      }
+      processEncoderInput(totalQuarts);
+      break;
+    case 1:
+      if (updateEntireScreen) {
         lcd.setCursor(0, 1);
         lcd.print("Price per ounce:");
         lcd.setCursor(0, 2);
         lcd.print(pricePerOunce);
-        break;
-      case 2:
+        updateEntireScreen = false;
+      }
+      processEncoderInput(pricePerOunce);
+      break;
+    case 2:
+      if (updateEntireScreen) {
         lcd.setCursor(0, 1);
         lcd.print("Max drinks:");
         lcd.setCursor(0, 2);
         lcd.print(maxDrinks);
-        break;
-      case 3:
+        updateEntireScreen = false;
+      }
+      processEncoderInput(maxDrinks);
+      break;
+    case 3:
+      if (updateEntireScreen) {
         lcd.setCursor(0, 1);
         lcd.print("Last scanned:");
         lcd.setCursor(0, 2);
-        if(customers.getSize()>0){
+        if (customers.getSize() > 0) {
           lastScannedCustomer.lcdPrint();
-        }
-        else{
+        } else {
           lcd.print("No Customers Scanned");
         }
-        break;
-      case 4:
+        updateEntireScreen = false;
+      }
+      break;
+    case 4:
+      if (updateEntireScreen) {
         lcd.setCursor(0, 1);
         lcd.print("All Customers");
         lcd.setCursor(0, 2);
-        if(customers.getSize()>0){
+        if (customers.getSize() > 0) {
           lastScannedCustomer.lcdPrint();
-        }
-        else{
+        } else {
           lcd.print("No Customers Scanned");
         }
-        break;
-      
-    }
-    
-    updateEntireScreen = false;
+      }
+      updateEntireScreen = false;
+      break;
   }
+
+  
 }

@@ -21,7 +21,7 @@ class Customer;
 extern String drinkOTD;
 extern double pricePerOunce; // = .40;
 extern double totalQuarts; // = 640;
-extern int maxDrinks; // = ouncesLeft/12;
+extern int maxDrinks; // 
 extern LiquidCrystal_I2C lcd;
 extern ESP32Encoder encoder;
 extern String screens[NUM_SCREENS];
