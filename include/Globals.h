@@ -25,6 +25,7 @@ extern int maxDrinks; //
 extern LiquidCrystal_I2C lcd;
 extern ESP32Encoder encoder;
 extern DynamicArray<Customer> customers;
+extern Customer lastCustomerScanned;
 
 
 #endif 

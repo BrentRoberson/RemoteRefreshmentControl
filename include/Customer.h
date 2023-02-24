@@ -11,15 +11,20 @@
 class Customer {
   public:
     Customer(String id = "", double balance = 0);
+    friend class Menu;
+
+    //eventually make private with accessor functions
     String ID;
     double balance;
     DynamicArray<Drink>* drinks;
+    bool manager;
+
     void lcdPrint();
     void print();
-    friend class Menu;
-    bool manager;
+    void editCustomer(Customer customer);
 };
 
+void addCustomer();
 
 
 

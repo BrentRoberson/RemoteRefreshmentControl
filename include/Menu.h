@@ -9,6 +9,7 @@
 #include <Customer.h>
 #include <RFID.h>
 #include <Pitches.h>
+#include <RFID.h>
 //https://www.youtube.com/watch?v=P36GIB0dYks&list=PLfwpK3RIxFR39m27Q8C6zjnj9kOjJz3VV&index=5
 //heavily relied on this menu system^
 
@@ -23,6 +24,27 @@ class Menu {
     void clearLCDLine(int line);
     static void triggerMenu();
     void displayMenu();
+
+  private:
+    void printLcdWelcome();
+
+    template <typename T>
+    void processEncoderInput(T & value, double increment);
+
+    void printSettingTitle();
+
+    template <typename T>
+    void displaySetting(const char* title, T value);
+
+    bool validated();
+
+    void editLastCustomerScreen(String title, String action, std::function<void()> onValidation);
+
 };
 
+
+
+
+
 #endif
+

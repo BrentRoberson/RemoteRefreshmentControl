@@ -47,3 +47,10 @@ void Customer::lcdPrint() {
   lcd.print(this->drinks->getSize());
 
 }
+
+void Customer::editCustomer(Customer customer){
+
+}
+void addCustomer(){
+  //add customer
+}

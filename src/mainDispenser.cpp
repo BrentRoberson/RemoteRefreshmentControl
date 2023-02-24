@@ -21,6 +21,7 @@ String drinkOTD = "NA";
 ESP32Encoder encoder;
 bool readError;
 DynamicArray<Customer> customers;
+Customer lastCustomerScanned;
 struct_message myData;
 LiquidCrystal_I2C lcd(0x27, 16, 4);
 Menu menu;
@@ -40,6 +41,7 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   int customer_index = customers.search(myData.rfid);
   // if theres a new customer 
   customers[customer_index].balance += myData.amount; 
+  
 }
 
 void setup() {

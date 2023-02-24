@@ -8,17 +8,16 @@
 
 #include<RFID.h>
 #include <LiquidCrystal_I2C.h>
-
+bool tagRead = false;
 MFRC522 rfid(SS_PIN, RST_PIN);
 
 void RFIDsetup() {
   SPI.begin(); // init SPI bus
   rfid.PCD_Init(); // init MFRC522
   Serial.println("Tap an RFID/NFC tag on the RFID-RC522 reader");
-  
 }
 
-String waitForTag() {
+String rfidScan() {
   String temp = "";
   if (rfid.PICC_IsNewCardPresent()) { // new tag is available
     if (rfid.PICC_ReadCardSerial()) { // NUID has been readed
@@ -27,22 +26,12 @@ String waitForTag() {
       }
     }
   }
-    rfid.PICC_HaltA(); // halt PICC
-    rfid.PCD_StopCrypto1(); // stop encryption on PCD
-   
+  rfid.PICC_HaltA(); // halt PICC
+  rfid.PCD_StopCrypto1(); // stop encryption on PCD
+
+  //if a scan found a customer and temp was changed
   return temp;
+  
 }
 
 
-// void printTag(MFRC522 rfid,LiquidCrystal_I2C lcd ){
-//   // print UID in Serial Monitor in the hex format
-//   Serial.print("UID:");
-//   lcd.print("UID:");
-//   for (int i = 0; i < rfid.uid.size; i++) {
-//     Serial.print(rfid.uid.uidByte[i] );
-//   }
-//   Serial.println();
-  
-//   rfid.PICC_HaltA(); // halt PICC
-//   rfid.PCD_StopCrypto1(); // stop encryption on PCD
-// }

@@ -7,17 +7,17 @@ unsigned long menuTriggeredTime = 0;
 int currentScreen = -1;
 bool updateEntireScreen = true;
 bool updateJustVal = true;
-String readTag = "";
-long rfidTriggerTime = 0;
+unsigned long rfidTriggerTime = 0;
 bool waiting = false;
 bool scanTimeout = false;
-bool tagRead;
+String readTag = "";
+bool newTap = false;
 int validationTurns = 0;
 Customer lastScannedCustomer;
 
 Menu::Menu(){}
 
-void lcdWelcome(){
+void Menu:: printLcdWelcome(){
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("Welcome to RRC!");
@@ -37,9 +37,8 @@ void Menu::setup()  {
   attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), Menu :: triggerMenu, FALLING);
   encoder.attachHalfQuad(DT, CLK);
   encoder.setCount(0);
-  lcdWelcome();
+  printLcdWelcome();
 }
-
 
 
 void Menu::run() {
@@ -60,56 +59,46 @@ void Menu::run() {
   }
 }
 
-void rfidScanner(){
-  // Serial.print(menuTriggeredTime);
-  // Serial.print(rfidTriggerTime);
-  readTag = waitForTag();
-  if(readTag!=""){
-    int customerIndex = customers.search(readTag);
-    rfidTriggerTime = millis();
-    tagRead = true;
-    if(customerIndex>-1)
-    {
-      lastScannedCustomer = customers[customerIndex];
-      rfidGoodTap();
-      customers[customerIndex].lcdPrint();
-      //print "press green button to dispense
-      //enter drink menued itCustomer/buy drink
-      //make this a public function in the customer class, make the array private var
-      customers[customerIndex].drinks->push_back(Drink(rand()%24, rand()%2000));
-      customers[customerIndex].balance -= rand()%6;
-      customers[customerIndex].print();
-    }
-    else{
-      rfidBadTap();
-      lcd.clear();
-      lcd.setCursor(0,0);
-      lcd.print("Card Unrecognized");
-      lcd.setCursor(2,2);
-      lcd.print("Please check in");
-      lcd.setCursor(3,3);
-      lcd.print("at front desk");
-      Serial.print("Customer not added, please go to check in to add your card. ");
-      Serial.println("For testing purposes, customer is added: ");
-      customers.push_back(Customer(readTag, rand()%50));
-    }
-    Serial.println(readTag);
-    
-  }
-}
 
 void Menu::waitScreen() {
   waiting = true;
-  lcdWelcome();
+  printLcdWelcome();
 
   while(menuTriggeredTime==0 ){
-    rfidScanner();
+    readTag = rfidScan();
+    
+    if(readTag!=""){
+      rfidTriggerTime = millis();
+      newTap = true;
+      int customerIndex = customers.search(readTag);
+      lcd.clear();
+      lcd.setCursor(0,0);
+        if(customerIndex>-1)
+        {
+          rfidGoodTap();
+          lastCustomerScanned = customers[customerIndex];
+          lastCustomerScanned.lcdPrint();
+        }
+        else{
+          rfidBadTap();
+          lcd.print("Unknown ID");
+          lcd.setCursor(0,1);
+          lcd.print("Please check in");
+          Serial.print("Customer not added");
+          Serial.println("(For testing purposes, customer is added) ");
+          customers.push_back(Customer(readTag, rand()%50));
+        } 
+        
+      }
+    Serial.println(readTag);
+    Serial.println(rfidTriggerTime);
 
-    if(rfidTriggerTime + 4000 < millis() && tagRead){
-      lcdWelcome();
-      tagRead = false;
+    Serial.println();
+    Serial.println();
+    if(rfidTriggerTime + 4000 < millis() && newTap){
+      printLcdWelcome();
+      newTap = false;
     }
-
   }
 }
 
@@ -139,7 +128,7 @@ void Menu:: triggerMenu()
 }
 
 template <typename T>
-void processEncoderInput(T & value, double increment) {
+void Menu:: processEncoderInput(T & value, double increment) {
   newPosition = encoder.getCount();
   if (newPosition != oldPosition && newPosition % 2 == 0) {
     Serial.println(newPosition);
@@ -156,14 +145,14 @@ void processEncoderInput(T & value, double increment) {
     oldPosition = newPosition;
   }
 }
-void printSettingTitle(){
+void Menu:: printSettingTitle(){
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print(" ***  SETTINGS  *** ");
 }
 
 template <typename T>
-void displaySetting(const char* title, T value) {
+void Menu:: displaySetting(const char* title, T value) {
   if (updateEntireScreen) {
     printSettingTitle();
     lcd.setCursor(0, 1);
@@ -175,7 +164,7 @@ void displaySetting(const char* title, T value) {
 }
 
 
-bool validated(){
+bool Menu:: validated(){
   Serial.print("Here  ");
   Serial.println(validationTurns);
   processEncoderInput(validationTurns,1);
@@ -183,10 +172,11 @@ bool validated(){
   return(validationTurns>=5 || validationTurns<=-5);
 }
 
-void displayCustomerUpdate(String title, String action, std::function<void()> onValidation) {
+void Menu:: editLastCustomerScreen(String title, String action, std::function<void()> onValidation) {
   if (updateEntireScreen) {
     printSettingTitle();
     lcd.setCursor(0, 1);
+    lcd.print("Last Customer: ");
     lcd.print(title);
     lcd.setCursor(0, 2);
     if (customers.getSize() > 0) {
@@ -200,10 +190,11 @@ void displayCustomerUpdate(String title, String action, std::function<void()> on
     }
     updateEntireScreen = false;
   }
+  //if there are customers
   if (customers.getSize() > 0 && validated()) {
     lcd.clear();
     lcd.setCursor(3, 1);
-    lcd.print("Last Customer");
+    lcd.print("Last Customer ");
     lcd.setCursor(3, 2);
     lcd.print(action);
     onValidation();
@@ -215,6 +206,7 @@ void displayCustomerUpdate(String title, String action, std::function<void()> on
 
 
 void Menu::displayMenu() {
+  Serial.print(currentScreen);
   switch (currentScreen) {
     case 0:
       displaySetting("Total Quarts:", totalQuarts);
@@ -229,12 +221,12 @@ void Menu::displayMenu() {
       processEncoderInput(maxDrinks, 1);
       break;
     case 3:
-      displayCustomerUpdate("Delete Last custom:", "  Removed", []() {
+      editLastCustomerScreen("Rm", "  Removed", []() {
         customers.pop_back();
       });
       break;
     case 4:
-      displayCustomerUpdate("Make Last Manager", "Make Manager", []() {
+      editLastCustomerScreen("Mgr", "Made Manager", []() {
         lastScannedCustomer.manager = true;
       });
       break;
