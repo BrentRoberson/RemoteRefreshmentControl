@@ -139,15 +139,15 @@ void Menu:: triggerMenu()
 }
 
 template <typename T>
-void processEncoderInput(T & value) {
+void processEncoderInput(T & value, double increment) {
   newPosition = encoder.getCount();
   if (newPosition != oldPosition && newPosition % 2 == 0) {
     Serial.println(newPosition);
     if(menuTriggeredTime != 0 && currentScreen != -1) {
       if(newPosition > oldPosition) {
-        value++;
+        value += increment;
       } else {
-        value--;
+        value -= increment;
       }
       //reset menu trigger time on parameter change
       menuTriggeredTime = millis();
@@ -174,83 +174,71 @@ void displaySetting(const char* title, T value) {
   }
 }
 
+
 bool validated(){
   Serial.print("Here  ");
   Serial.println(validationTurns);
-  processEncoderInput(validationTurns);
+  processEncoderInput(validationTurns,1);
   //if turned 5 times, return true for validated
   return(validationTurns>=5 || validationTurns<=-5);
 }
+
+void displayCustomerUpdate(String title, String action, std::function<void()> onValidation) {
+  if (updateEntireScreen) {
+    printSettingTitle();
+    lcd.setCursor(0, 1);
+    lcd.print(title);
+    lcd.setCursor(0, 2);
+    if (customers.getSize() > 0) {
+      lcd.print("Balance: $");
+      lcd.print(lastScannedCustomer.balance);
+      lcd.setCursor(0, 3);
+      lcd.print(5 - abs(validationTurns));
+      lcd.print(" turns to validate");
+    } else {
+      lcd.print("No Customers Scanned");
+    }
+    updateEntireScreen = false;
+  }
+  if (customers.getSize() > 0 && validated()) {
+    lcd.clear();
+    lcd.setCursor(3, 1);
+    lcd.print("Last Customer");
+    lcd.setCursor(3, 2);
+    lcd.print(action);
+    onValidation();
+    validationTurns = 0;
+    updateEntireScreen = false;
+    menuTriggeredTime -= 2000;
+  }
+}
+
 
 void Menu::displayMenu() {
   switch (currentScreen) {
     case 0:
       displaySetting("Total Quarts:", totalQuarts);
-      processEncoderInput(totalQuarts);
+      processEncoderInput(totalQuarts, .5);
       break;
     case 1:
       displaySetting("Price per ounce:", pricePerOunce);
-      processEncoderInput(pricePerOunce);
+      processEncoderInput(pricePerOunce, .01);
       break;
     case 2:
       displaySetting("Max drinks:", maxDrinks);
-      processEncoderInput(maxDrinks);
+      processEncoderInput(maxDrinks, 1);
       break;
-    //delete customer
     case 3:
-      if (updateEntireScreen) {
-        printSettingTitle();
-        lcd.setCursor(0, 1);
-        lcd.print("Last ID scanned:");
-        lcd.setCursor(0, 2);
-        if (customers.getSize() > 0) {
-          lcd.print("Balance: $");
-          lcd.print(lastScannedCustomer.balance);
-          lcd.setCursor(0, 3);
-          lcd.print("Drinks Purchased: $");
-          lcd.print(lastScannedCustomer.drinks->getSize());
-        } else {
-          lcd.print("No Customers Scanned");
-        }
-      updateEntireScreen = false;
-      }
+      displayCustomerUpdate("Delete Last custom:", "  Removed", []() {
+        customers.pop_back();
+      });
       break;
-    //make manager  
     case 4:
-      if (updateEntireScreen) {
-        printSettingTitle();
-        lcd.setCursor(0, 1);
-        lcd.print("Make Last Manager");
-        lcd.setCursor(0, 2);
-        if (customers.getSize() > 0) {
-          lcd.print("Balance: $");
-          lcd.print(lastScannedCustomer.balance);
-          lcd.setCursor(0, 3);
-          // lcd.print("validate with ");
-          lcd.print(5-abs(validationTurns));
-          lcd.print(" turns");
-          
-
-        } else {
-          lcd.print("No Customers Scanned");
-        }
-        updateEntireScreen = false;
-      }
-      if (customers.getSize() > 0) {
-        if(validated()){
-          lcd.clear();
-          lcd.setCursor(3, 1);
-          lcd.print("Last Customer");
-          lcd.setCursor(3, 2);
-          lcd.print("Made Manager");
-          lastScannedCustomer.manager = true;
-          validationTurns = 0;
-          updateEntireScreen = false;
-          menuTriggeredTime-=2000;
-        }
-      }
+      displayCustomerUpdate("Make Last Manager", "Make Manager", []() {
+        lastScannedCustomer.manager = true;
+      });
       break;
-      //make a case to resetAll
+    //make a case to resetAll
   }
 }
 
