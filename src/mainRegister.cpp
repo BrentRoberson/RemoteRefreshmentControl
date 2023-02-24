@@ -45,13 +45,38 @@ void setup() {
 
 void loop() {
 // Format structured data
-  readTag = waitForTag();
+  readTag = rfidScan();
   if (readTag!=""){
   float input_amount = 5.0;
 
   myData.rfid = readTag;
   myData.amount = input_amount;
- 
+
+  //I think it will need this to be able to edit vs add balance
+  //Register has to have the entire customer array for this, but I 
+  //maybe we can ping the dispenser asking if customer is in array
+  // int customerIndex = customers.search(readTag);
+  //   lcd.clear();
+  //   lcd.setCursor(0,0);
+  //   if(customerIndex>-1)
+  //     {
+  //       lastCustomerScanned = customers[customerIndex];
+  //       rfidBadTap();
+  //       lcd.print("Already Added");
+  //       lcd.setCursor(0,1);
+  //       lcd.print("Edit Balance: ");
+  //       lcd.setCursor(0,2);
+  //       lcd.print(lastCustomerScanned.balance);
+  //       //needs implementing
+  //       editCustomer(lastCustomerScanned);
+  //     }
+  //     else{
+  //       rfidGoodTap();
+  //       Serial.print("Welcome, New Customer!");
+  //       //needs implementing
+  //       addCustomer();
+  //       lastCustomerScanned = customers.pop_back();
+  //     } 
   
   // Send message via ESP-NOW
   Serial.println("SENT!!!!");
