@@ -23,13 +23,6 @@ bool readError;
 DynamicArray<Customer> customers;
 struct_message myData;
 LiquidCrystal_I2C lcd(0x27, 16, 4);
-String screens[NUM_SCREENS] = {
-  "Drinks Left", 
-  "Total Customers", 
-  "Edit Quarts",
-  "Drink Limit", 
-  "Edit Customers"};
-
 Menu menu;
 
 uint8_t broadcastAddress[] = {0xCC, 0xDB, 0xA7, 0x14, 0xF4, 0x58};

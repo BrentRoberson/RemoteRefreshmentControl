@@ -24,7 +24,6 @@ extern double totalQuarts; // = 640;
 extern int maxDrinks; // 
 extern LiquidCrystal_I2C lcd;
 extern ESP32Encoder encoder;
-extern String screens[NUM_SCREENS];
 extern DynamicArray<Customer> customers;
 
 
