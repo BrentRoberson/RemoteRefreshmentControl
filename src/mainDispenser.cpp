@@ -25,8 +25,8 @@ Customer lastCustomerScanned;
 struct_message myData;
 LiquidCrystal_I2C lcd(0x27, 16, 4);
 Menu menu;
-
-uint8_t broadcastAddress[] = {0xCC, 0xDB, 0xA7, 0x14, 0xF4, 0x58};
+/// Make globals for this address 
+uint8_t Register_broadcastAddress[] = {0xCC, 0xDB, 0xA7, 0x14, 0xF4, 0x58};
 
 // Callback function executed when data is received
 // When data is received from the other controller this function will run automatically
@@ -52,10 +52,9 @@ void setup() {
   WiFi.mode(WIFI_STA);
   ESP32NOW espNow;
   espNow.init();
-  espNow.addPeer(broadcastAddress);
+  espNow.addPeer(Register_broadcastAddress);
   espNow.registerDataReceivedCallback(OnDataRecv);
  
-
   RFIDsetup();
   lcd.init();
   lcd.backlight();

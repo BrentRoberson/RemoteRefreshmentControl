@@ -3,6 +3,7 @@
 #include <WiFi.h>
 #include <message.h>
 #include <ESPNow.h>
+#include <registerMenu.h>
  
 // Variables for test data
 int int_value;
@@ -25,6 +26,8 @@ void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
   Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
 }
 
+registerMenu menu;
+
 
 void setup() {
   
@@ -40,57 +43,35 @@ void setup() {
   espNow.init();
   espNow.addPeer(broadcastAddress);
   espNow.registerDataSentCallback(OnDataSent);
+
+  menu.setup();
 }
 
 
 void loop() {
+  menu.run();
 // Format structured data
-  readTag = rfidScan();
-  if (readTag!=""){
-  float input_amount = 5.0;
+  // readTag = waitForTag();
+  // if (readTag!=""){
+  // float input_amount = 5.0;
 
-  myData.rfid = readTag;
-  myData.amount = input_amount;
-
-  //I think it will need this to be able to edit vs add balance
-  //Register has to have the entire customer array for this, but I 
-  //maybe we can ping the dispenser asking if customer is in array
-  // int customerIndex = customers.search(readTag);
-  //   lcd.clear();
-  //   lcd.setCursor(0,0);
-  //   if(customerIndex>-1)
-  //     {
-  //       lastCustomerScanned = customers[customerIndex];
-  //       rfidBadTap();
-  //       lcd.print("Already Added");
-  //       lcd.setCursor(0,1);
-  //       lcd.print("Edit Balance: ");
-  //       lcd.setCursor(0,2);
-  //       lcd.print(lastCustomerScanned.balance);
-  //       //needs implementing
-  //       editCustomer(lastCustomerScanned);
-  //     }
-  //     else{
-  //       rfidGoodTap();
-  //       Serial.print("Welcome, New Customer!");
-  //       //needs implementing
-  //       addCustomer();
-  //       lastCustomerScanned = customers.pop_back();
-  //     } 
+  // myData.rfid = readTag;
+  // myData.amount = input_amount;
+ 
   
-  // Send message via ESP-NOW
-  Serial.println("SENT!!!!");
-  esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *) &myData, sizeof(myData));
+  // // Send message via ESP-NOW
+  // Serial.println("SENT!!!!");
+  // esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *) &myData, sizeof(myData));
    
-  if (result == ESP_OK) {
-    Serial.println("Sending confirmed");
-    readTag = "";
-  }
-  else {
-    Serial.println("Sending error");
-    readTag= "";
-  }
-  delay(2000);
-  }
+  // if (result == ESP_OK) {
+  //   Serial.println("Sending confirmed");
+  //   readTag = "";
+  // }
+  // else {
+  //   Serial.println("Sending error");
+  //   readTag= "";
+  // }
+  // delay(2000);
+  // }
 
 }
