@@ -29,9 +29,11 @@ class Menu {
     void printLcdWelcome();
 
     template <typename T>
-    void processEncoderInput(T & value, double increment);
+    void editSetting(T & value, double increment);
 
     void printSettingTitle();
+
+    void openDoor();
 
     template <typename T>
     void displaySetting(const char* title, T value);

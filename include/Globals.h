@@ -10,12 +10,15 @@
 #define BUTTON_PIN 13
 #define ENC_CLOCK 2
 #define ENC_DATA 4
-#define NUM_SCREENS 5
+#define NUM_SCREENS 5  //settings 
 #define CLK 2 // CLK ENCODER
 #define DT 4 // DT ENCODER
-#define SS_PIN  32  // ESP32 pin GIOP5 
-#define RST_PIN 33 // ESP32 pin GIOP27 
-#define SOLENOID 5
+#define SS_PIN  32  // For RFID
+#define RST_PIN 33 // For RFID
+#define PUMP 5
+#define DOOR_LOCK 14
+#define SENSOR 27
+
 
 class Customer;
 extern String drinkOTD;

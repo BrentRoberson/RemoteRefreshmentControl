@@ -17,20 +17,6 @@ Customer lastScannedCustomer;
 
 Menu::Menu(){}
 
-void Menu:: printLcdWelcome(){
-  lcd.clear();
-  lcd.setCursor(0,0);
-  lcd.print("Welcome to RRC!");
-  lcd.setCursor(0, 1);
-  lcd.print(" Scan to Begin!");
-  lcd.setCursor(0, 2);
-  lcd.print("Price/Oz: $");
-  lcd.print(pricePerOunce);
-  lcd.setCursor(0, 3);
-  lcd.print("Oz Left: ");
-  lcd.print(totalQuarts*32.0);
-  lcd.print("oz");
-}
 
 void Menu::setup()  {
   pinMode(BUTTON_PIN, INPUT_PULLUP);
@@ -38,6 +24,40 @@ void Menu::setup()  {
   encoder.attachHalfQuad(DT, CLK);
   encoder.setCount(0);
   printLcdWelcome();
+}
+
+void Menu::displayMenu() {
+  Serial.print(currentScreen);
+  switch (currentScreen) {
+    case 0:
+      displaySetting("Total Quarts:", totalQuarts);
+      editSetting(totalQuarts, .5);
+      break;
+    case 1:
+      displaySetting("Price per ounce:", pricePerOunce);
+      editSetting(pricePerOunce, .01);
+      break;
+    case 2:
+      displaySetting("Max drinks:", maxDrinks);
+      editSetting(maxDrinks, 1);
+      break;
+    case 3:
+      editLastCustomerScreen("Rm", "  Removed", []() {
+        customers.pop_back();
+      });
+      break;
+    case 4:
+      editLastCustomerScreen("Mgr", "Made Manager", []() {
+        lastScannedCustomer.manager = true;
+      });
+      break;
+      //open door
+    case 5:
+      openDoor();
+      break;
+
+    //make a case to resetAll
+  }
 }
 
 
@@ -128,7 +148,7 @@ void Menu:: triggerMenu()
 }
 
 template <typename T>
-void Menu:: processEncoderInput(T & value, double increment) {
+void Menu:: editSetting(T & value, double increment) {
   newPosition = encoder.getCount();
   if (newPosition != oldPosition && newPosition % 2 == 0) {
     Serial.println(newPosition);
@@ -145,6 +165,7 @@ void Menu:: processEncoderInput(T & value, double increment) {
     oldPosition = newPosition;
   }
 }
+
 void Menu:: printSettingTitle(){
     lcd.clear();
     lcd.setCursor(0, 0);
@@ -165,9 +186,8 @@ void Menu:: displaySetting(const char* title, T value) {
 
 
 bool Menu:: validated(){
-  Serial.print("Here  ");
   Serial.println(validationTurns);
-  processEncoderInput(validationTurns,1);
+  editSetting(validationTurns,1);
   //if turned 5 times, return true for validated
   return(validationTurns>=5 || validationTurns<=-5);
 }
@@ -204,34 +224,34 @@ void Menu:: editLastCustomerScreen(String title, String action, std::function<vo
   }
 }
 
+void Menu::openDoor(){
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Turn to Open Door");
+  lcd.setCursor(0, 1);
+  if (validated())
+  {
+    digitalWrite(DOOR_LOCK,HIGH);
+    delay(2000);
+    digitalWrite(DOOR_LOCK,LOW);
+    delay(2000);
 
-void Menu::displayMenu() {
-  Serial.print(currentScreen);
-  switch (currentScreen) {
-    case 0:
-      displaySetting("Total Quarts:", totalQuarts);
-      processEncoderInput(totalQuarts, .5);
-      break;
-    case 1:
-      displaySetting("Price per ounce:", pricePerOunce);
-      processEncoderInput(pricePerOunce, .01);
-      break;
-    case 2:
-      displaySetting("Max drinks:", maxDrinks);
-      processEncoderInput(maxDrinks, 1);
-      break;
-    case 3:
-      editLastCustomerScreen("Rm", "  Removed", []() {
-        customers.pop_back();
-      });
-      break;
-    case 4:
-      editLastCustomerScreen("Mgr", "Made Manager", []() {
-        lastScannedCustomer.manager = true;
-      });
-      break;
-    //make a case to resetAll
   }
+  lcd.print(validationTurns);
+  lcd.print(" Turns Left");
+} 
+
+void Menu:: printLcdWelcome(){
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Welcome to RRC!");
+  lcd.setCursor(0, 1);
+  lcd.print(" Scan to Begin!");
+  lcd.setCursor(0, 2);
+  lcd.print("Price/Oz: $");
+  lcd.print(pricePerOunce);
+  lcd.setCursor(0, 3);
+  lcd.print("Oz Left: ");
+  lcd.print(totalQuarts*32.0);
+  lcd.print("oz");
 }
-
-
