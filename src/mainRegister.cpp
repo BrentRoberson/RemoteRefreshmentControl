@@ -11,6 +11,8 @@ registerMenu menu;
 ESP32Encoder encoder;
 LiquidCrystal_I2C lcd(0x27, 16, 4);
 struct_message myData;
+float refund_amount = 0;
+bool refund_received = false;
 
 DynamicArray<Customer> customers;
 Customer lastCustomerScanned;
@@ -27,6 +29,8 @@ void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
 void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   memcpy(&myData, incomingData, sizeof(myData));
   // Issue Refund
+  refund_amount = myData.amount;
+  refund_received = true;
 
 }
 

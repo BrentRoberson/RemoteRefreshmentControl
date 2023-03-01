@@ -23,8 +23,10 @@ bool readError;
 DynamicArray<Customer> customers;
 Customer lastCustomerScanned;
 struct_message myData;
+struct_message response_message;
 LiquidCrystal_I2C lcd(0x27, 16, 4);
 Menu menu;
+ESP32NOW espNow;
 /// Make globals for this address 
 uint8_t Register_broadcastAddress[] = {0xCC, 0xDB, 0xA7, 0x14, 0xF4, 0x58};
 
@@ -32,14 +34,38 @@ uint8_t Register_broadcastAddress[] = {0xCC, 0xDB, 0xA7, 0x14, 0xF4, 0x58};
 // When data is received from the other controller this function will run automatically
 void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   memcpy(&myData, incomingData, sizeof(myData));
-  if (myData.amount > 1){
+  int customer_index = customers.search(myData.rfid);
+  if (myData.amount > 0){
+    // new customer
+    if (customer_index ==-1){
+    Serial.print("New Customer");
+
+      customers.push_back(Customer(myData.rfid,myData.amount));
+      response_message.amount =  customers[customer_index].balance; 
+    }
     // Add to balance
+    else {
+      Serial.print("Balance Increased");
+      customers[customer_index].balance += myData.amount;
+      response_message.amount =  customers[customer_index].balance;
+    }
 
   }
+  // Refunds
   else if (myData.amount==-1)
   {
     // delete the customer and send refund message
-    
+    if (customer_index ==-1){
+      // no customer found to refund
+      Serial.print("refund Error");
+      response_message.amount =  -10; 
+    }
+    else {
+      Serial.print("Refund issued");
+      response_message.amount =  customers[customer_index].balance;
+      customers.deleteAt(customer_index);
+
+    }
   }
   Serial.print("Data received: ");
   Serial.println(len);
@@ -47,10 +73,8 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   Serial.println(myData.rfid);
   Serial.print("Amount Transfered Value: ");
   Serial.println(myData.amount);
-  int customer_index = customers.search(myData.rfid);
-  // if theres a new customer 
-  customers[customer_index].balance += myData.amount; 
-  
+  response_message.rfid = "";
+  espNow.sendData((uint8_t *) &response_message, sizeof(response_message));
 }
 
 void setup() {
@@ -59,7 +83,6 @@ void setup() {
 
   // Set ESP32 as a Wi-Fi Station
   WiFi.mode(WIFI_STA);
-  ESP32NOW espNow;
   espNow.init();
   espNow.addPeer(Register_broadcastAddress);
   espNow.registerDataReceivedCallback(OnDataRecv);

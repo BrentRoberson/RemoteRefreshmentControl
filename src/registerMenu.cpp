@@ -4,6 +4,8 @@ double total_customers = 0;
 bool scan;
 ESP32NOW espnow; 
 
+unsigned long startTime;
+unsigned long startTimeScan;
 
 
 registerMenu::registerMenu(){}
@@ -26,26 +28,52 @@ void registerMenu::displayMenu() {
   Serial.print(currentScreen);
   switch (currentScreen) {
     case 0:
-      scan = true;
-      // readTag = "";
       printSettingTitle();
       lcd.setCursor(0, 1);
       lcd.print("Refund Tag");
       lcd.setCursor(0, 2);
       lcd.print("Scan a Tag");
-      if (scan == true) {
+      startTime = millis();
+      while (millis() - startTime < 5000 && currentScreen==0) { // && refund_amount
         readTag = rfidScan();
+        if (readTag != "") {
+          readTag = rfidScan();
+          lcd.clear();
+          lcd.setCursor(0,0);
+          lcd.print("Tag Read!");
+          
+          lcd.print(refund_amount);
+          message.rfid = readTag;
+          // How do i send this amount and then wait for the response to update the screen?
+          message.amount = -1;
+          espnow.sendData( (uint8_t *) &message,sizeof(message));
+          lcd.clear();
+          startTimeScan = millis();
+          while (millis() - startTimeScan < 2000){
+            if (refund_received == false)
+            {
+              lcd.setCursor(0,0);
+              lcd.print("Waiting.........");
+            }
+            else{
+              if (refund_amount >0){
+                lcd.clear();
+                lcd.setCursor(0,0);
+                lcd.print("Refund Received!");
+                lcd.setCursor(0,1);
+                lcd.print("Refund Amount: ");
+                lcd.print(refund_amount);
+              }
+              else {
+                lcd.clear();
+                lcd.setCursor(0,0);
+                lcd.print("Refund Error!");
+
+              }
+            }
+           }
+         }
       }
-      if (readTag !=""){
-        lcd.setCursor(0,3);
-        lcd.print("Tag Read!");
-        message.rfid = readTag;
-        message.amount = -1;
-        espnow.sendData( (uint8_t *) &message,sizeof(message));
-        scan = false;
-      }
-      lcd.clear();
-      lcd.print("Sent!");
       break;
     case 1:
       displaySetting("Check Balance", pricePerOunce);
@@ -54,7 +82,6 @@ void registerMenu::displayMenu() {
     //make a case to resetAll
   }
 }
-
 
 void registerMenu::waitScreen() {
   waiting = true;
