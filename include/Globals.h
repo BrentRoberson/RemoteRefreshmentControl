@@ -18,8 +18,9 @@
 #define PUMP 5
 #define DOOR_LOCK 14
 #define SENSOR 27
-
-
+#define GREEN_BUTTON 12
+#define RED_BUTTON  10
+#define LED_STRIP 9
 class Customer;
 extern String drinkOTD;
 extern double pricePerOunce; // = .40;
