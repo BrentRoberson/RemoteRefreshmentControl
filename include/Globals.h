@@ -8,8 +8,6 @@
 #include <Customer.h>
 
 #define BUTTON_PIN 13
-#define ENC_CLOCK 2
-#define ENC_DATA 4
 #define NUM_SCREENS 5  //settings 
 #define CLK 2 // CLK ENCODER
 #define DT 4 // DT ENCODER
@@ -18,8 +16,9 @@
 #define PUMP 5
 #define DOOR_LOCK 14
 #define SENSOR 27
-
-
+#define GREEN_BUTTON 12
+#define RED_BUTTON  10
+#define LED_STRIP 9
 class Customer;
 extern String drinkOTD;
 extern double pricePerOunce; // = .40;

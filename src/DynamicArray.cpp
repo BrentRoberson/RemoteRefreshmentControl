@@ -4,7 +4,7 @@
 template <typename T> 
 DynamicArray<T>::DynamicArray()
 {
-    capacity = 10;
+    capacity = 5;
     size = 0;
     array= new T[capacity];
 }
