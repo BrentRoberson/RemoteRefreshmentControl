@@ -1,19 +1,29 @@
 #include "Menu.h"
 
-long oldPosition = 0;
-long newPosition = 0;
-long initPosition = 0;
-unsigned long menuTriggeredTime = 0;
-int currentScreen = -1;
-bool updateEntireScreen = true;
-bool updateJustVal = true;
-unsigned long rfidTriggerTime = 0;
-bool waiting = false;
-bool scanTimeout = false;
-String readTag = "";
-bool newTap = false;
-int validationTurns = 0;
+// long oldPosition = 0;
+// long newPosition = 0;
+// long initPosition = 0;
+// unsigned long menuTriggeredTime = 0;
+// int currentScreen = -1;
+// bool updateEntireScreen = true;
+// bool updateJustVal = true;
+// unsigned long rfidTriggerTime = 0;
+// bool waiting = false;
+// bool scanTimeout = false;
+// String readTag = "";
+// bool newTap = false;
+// int validationTurns = 0;
+// Customer lastScannedCustomer;
 Customer lastScannedCustomer;
+
+// define and initialize the static member variables
+unsigned long Menu::menuTriggeredTime = 0;
+int Menu::currentScreen = -1;
+int Menu::validationTurns = 0;
+long Menu::initPosition = 0;
+long Menu::oldPosition = 0;
+bool Menu::updateEntireScreen = true;
+int Menu::NUM_SCREENS = 5;
 
 Menu::Menu(){}
 
@@ -21,6 +31,7 @@ Menu::Menu(){}
 void Menu::setup()  {
   pinMode(BUTTON_PIN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), Menu :: triggerMenu, FALLING);
+  //  attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), [](){myMenu.triggerMenu();}, FALLING);
   encoder.attachHalfQuad(DT, CLK);
   encoder.setCount(0);
   printLcdWelcome();
@@ -241,7 +252,7 @@ void Menu::openDoor(){
   lcd.print(" Turns Left");
 } 
 
-void Menu:: printLcdWelcome(){
+void Menu::printLcdWelcome(){
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("Welcome to RRC!");

@@ -18,15 +18,33 @@ class Menu {
  
   public:
     Menu();
-    void setup();
-    void run();
-    void waitScreen();
+    virtual void setup();
+    virtual void run();
+    virtual void waitScreen();
     void clearLCDLine(int line);
     static void triggerMenu();
-    void displayMenu();
+    // void triggerMenu();
 
-  private:
-    void printLcdWelcome();
+    virtual void displayMenu();
+
+    // public member variables of the function 
+    static int NUM_SCREENS;
+    static long oldPosition;
+    long newPosition;
+    static long initPosition;
+    static unsigned long menuTriggeredTime;
+    static int currentScreen;
+    static bool updateEntireScreen;
+    bool updateJustVal = true;
+    unsigned long rfidTriggerTime = 0;
+    bool waiting = false;
+    bool scanTimeout = false;
+    String readTag = "";
+    bool newTap = false;
+    static int validationTurns;
+    
+  protected:
+    virtual void printLcdWelcome();
 
     template <typename T>
     void editSetting(T & value, double increment);

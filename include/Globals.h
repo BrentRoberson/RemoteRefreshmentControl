@@ -10,7 +10,7 @@
 #define BUTTON_PIN 13
 #define ENC_CLOCK 2
 #define ENC_DATA 4
-#define NUM_SCREENS 5  //settings 
+// #define NUM_SCREENS 5  //settings 
 #define CLK 2 // CLK ENCODER
 #define DT 4 // DT ENCODER
 #define SS_PIN  32  // For RFID

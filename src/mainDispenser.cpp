@@ -32,6 +32,15 @@ uint8_t Register_broadcastAddress[] = {0xCC, 0xDB, 0xA7, 0x14, 0xF4, 0x58};
 // When data is received from the other controller this function will run automatically
 void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   memcpy(&myData, incomingData, sizeof(myData));
+  if (myData.amount > 1){
+    // Add to balance
+
+  }
+  else if (myData.amount==-1)
+  {
+    // delete the customer and send refund message
+    
+  }
   Serial.print("Data received: ");
   Serial.println(len);
   Serial.print("RFID Value: ");
