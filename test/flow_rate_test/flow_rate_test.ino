@@ -28,16 +28,27 @@ void setup()
   flowMilliLitres = 0;
   totalMilliLitres = 0;
   previousMillis = 0;
+  digitalWrite(PUMP,HIGH);
 
-  attachInterrupt(digitalPinToInterrupt(PUMP), pulseCounter, FALLING);
+  attachInterrupt(digitalPinToInterrupt(SENSOR), pulseCounter, FALLING);
 }
 
 void loop()
 {
   
   currentMillis = millis();
+ 
+
   if (currentMillis - previousMillis > interval) {
     //opens solenoid
+    if ((totalMilliLitres * 0.033814 ) > 6) {
+      digitalWrite(PUMP,LOW);
+      totalMilliLitres = 0;
+      delay(1000);
+    }   
+    else {
+      digitalWrite(PUMP,HIGH);
+    }
     pulse1Sec = pulseCount;
     pulseCount = 0;
 
@@ -46,6 +57,8 @@ void loop()
     // that to scale the output. We also apply the calibrationFactor to scale the output
     // based on the number of pulses per second per units of measure (litres/minute in
     // this case) coming from the sensor.
+
+
     flowRate = ((1000.0 / (millis() - previousMillis)) * pulse1Sec) / calibrationFactor;
     previousMillis = millis();
 
@@ -65,7 +78,7 @@ void loop()
 
     // Print the cumulative total of litres flowed since starting
     Serial.print("Output Liquid Quantity: ");
-    Serial.print("totalMilliLitres");
+    Serial.print(totalMilliLitres);
     Serial.print("\t");
     //print oz
     Serial.print("Ounces Dispensed:  ");
