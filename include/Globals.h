@@ -6,6 +6,7 @@
 #include <ESP32Encoder.h>
 #include <DynamicArray.h>
 #include <Customer.h>
+#include <ESPNow.h>
 
 #define BUTTON_PIN 13
 #define ENC_CLOCK 2
@@ -18,6 +19,7 @@
 #define PUMP 5
 #define DOOR_LOCK 14
 #define SENSOR 27
+#define registerButton 5
 #define GREEN_BUTTON 12
 #define RED_BUTTON  10
 #define LED_STRIP 9
@@ -26,8 +28,12 @@ extern String drinkOTD;
 extern double pricePerOunce; // = .40;
 extern double totalQuarts; // = 640;
 extern int maxDrinks; // 
-extern float refund_amount;
+extern double refund_amount;
+extern bool register_sent;
 extern bool refund_received;
+extern bool bal_received;
+extern double returned_balance;
+extern ESP32NOW espNow; 
 extern LiquidCrystal_I2C lcd;
 extern ESP32Encoder encoder;
 extern DynamicArray<Customer> customers;

@@ -28,7 +28,7 @@ LiquidCrystal_I2C lcd(0x27, 16, 4);
 Menu menu;
 ESP32NOW espNow;
 /// Make globals for this address 
-uint8_t Register_broadcastAddress[] = {0xCC, 0xDB, 0xA7, 0x14, 0xF4, 0x58};
+uint8_t Register_broadcastAddress[] = {0xC8, 0xF0, 0x9E, 0x74, 0xE1, 0xC0};
 
 // Callback function executed when data is received
 // When data is received from the other controller this function will run automatically
@@ -41,29 +41,53 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
     Serial.print("New Customer");
 
       customers.push_back(Customer(myData.rfid,myData.amount));
-      response_message.amount =  customers[customer_index].balance; 
+      response_message.amount =  myData.amount; 
+      response_message.rfid = String("Bal");
+      espNow.sendData( (uint8_t *) &response_message,sizeof(response_message));
     }
     // Add to balance
     else {
       Serial.print("Balance Increased");
       customers[customer_index].balance += myData.amount;
       response_message.amount =  customers[customer_index].balance;
+      response_message.rfid = String("Bal");
+      espNow.sendData( (uint8_t *) &response_message,sizeof(response_message));
     }
 
   }
+  // Balance Checks
+  else if (myData.amount==-5.00)
+  {
+    if (customer_index ==-1){
+      response_message.amount =  -5; 
+      response_message.rfid = String("Bal_err");
+      espNow.sendData( (uint8_t *) &response_message,sizeof(response_message));
+    }
+    else {
+      response_message.amount =  customers[customer_index].balance; 
+      response_message.rfid = String("Bal");
+      espNow.sendData( (uint8_t *) &response_message,sizeof(response_message));
+
+    }
+  }
   // Refunds
-  else if (myData.amount==-1)
+  else if (myData.amount==-1.00)
   {
     // delete the customer and send refund message
     if (customer_index ==-1){
       // no customer found to refund
       Serial.print("refund Error");
       response_message.amount =  -10; 
+      response_message.rfid = String("err");
+      espNow.sendData( (uint8_t *) &response_message,sizeof(response_message));
+
     }
     else {
       Serial.print("Refund issued");
       response_message.amount =  customers[customer_index].balance;
       customers.deleteAt(customer_index);
+      response_message.rfid = String("rfnd");
+      espNow.sendData( (uint8_t *) &response_message,sizeof(response_message));
 
     }
   }
@@ -73,8 +97,13 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   Serial.println(myData.rfid);
   Serial.print("Amount Transfered Value: ");
   Serial.println(myData.amount);
-  response_message.rfid = "";
-  espNow.sendData((uint8_t *) &response_message, sizeof(response_message));
+  // response_message.rfid = "";
+  // espNow.sendData((uint8_t *) &response_message, sizeof(response_message));
+}
+
+void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
+  Serial.print("\r\nLast Packet Send Status:\t");
+  Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
 }
 
 void setup() {
@@ -83,8 +112,11 @@ void setup() {
 
   // Set ESP32 as a Wi-Fi Station
   WiFi.mode(WIFI_STA);
+  // WiFi.mode(WIFI_MODE_STA);
+
   espNow.init();
   espNow.addPeer(Register_broadcastAddress);
+  espNow.registerDataSentCallback(OnDataSent);
   espNow.registerDataReceivedCallback(OnDataRecv);
  
   RFIDsetup();

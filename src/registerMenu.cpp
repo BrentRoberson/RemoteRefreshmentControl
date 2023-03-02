@@ -1,23 +1,25 @@
 #include "registerMenu.h"
 
-double total_customers = 0;
+double payment_count = 0;
 bool scan;
-ESP32NOW espnow; 
 
 unsigned long startTime;
 unsigned long startTimeScan;
-
+double payment_amount = 0;
+int buttonState;
 
 registerMenu::registerMenu(){}
 struct_message message;
 
 void registerMenu::setup()  {
   pinMode(BUTTON_PIN, INPUT_PULLUP);
+  pinMode(registerButton,INPUT);
+
   attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), registerMenu :: triggerMenu, FALLING);
   encoder.attachHalfQuad(DT, CLK);
   encoder.setCount(0);
   printLcdWelcome();
-  NUM_SCREENS = 2;
+  NUM_SCREENS = 3;
 }
 
 void registerMenu::set_num_screens(int screens){
@@ -28,102 +30,62 @@ void registerMenu::displayMenu() {
   Serial.print(currentScreen);
   switch (currentScreen) {
     case 0:
-      printSettingTitle();
-      lcd.setCursor(0, 1);
-      lcd.print("Refund Tag");
-      lcd.setCursor(0, 2);
-      lcd.print("Scan a Tag");
-      startTime = millis();
-      while (millis() - startTime < 5000 && currentScreen==0) { // && refund_amount
-        readTag = rfidScan();
-        if (readTag != "") {
-          readTag = rfidScan();
-          lcd.clear();
-          lcd.setCursor(0,0);
-          lcd.print("Tag Read!");
-          
-          lcd.print(refund_amount);
-          message.rfid = readTag;
-          // How do i send this amount and then wait for the response to update the screen?
-          message.amount = -1;
-          espnow.sendData( (uint8_t *) &message,sizeof(message));
-          lcd.clear();
-          startTimeScan = millis();
-          while (millis() - startTimeScan < 2000){
-            if (refund_received == false)
-            {
-              lcd.setCursor(0,0);
-              lcd.print("Waiting.........");
-            }
-            else{
-              if (refund_amount >0){
-                lcd.clear();
-                lcd.setCursor(0,0);
-                lcd.print("Refund Received!");
-                lcd.setCursor(0,1);
-                lcd.print("Refund Amount: ");
-                lcd.print(refund_amount);
-              }
-              else {
-                lcd.clear();
-                lcd.setCursor(0,0);
-                lcd.print("Refund Error!");
-
-              }
-            }
-           }
-         }
-      }
+      add_a_tag();
       break;
     case 1:
-      displaySetting("Check Balance", pricePerOunce);
-      editSetting(pricePerOunce, .01);
+      refund_tag();
+      break;
+    case 2:
+      check_balance();
       break;
     //make a case to resetAll
+  }
+  waiting = false;
+}
+
+void registerMenu:: triggerMenu()
+{
+  if(menuTriggeredTime + 500 < millis()){
+    if(menuTriggeredTime == 0) {
+      initPosition = oldPosition;
+    }
+    menuTriggeredTime = millis();
+    currentScreen++;
+    if(currentScreen >= NUM_SCREENS) {
+      currentScreen = -1;
+      // menuTriggeredTime = -50000;
+    }
+    validationTurns = 0;
+    updateEntireScreen = true;
+  }
+}
+
+void registerMenu::run() {
+  if(menuTriggeredTime != 0 && currentScreen != -1) {
+    displayMenu();
+    if(menuTriggeredTime + 30000 < millis()) {
+    // if(menuTriggeredTime + 4000 < millis()) {
+
+      menuTriggeredTime = 0;
+      currentScreen = -1;
+      encoder.setCount(initPosition);
+      oldPosition = initPosition;
+      newPosition = initPosition;
+      initPosition = 0;
+      waitScreen();
+    }
+  }
+
+  else if(!waiting){
+    waitScreen();
   }
 }
 
 void registerMenu::waitScreen() {
   waiting = true;
+  
+
   printLcdWelcome();
-
-  while(menuTriggeredTime==0 ){
-    readTag = rfidScan();
-    
-    if(readTag!=""){
-      newTap = true;
-      lcd.clear();
-      lcd.setCursor(0,0);
-      // Send message to add balance 
-      rfidGoodTap();
-      double payment_amount = 0;
-      displaySetting("Payment Amount:", payment_amount);
-      editSetting(payment_amount, .25);
-      message.rfid = readTag;
-      message.amount =+ payment_amount;
-      espnow.sendData( (uint8_t *) &message,sizeof(message));
-    }
-        
-    // else{
-    //   rfidBadTap();
-    //   lcd.print("Unknown ID");
-    //   lcd.setCursor(0,1);
-    //   lcd.print("Please check in");
-    //   Serial.print("Customer not added");
-    //   Serial.println("(For testing purposes, customer is added) ");
-    //   customers.push_back(Customer(readTag, rand()%50));
-    // } 
-        
-    Serial.println(readTag);
-    Serial.println(rfidTriggerTime);
-
-    Serial.println();
-    Serial.println();
-    if(rfidTriggerTime + 4000 < millis() && newTap){
-      printLcdWelcome();
-      newTap = false;
-    }
-  }
 }
 
 void registerMenu::printLcdWelcome(){
@@ -131,9 +93,213 @@ void registerMenu::printLcdWelcome(){
   lcd.setCursor(0,0);
   lcd.print("Welcome to RRC!");
   lcd.setCursor(0, 1);
-  lcd.print("Scan a tag to Deposit!");
+  lcd.print("Register Tags Here!");
   lcd.setCursor(0, 2);
-  lcd.print("Total Current Users");
+  lcd.print("Payment Count");
   lcd.setCursor(0, 3);
-  lcd.print(total_customers);
+  lcd.print(payment_count);
+}
+
+void registerMenu:: add_a_tag(){
+  register_sent = false;
+  payment_amount = 1;
+
+  printSettingTitle();
+  lcd.setCursor(0, 1);
+  lcd.print("Add A Tag");
+  lcd.setCursor(0, 2);
+  lcd.print("Scan a Tag to add");
+  startTime = millis();
+  while (millis() - startTime < 5000 && currentScreen==0) {
+    readTag = rfidScan();
+    if(readTag!="") {
+      newTap = true;
+      rfidGoodTap();
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("Tag Read!");
+      // Send message to add balance 
+      while (!register_sent) {
+        buttonState = digitalRead(registerButton);
+        displaySetting("Payment Amount",payment_amount);
+        editSetting(payment_amount, .25);
+        if (buttonState == LOW && payment_amount >0){
+          message.amount = payment_amount;
+          message.rfid = readTag;
+          espNow.sendData( (uint8_t *) &message,sizeof(message));
+          lcd.clear();
+          lcd.setCursor(0,0);
+          lcd.print("Sent");
+          register_sent = true;
+        }
+      }
+      while (register_sent == true) {
+        if (bal_received == false  )
+        {
+          lcd.clear();
+          lcd.setCursor(0,0);
+          lcd.print("Waiting.........");
+        }
+        else if (returned_balance >0 ){
+          Serial.print(returned_balance);
+          lcd.clear();
+          lcd.setCursor(0,0);
+          lcd.print("Success!!!");
+          lcd.setCursor(0,1);
+          lcd.print("Current Fund:: ");
+          lcd.print(returned_balance);
+          delay(2000);
+          bal_received = false;
+          register_sent = false;
+          payment_count++;
+        }
+        else {
+          lcd.clear();
+          lcd.setCursor(0,0);
+          lcd.print("Error");
+          lcd.setCursor(0,1);
+          lcd.print("Payment Failed!!!");
+          delay(2000);
+          bal_received = false;
+          register_sent = false;
+          returned_balance = 0;
+        }
+      }      
+                
+    Serial.println(readTag);
+    Serial.println(rfidTriggerTime);
+
+    Serial.println();
+    Serial.println();
+    }
+  }
+}
+
+void registerMenu:: refund_tag(){
+  printSettingTitle();
+  lcd.setCursor(0, 1);
+  lcd.print("Refund Tag");
+  lcd.setCursor(0, 2);
+  lcd.print("Scan a Tag");
+  startTime = millis();
+  while (millis() - startTime < 5000 && currentScreen==1) { // && refund_amount
+    readTag = rfidScan();
+    if (readTag != "") {
+      rfidGoodTap();
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("Tag Read!");
+      message.rfid = readTag;
+      // How do i send this amount and then wait for the response to update the screen?
+      message.amount = -1;
+      espNow.sendData( (uint8_t *) &message,sizeof(message));
+      lcd.clear();
+      startTimeScan = millis();
+      // while (millis() - startTimeScan < 2000){
+        while (refund_received == false){
+          lcd.setCursor(0,0);
+          lcd.print("Waiting.........");
+        }
+        // if the refund went wrong 
+        // maybe not a user
+        if (refund_amount == -10.00){
+          lcd.clear();
+          lcd.setCursor(0,0);
+          lcd.print("Refund Error!!");
+          lcd.setCursor(0,1);
+          lcd.print("Card Not Found");
+          delay(2000);
+          refund_amount = 0;
+          refund_received = false;
+          break;
+          
+        }
+        else{
+          if (refund_amount >0){
+            lcd.clear();
+            lcd.setCursor(0,0);
+            lcd.print("Refund Received!");
+            lcd.setCursor(0,1);
+            lcd.print("Refund Amount: ");
+            lcd.print(refund_amount);
+            delay(2000);
+            refund_received = false;
+            break;
+          }
+          else {
+            lcd.clear();
+            lcd.setCursor(0,0);
+            lcd.print("Refund Error!");
+            lcd.print(refund_amount);
+            refund_amount = 0 ;
+            refund_received = false;
+            break;
+          }
+        }
+    }
+  }
+}
+void registerMenu:: check_balance(){
+  printSettingTitle();
+  lcd.setCursor(0, 1);
+  lcd.print("Check Balance");
+  lcd.setCursor(0, 2);
+  lcd.print("Scan a Tag");
+  startTime = millis();
+  while (millis() - startTime < 5000 && currentScreen==2) { // && refund_amount
+    readTag = rfidScan();
+    if (readTag != "") {
+      rfidGoodTap();
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("Tag Read!");
+      message.rfid = readTag;
+      // How do i send this amount and then wait for the response to update the screen?
+      message.amount = -5;
+      espNow.sendData( (uint8_t *) &message,sizeof(message));
+      lcd.clear();
+      startTimeScan = millis();
+      // while (millis() - startTimeScan < 2000){
+        while (bal_received == false){
+          lcd.setCursor(0,0);
+          lcd.print("Waiting.........");
+        }
+        // if the refund went wrong 
+        // maybe not a user
+        if (returned_balance == -5.00){
+          lcd.clear();
+          lcd.setCursor(0,0);
+          lcd.print("Balance Error!!");
+          lcd.setCursor(0,1);
+          lcd.print("Card Not Found");
+          delay(2000);
+          returned_balance = 0;
+          bal_received = false;
+          break;
+          
+        }
+        else{
+          if (returned_balance >=0){
+            lcd.clear();
+            lcd.setCursor(0,0);
+            lcd.print("Balance Received!");
+            lcd.setCursor(0,1);
+            lcd.print("Balance: ");
+            lcd.print(returned_balance);
+            delay(2000);
+            bal_received = false;
+            break;
+          }
+          else {
+            lcd.clear();
+            lcd.setCursor(0,0);
+            lcd.print("Balance Error!");
+            lcd.print(returned_balance);
+            returned_balance = 0 ;
+            bal_received = false;
+            break;
+          }
+        }
+    }
+  }
 }

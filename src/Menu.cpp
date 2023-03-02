@@ -38,7 +38,7 @@ void Menu::setup()  {
 }
 
 void Menu::displayMenu() {
-  Serial.print(currentScreen);
+  // Serial.print(currentScreen);
   switch (currentScreen) {
     case 0:
       displaySetting("Total Quarts:", totalQuarts);
@@ -75,7 +75,8 @@ void Menu::displayMenu() {
 void Menu::run() {
   if(menuTriggeredTime != 0 && currentScreen != -1) {
     displayMenu();
-    if(menuTriggeredTime + 4000 < millis()) {
+    if(menuTriggeredTime + 20000 < millis()) {
+
       menuTriggeredTime = 0;
       currentScreen = -1;
       encoder.setCount(initPosition);
@@ -121,11 +122,11 @@ void Menu::waitScreen() {
         } 
         
       }
-    Serial.println(readTag);
-    Serial.println(rfidTriggerTime);
+    // Serial.println(readTag);
+    // Serial.println(rfidTriggerTime);
 
-    Serial.println();
-    Serial.println();
+    // Serial.println();
+    // Serial.println();
     if(rfidTriggerTime + 4000 < millis() && newTap){
       printLcdWelcome();
       newTap = false;
@@ -151,7 +152,7 @@ void Menu:: triggerMenu()
     menuTriggeredTime = millis();
     currentScreen++;
     if(currentScreen >= NUM_SCREENS) {
-      currentScreen = 0;
+      currentScreen = -1;
     }
     validationTurns = 0;
     updateEntireScreen = true;
@@ -162,7 +163,7 @@ template <typename T>
 void Menu:: editSetting(T & value, double increment) {
   newPosition = encoder.getCount();
   if (newPosition != oldPosition && newPosition % 2 == 0) {
-    Serial.println(newPosition);
+    // Serial.println(newPosition);
     if(menuTriggeredTime != 0 && currentScreen != -1) {
       if(newPosition > oldPosition) {
         value += increment;
@@ -197,7 +198,7 @@ void Menu:: displaySetting(const char* title, T value) {
 
 
 bool Menu:: validated(){
-  Serial.println(validationTurns);
+  // Serial.println(validationTurns);
   editSetting(validationTurns,1);
   //if turned 5 times, return true for validated
   return(validationTurns>=5 || validationTurns<=-5);

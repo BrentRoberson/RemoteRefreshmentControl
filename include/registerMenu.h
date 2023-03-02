@@ -21,9 +21,14 @@ class registerMenu: public Menu {
     registerMenu();
     void displayMenu() override;
     void waitScreen() override;
+    static void triggerMenu();
+    void run() override;
     void printLcdWelcome() override;
     void setup() override;
     void set_num_screens(int screens);
+    void add_a_tag();
+    void refund_tag();
+    void check_balance();
 };
 
 
