@@ -133,7 +133,8 @@ void registerMenu:: add_a_tag(){
           register_sent = true;
         }
       }
-      while (register_sent == true) {
+      startTimeScan = millis();
+      while (millis() - startTimeScan < 4000 && register_sent == true) {
         if (bal_received == false  )
         {
           lcd.clear();
@@ -162,9 +163,18 @@ void registerMenu:: add_a_tag(){
           delay(2000);
           bal_received = false;
           register_sent = false;
-          returned_balance = 0;
         }
-      }      
+      }   
+    if (millis() - startTimeScan > 4000){
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("Timeout!!");
+      lcd.setCursor(0,1);
+      lcd.print("Coms Failed!!!");
+      delay(2000);
+      bal_received = false;
+      register_sent = false;
+    }   
                 
     Serial.println(readTag);
     Serial.println(rfidTriggerTime);
@@ -196,10 +206,21 @@ void registerMenu:: refund_tag(){
       lcd.clear();
       startTimeScan = millis();
       // while (millis() - startTimeScan < 2000){
-        while (refund_received == false){
+        startTimeScan = millis();
+        while (millis() - startTimeScan < 4000 && refund_received == false){
           lcd.setCursor(0,0);
           lcd.print("Waiting.........");
         }
+        if (millis() - startTimeScan > 4000){
+          lcd.clear();
+          lcd.setCursor(0,0);
+          lcd.print("Timeout!!");
+          lcd.setCursor(0,1);
+          lcd.print("Coms Failed!!!");
+          delay(2000);
+          bal_received = false;
+          register_sent = false;
+        }   
         // if the refund went wrong 
         // maybe not a user
         if (refund_amount == -10.00){
@@ -246,7 +267,7 @@ void registerMenu:: check_balance(){
   lcd.setCursor(0, 2);
   lcd.print("Scan a Tag");
   startTime = millis();
-  while (millis() - startTime < 5000 && currentScreen==2) { // && refund_amount
+  while (millis() - startTime < 8000 && currentScreen==2) { // && refund_amount
     readTag = rfidScan();
     if (readTag != "") {
       rfidGoodTap();
@@ -260,24 +281,33 @@ void registerMenu:: check_balance(){
       lcd.clear();
       startTimeScan = millis();
       // while (millis() - startTimeScan < 2000){
-        while (bal_received == false){
-          lcd.setCursor(0,0);
-          lcd.print("Waiting.........");
-        }
-        // if the refund went wrong 
-        // maybe not a user
-        if (returned_balance == -5.00){
-          lcd.clear();
-          lcd.setCursor(0,0);
-          lcd.print("Balance Error!!");
-          lcd.setCursor(0,1);
-          lcd.print("Card Not Found");
-          delay(2000);
-          returned_balance = 0;
-          bal_received = false;
-          break;
-          
-        }
+        startTimeScan = millis();
+      while (millis() - startTimeScan < 4000 && bal_received == false){
+        lcd.setCursor(0,0);
+        lcd.print("Waiting.........");
+      }
+      if (millis() - startTimeScan > 4000){
+        lcd.clear();
+        lcd.setCursor(0,0);
+        lcd.print("Timeout!!");
+        lcd.setCursor(0,1);
+        lcd.print("Coms Failed!!!");
+        delay(2000);
+        bal_received = false;
+        register_sent = false;
+      }   
+      // if the refund went wrong 
+      // maybe not a user
+      if (returned_balance == -5.00){
+        lcd.clear();
+        lcd.setCursor(0,0);
+        lcd.print("Balance Error!!");
+        lcd.setCursor(0,1);
+        lcd.print("Card Not Found");
+        delay(2000);
+        returned_balance = 0;
+        bal_received = false;
+        break;}
         else{
           if (returned_balance >=0){
             lcd.clear();
@@ -302,4 +332,4 @@ void registerMenu:: check_balance(){
         }
     }
   }
-}
+ }
