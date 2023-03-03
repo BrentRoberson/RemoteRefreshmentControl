@@ -34,7 +34,7 @@ class Menu {
     static long initPosition;
     static unsigned long menuTriggeredTime;
     static int currentScreen;
-    static bool updateEntireScreen;
+    static bool updateScreen;
     bool updateJustVal = true;
     unsigned long rfidTriggerTime = 0;
     bool waiting = false;
@@ -47,11 +47,11 @@ class Menu {
     virtual void printLcdWelcome();
 
     template <typename T>
-    void editSetting(T & value, double increment);
+    void editSetting(T & value, double increment, double decrement);
 
     void printSettingTitle();
 
-    void openDoor();
+    void openDoorScreen();
 
     template <typename T>
     void displaySetting(const char* title, T value);

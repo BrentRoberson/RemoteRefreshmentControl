@@ -56,7 +56,7 @@ void registerMenu:: triggerMenu()
       // menuTriggeredTime = -50000;
     }
     validationTurns = 0;
-    updateEntireScreen = true;
+    updateScreen = true;
   }
 }
 
@@ -122,7 +122,7 @@ void registerMenu:: add_a_tag(){
       while (!register_sent) {
         buttonState = digitalRead(registerButton);
         displaySetting("Payment Amount",payment_amount);
-        editSetting(payment_amount, .25);
+        editSetting(payment_amount, .25, .25);
         if (buttonState == LOW && payment_amount >0){
           message.amount = payment_amount;
           message.rfid = readTag;

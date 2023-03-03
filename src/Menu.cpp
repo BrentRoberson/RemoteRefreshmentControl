@@ -5,7 +5,7 @@
 // long initPosition = 0;
 // unsigned long menuTriggeredTime = 0;
 // int currentScreen = -1;
-// bool updateEntireScreen = true;
+// bool updateScreen = true;
 // bool updateJustVal = true;
 // unsigned long rfidTriggerTime = 0;
 // bool waiting = false;
@@ -22,8 +22,8 @@ int Menu::currentScreen = -1;
 int Menu::validationTurns = 0;
 long Menu::initPosition = 0;
 long Menu::oldPosition = 0;
-bool Menu::updateEntireScreen = true;
-int Menu::NUM_SCREENS = 5;
+bool Menu::updateScreen = true;
+int Menu::NUM_SCREENS = 6;
 
 Menu::Menu(){}
 
@@ -42,15 +42,15 @@ void Menu::displayMenu() {
   switch (currentScreen) {
     case 0:
       displaySetting("Total Quarts:", totalQuarts);
-      editSetting(totalQuarts, .5);
+      editSetting(totalQuarts, .5, .5);
       break;
     case 1:
       displaySetting("Price per ounce:", pricePerOunce);
-      editSetting(pricePerOunce, .01);
+      editSetting(pricePerOunce, .01, .01);
       break;
     case 2:
       displaySetting("Max drinks:", maxDrinks);
-      editSetting(maxDrinks, 1);
+      editSetting(maxDrinks, 1, 1);
       break;
     case 3:
       editLastCustomerScreen("Rm", "  Removed", []() {
@@ -64,7 +64,7 @@ void Menu::displayMenu() {
       break;
       //open door
     case 5:
-      openDoor();
+      openDoorScreen();
       break;
 
     //make a case to resetAll
@@ -75,14 +75,15 @@ void Menu::displayMenu() {
 void Menu::run() {
   if(menuTriggeredTime != 0 && currentScreen != -1) {
     displayMenu();
-    if(menuTriggeredTime + 20000 < millis()) {
-
+    if(menuTriggeredTime + 4000 < millis()) {
+      validationTurns = 0; //set this back to 0 if a successful validation has occurred (validationTurns = -1)
       menuTriggeredTime = 0;
       currentScreen = -1;
       encoder.setCount(initPosition);
       oldPosition = initPosition;
       newPosition = initPosition;
       initPosition = 0;
+      digitalWrite(DOOR_LOCK,LOW);
       waitScreen();
     }
   }
@@ -122,11 +123,6 @@ void Menu::waitScreen() {
         } 
         
       }
-    // Serial.println(readTag);
-    // Serial.println(rfidTriggerTime);
-
-    // Serial.println();
-    // Serial.println();
     if(rfidTriggerTime + 4000 < millis() && newTap){
       printLcdWelcome();
       newTap = false;
@@ -137,7 +133,7 @@ void Menu::waitScreen() {
 void Menu::clearLCDLine(int line)
 {               
   lcd.setCursor(0,line);
-  for(int n = 0; n < 20; n++) // 20 indicates symbols in line. For 2x16 LCD write - 16
+  for(int n = 0; n < 20; n++) //
   {
     lcd.print(" ");
   }
@@ -145,7 +141,7 @@ void Menu::clearLCDLine(int line)
 
 void Menu:: triggerMenu()
 {
-  if(menuTriggeredTime + 500 < millis()){
+  if(menuTriggeredTime + 350 < millis()){
     if(menuTriggeredTime == 0) {
       initPosition = oldPosition;
     }
@@ -155,12 +151,12 @@ void Menu:: triggerMenu()
       currentScreen = -1;
     }
     validationTurns = 0;
-    updateEntireScreen = true;
+    updateScreen = true;
   }
 }
 
 template <typename T>
-void Menu:: editSetting(T & value, double increment) {
+void Menu:: editSetting(T & value, double increment, double decrement) {
   newPosition = encoder.getCount();
   if (newPosition != oldPosition && newPosition % 2 == 0) {
     // Serial.println(newPosition);
@@ -168,11 +164,11 @@ void Menu:: editSetting(T & value, double increment) {
       if(newPosition > oldPosition) {
         value += increment;
       } else {
-        value -= increment;
+        value -= decrement;
       }
       //reset menu trigger time on parameter change
       menuTriggeredTime = millis();
-      updateEntireScreen = true;
+      updateScreen = true;
     }
     oldPosition = newPosition;
   }
@@ -186,26 +182,29 @@ void Menu:: printSettingTitle(){
 
 template <typename T>
 void Menu:: displaySetting(const char* title, T value) {
-  if (updateEntireScreen) {
+  if (updateScreen) {
     printSettingTitle();
     lcd.setCursor(0, 1);
     lcd.print(title);
     lcd.setCursor(0, 2);
     lcd.print(value);
-    updateEntireScreen = false;
+    updateScreen = false;
   }
 }
 
 
 bool Menu:: validated(){
-  // Serial.println(validationTurns);
-  editSetting(validationTurns,1);
+  //if we are not waiting for a successful validation to complete
+  if (validationTurns!=-1)
+  {
+    editSetting(validationTurns, 1, -1);
+  }
   //if turned 5 times, return true for validated
-  return(validationTurns>=5 || validationTurns<=-5);
+  return(validationTurns>=5);
 }
 
 void Menu:: editLastCustomerScreen(String title, String action, std::function<void()> onValidation) {
-  if (updateEntireScreen) {
+  if (updateScreen) {
     printSettingTitle();
     lcd.setCursor(0, 1);
     lcd.print("Last Customer: ");
@@ -215,12 +214,12 @@ void Menu:: editLastCustomerScreen(String title, String action, std::function<vo
       lcd.print("Balance: $");
       lcd.print(lastScannedCustomer.balance);
       lcd.setCursor(0, 3);
-      lcd.print(5 - abs(validationTurns));
+      lcd.print(5 - validationTurns);
       lcd.print(" turns to validate");
     } else {
       lcd.print("No Customers Scanned");
     }
-    updateEntireScreen = false;
+    updateScreen = false;
   }
   //if there are customers
   if (customers.getSize() > 0 && validated()) {
@@ -230,27 +229,33 @@ void Menu:: editLastCustomerScreen(String title, String action, std::function<vo
     lcd.setCursor(3, 2);
     lcd.print(action);
     onValidation();
-    validationTurns = 0;
-    updateEntireScreen = false;
+    validationTurns = -1; //successful validation
+    updateScreen = false;
     menuTriggeredTime -= 2000;
   }
 }
 
-void Menu::openDoor(){
-  lcd.clear();
-  lcd.setCursor(0,0);
-  lcd.print("Turn to Open Door");
-  lcd.setCursor(0, 1);
+void Menu::openDoorScreen(){
+  if(updateScreen){
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("Turn to Open Door");
+    lcd.setCursor(0, 1);
+    lcd.print(5 - validationTurns);
+    lcd.print(" Turns Left");
+    updateScreen = false;
+  }
   if (validated())
   {
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("Door Opened!");
     digitalWrite(DOOR_LOCK,HIGH);
-    delay(2000);
-    digitalWrite(DOOR_LOCK,LOW);
-    delay(2000);
+    validationTurns = -1; //successful validation
+    menuTriggeredTime -= 2000;
+    updateScreen = false;
 
   }
-  lcd.print(validationTurns);
-  lcd.print(" Turns Left");
 } 
 
 void Menu::printLcdWelcome(){

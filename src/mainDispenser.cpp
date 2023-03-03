@@ -129,6 +129,8 @@ void setup() {
   startup();
 
   menu.setup();
+  pinMode(DOOR_LOCK, OUTPUT);
+  pinMode(PUMP, OUTPUT);
 }
 
 
