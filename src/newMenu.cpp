@@ -40,10 +40,12 @@ void printLcdWelcome(){
   lcd.print("Oz Left: ");
   lcd.print(totalQuarts*32.0);
   lcd.print("oz");
+
 }
 
 void menuSetup()  {
-  pinMode(DISPENSE_BUTTON, INPUT_PULLUP);
+  pinMode(DISPENSE_BUTTON, INPUT);
+  pinMode(DONE_BUTTON, INPUT);
   encoder.attachHalfQuad(DT, CLK);
   encoder.setCount(0);
   printLcdWelcome();
@@ -214,6 +216,7 @@ void settingsScreen(){
 
 
 void waitScreen(){
+  
   if (updateScreen){
     updateScreen = false;
     printLcdWelcome();
@@ -269,21 +272,26 @@ void dispenseScreen(){
       lastCustomerScanned.lcdPrint();
       updateScreen = false;
     }
+    Serial.print("Dispense: ");
     Serial.println(digitalRead(DISPENSE_BUTTON));
+    Serial.print("Done: ");
+    Serial.println(digitalRead(DONE_BUTTON));
+
     while(digitalRead(DISPENSE_BUTTON)==LOW){
-      digitalWrite(PUMP,HIGH); 
+      // digitalWrite(PUMP,HIGH);
+      Serial.print("DISPENSING!!") ;
       dispenseLastTouched = millis();
     }
-    digitalWrite(PUMP,LOW);
-
-    doneButton.update();
-    if(doneButton.isSingleClick()){
+    // digitalWrite(PUMP,LOW);
+  
+    if(digitalRead(DONE_BUTTON)==LOW){
       done = true;
     }
   }
   dispenseLastTouched = 0;
   currentScreen = 0;
   updateScreen = true;
+  delay(100);
 
 }
 
