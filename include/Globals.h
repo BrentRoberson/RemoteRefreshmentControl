@@ -9,20 +9,20 @@
 #include <ESPNow.h>
 
 #define ENCODER_BUTTON 13
-#define ENC_CLOCK 2
-#define ENC_DATA 4
 // #define NUM_SCREENS 5  //settings 
 #define CLK 2 // CLK ENCODER
 #define DT 4 // DT ENCODER
 #define SS_PIN  32  // For RFID
 #define RST_PIN 33 // For RFID
-#define PUMP 5
+#define PUMP 16
 #define DOOR_LOCK 14
 #define SENSOR 27
 #define registerButton 5
-#define GREEN_BUTTON 12
-#define RED_BUTTON  10
-#define LED_STRIP 9
+#define DISPENSE_BUTTON 25
+#define DONE_BUTTON  26
+#define LED_STRIP 17
+#define BUZZER_PIN  12 
+
 class Customer;
 extern String drinkOTD;
 extern double pricePerOunce; // = .40;

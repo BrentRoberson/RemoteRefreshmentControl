@@ -3,7 +3,7 @@
 #define PITCHES_H
 
 #include<Arduino.h>
-#define buzzerPin  12 
+#include<Globals.h>
 
 void startup();
 void rfidGoodTap();

@@ -8,7 +8,7 @@ int tapFrequencyCount = 4;
 
 void startup() {
   ledcSetup(0, 2000, 8);
-  ledcAttachPin(buzzerPin, 0);
+  ledcAttachPin(BUZZER_PIN, 0);
   for( int j = 0; j< 2; j++){
     for (int i = 0; i <= tapFrequencyCount; i++) {
       ledcWriteTone(0, goodTapFrequencies[i]);

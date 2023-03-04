@@ -8,6 +8,7 @@ long newPosition = 0;
 static long initPosition = 0;
 static unsigned long buttonJustPressed = 0;
 static unsigned long settingsStartTime=0;
+static unsigned long dispenseLastTouched=0;
 //0: Waiting 1: Dispensing 2: Settings 
 static int currentScreen = 0;
 static bool updateScreen = 0;
@@ -23,6 +24,7 @@ const unsigned long debounceDelay = 50; // Set debounce delay to 50 milliseconds
 unsigned long currentTime = 0; // Get the current time in milliseconds
 bool encoderPressed = 0; // Read the button state
 PinButton encoderButton(ENCODER_BUTTON);
+PinButton doneButton(DONE_BUTTON);
 
 
 void printLcdWelcome(){
@@ -41,6 +43,7 @@ void printLcdWelcome(){
 }
 
 void menuSetup()  {
+  pinMode(DISPENSE_BUTTON, INPUT_PULLUP);
   encoder.attachHalfQuad(DT, CLK);
   encoder.setCount(0);
   printLcdWelcome();
@@ -258,11 +261,30 @@ void waitScreen(){
 }
 
 void dispenseScreen(){
-  if(updateScreen){
-    lastCustomerScanned.lcdPrint();
+  bool done = false;
+  dispenseLastTouched = millis();
+  updateScreen = true;
+  while(dispenseLastTouched + 10000 > millis() && !done){
+    if(updateScreen){
+      lastCustomerScanned.lcdPrint();
+      updateScreen = false;
+    }
+    Serial.println(digitalRead(DISPENSE_BUTTON));
+    while(digitalRead(DISPENSE_BUTTON)==LOW){
+      digitalWrite(PUMP,HIGH); 
+      dispenseLastTouched = millis();
+    }
+    digitalWrite(PUMP,LOW);
 
-    updateScreen = false;
+    doneButton.update();
+    if(doneButton.isSingleClick()){
+      done = true;
+    }
   }
+  dispenseLastTouched = 0;
+  currentScreen = 0;
+  updateScreen = true;
+
 }
 
 
