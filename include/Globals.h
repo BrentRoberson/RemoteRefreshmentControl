@@ -8,7 +8,7 @@
 #include <Customer.h>
 #include <ESPNow.h>
 
-#define BUTTON_PIN 13
+#define ENCODER_BUTTON 13
 #define ENC_CLOCK 2
 #define ENC_DATA 4
 // #define NUM_SCREENS 5  //settings 
