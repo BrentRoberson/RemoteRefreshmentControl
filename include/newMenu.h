@@ -1,6 +1,7 @@
 #ifndef NEWMENU_H
 #define NEWMENU_H
 
+#include <Jug.h>
 #include <Arduino.h>
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>

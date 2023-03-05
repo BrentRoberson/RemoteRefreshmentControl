@@ -28,8 +28,8 @@ void dispense() {
   lcd.print(String(totalOz/pricePerOunce));
   lcd.setCursor(0,3);
   lcd.print("Balance: $");
-  lcd.print(String(lastCustomerScanned.balance));
-  while(digitalRead(DISPENSE_BUTTON)==LOW && lastCustomerScanned.balance>totalOz*pricePerOunce){
+  lcd.print(String(customers[currentScannedIndex].balance));
+  while(digitalRead(DISPENSE_BUTTON)==LOW && customers[currentScannedIndex].balance>totalOz*pricePerOunce){
     digitalWrite(PUMP,HIGH);
     // if(currentTime+250<millis())
     // {
@@ -83,7 +83,10 @@ void dispense() {
   Serial.println(totalOz);
   Serial.println();
   subtractFromBalance = totalOz * pricePerOunce;
-  lastCustomerScanned.balance -=subtractFromBalance;
+  customers[currentScannedIndex].balance -=subtractFromBalance;
+  if (customers[currentScannedIndex].balance<0){
+    customers[currentScannedIndex].balance = 0.00;
+  }
   Serial.println("after balance update:");
   Serial.println(totalOz);
   Serial.println();
@@ -98,7 +101,7 @@ void dispense() {
   lcd.print(String(totalOz*pricePerOunce));
   lcd.setCursor(0,3);
   lcd.print("New Balance: $");
-  lcd.print(String(lastCustomerScanned.balance));
+  lcd.print(String(customers[currentScannedIndex].balance));
   Serial.println();
   Serial.println(totalOz);
   Serial.println();

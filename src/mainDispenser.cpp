@@ -19,7 +19,7 @@ int maxDrinks = 6;
 ESP32Encoder encoder;
 bool readError;
 DynamicArray<Customer> customers;
-Customer lastCustomerScanned;
+int currentScannedIndex;
 struct_message myData;
 struct_message response_message;
 LiquidCrystal_I2C lcd(0x27, 20, 4);
@@ -113,6 +113,7 @@ void setup() {
   // WiFi.mode(WIFI_MODE_STA);
   pinMode(DOOR_LOCK, OUTPUT);
   pinMode(PUMP, OUTPUT);
+  pinMode(BUZZER_PIN, OUTPUT);
   pinMode(SENSOR, INPUT_PULLUP);
 
   espNow.init();

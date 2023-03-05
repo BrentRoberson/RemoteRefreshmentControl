@@ -2,9 +2,9 @@
 #include <MFRC522.h>
 
 #define RST_PIN         22          // RST Pin for RFID
-#define SS_PIN          18         // SS Pin for RFID
+#define CS_PIN_RFID          18         // SS Pin for RFID
 
-MFRC522 mfrc522(SS_PIN, RST_PIN);   // Create an MFRC522 instance
+MFRC522 mfrc522(CS_PIN_RFID, RST_PIN);   // Create an MFRC522 instance
 
 void setup() {
   Serial.begin(115200);              // Initialize serial communication

@@ -9,7 +9,7 @@
 // RtcDS1302<ThreeWire> Rtc(myWire);
 LiquidCrystal_I2C lcd(0x27,20,4);
 Encoder myEnc(12, 26);
-#define BUTTON_PIN 13
+#define ENCODER_BUTTON 13
 String timeStr = "";
 long oldPosition  = -999;
 long initPosition = -999;
@@ -29,8 +29,8 @@ bool updateScreen = true;
 void setup() {
   Serial.begin(115200);
   //Wire.begin(D1, D2);
-  pinMode(BUTTON_PIN, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), triggerMenu, FALLING);
+  pinMode(ENCODER_BUTTON, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(ENCODER_BUTTON), triggerMenu, FALLING);
   initScreen();
   // initTime();
   delay(2000);

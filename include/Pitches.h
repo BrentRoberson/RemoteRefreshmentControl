@@ -8,5 +8,6 @@
 void startup();
 void rfidGoodTap();
 void rfidBadTap();
-
+void newAddedTap();
+void addedTap();
 #endif
