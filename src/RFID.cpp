@@ -9,10 +9,10 @@
 #include<RFID.h>
 #include <LiquidCrystal_I2C.h>
 bool tagRead = false;
-MFRC522 rfid(SS_PIN, RST_PIN);
+MFRC522 rfid(CS_PIN_RFID, RST_PIN);
 
 void RFIDsetup() {
-  SPI.begin(); // init SPI bus
+  SPI.begin();
   rfid.PCD_Init(); // init MFRC522
   Serial.println("Tap an RFID/NFC tag on the RFID-RC522 reader");
 }
@@ -28,10 +28,8 @@ String rfidScan() {
   }
   rfid.PICC_HaltA(); // halt PICC
   rfid.PCD_StopCrypto1(); // stop encryption on PCD
-
   //if a scan found a customer and temp was changed
   return temp;
-  
 }
 
 

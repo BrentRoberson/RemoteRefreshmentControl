@@ -6,26 +6,24 @@
 #include <Customer.h>
 #include <Pitches.h>
 #include <LiquidCrystal_I2C.h>
-#include <Menu.h>
+//#include <Menu.h>
 #include <ESPNow.h>
-
+#include <newMenu.H>
 #define CLK_PIN 14
 #define DT_PIN 26
 #define SW_PIN 13
 
-
-double pricePerOunce = .40;
+double pricePerOunce = .20;
 double totalQuarts = 20;
 int maxDrinks = 6;
-String drinkOTD = "NA";
 ESP32Encoder encoder;
 bool readError;
 DynamicArray<Customer> customers;
 Customer lastCustomerScanned;
 struct_message myData;
 struct_message response_message;
-LiquidCrystal_I2C lcd(0x27, 16, 4);
-Menu menu;
+LiquidCrystal_I2C lcd(0x27, 20, 4);
+//Menu menu;
 ESP32NOW espNow;
 /// Make globals for this address 
 uint8_t Register_broadcastAddress[] = {0xC8, 0xF0, 0x9E, 0x74, 0xE1, 0xC0};
@@ -113,13 +111,16 @@ void setup() {
   // Set ESP32 as a Wi-Fi Station
   WiFi.mode(WIFI_STA);
   // WiFi.mode(WIFI_MODE_STA);
+  pinMode(DOOR_LOCK, OUTPUT);
+  pinMode(PUMP, OUTPUT);
+  pinMode(SENSOR, INPUT_PULLUP);
 
   espNow.init();
   espNow.addPeer(Register_broadcastAddress);
   espNow.registerDataSentCallback(OnDataSent);
   espNow.registerDataReceivedCallback(OnDataRecv);
- 
-  RFIDsetup();
+  
+  
   lcd.init();
   lcd.backlight();
   // esp_now_register_recv_cb(OnDataRecv);
@@ -127,14 +128,15 @@ void setup() {
   lcd.print("Startup Completed!");
 
   startup();
+  RFIDsetup();
+  menuSetup();
 
-  menu.setup();
-  pinMode(DOOR_LOCK, OUTPUT);
-  pinMode(PUMP, OUTPUT);
+
+
 }
 
 
 void loop() {
-  menu.run();
+  run();
   
 }

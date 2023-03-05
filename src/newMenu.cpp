@@ -49,6 +49,8 @@ void menuSetup()  {
   encoder.attachHalfQuad(DT, CLK);
   encoder.setCount(0);
   printLcdWelcome();
+  attachInterrupt(digitalPinToInterrupt(SENSOR), pulseCounter, FALLING);
+
 }
 
 bool validated(){
@@ -253,7 +255,7 @@ void waitScreen(){
       lcd.print("Please check in");
       Serial.print("Customer not added");
       Serial.println("(For testing purposes, customer is added) ");
-      customers.push_back(Customer(readTag, rand()%50));
+      customers.push_back(Customer(readTag, 10));
     } 
       
     }
@@ -272,18 +274,12 @@ void dispenseScreen(){
       lastCustomerScanned.lcdPrint();
       updateScreen = false;
     }
-    Serial.print("Dispense: ");
-    Serial.println(digitalRead(DISPENSE_BUTTON));
-    Serial.print("Done: ");
-    Serial.println(digitalRead(DONE_BUTTON));
 
-    while(digitalRead(DISPENSE_BUTTON)==LOW){
-      // digitalWrite(PUMP,HIGH);
-      Serial.print("DISPENSING!!") ;
+    if(digitalRead(DISPENSE_BUTTON)==LOW){
+      dispense();
       dispenseLastTouched = millis();
     }
-    // digitalWrite(PUMP,LOW);
-  
+    
     if(digitalRead(DONE_BUTTON)==LOW){
       done = true;
     }
@@ -299,17 +295,14 @@ void dispenseScreen(){
 void run(){
   switch(currentScreen){
     case 0: 
-      Serial.println("wait Screen");
       waitScreen();
       break;
 
     case 1:
-      Serial.println("dispense Screen");
       dispenseScreen();
       break;
 
     case 2:
-      Serial.println("settings Screen");
       settingsScreen();
       break;
   }
