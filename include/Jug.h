@@ -1,6 +1,5 @@
 #ifndef JUG_H
 #define JUG_H
-
 #include <Arduino.h>
 #include <Menu.h>
 #include <Globals.h>

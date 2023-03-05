@@ -8,23 +8,20 @@
 #include <Globals.h>
 #include <Customer.h>
 #include <message.h>
-#include <Menu.h>
+#include <NewMenu.h>
 #include <ESPNow.h>
 #include <RFID.h>
 #include <WiFi.h>
 #include <Pitches.h>
 
 
-class registerMenu: public Menu {
+class registerMenu: public NewMenu {
  
   public:
     registerMenu();
-    void displayMenu() override;
     void waitScreen() override;
-    static void triggerMenu();
     void run() override;
     void printLcdWelcome() override;
-    void setup() override;
     void set_num_screens(int screens);
     void add_a_tag();
     void refund_tag();

@@ -12,6 +12,7 @@
 // struct_message message;
 
 // void registerMenu::setup()  {
+<<<<<<< HEAD
 //   pinMode(BUTTON_PIN, INPUT_PULLUP);
 //   pinMode(registerButton,INPUT);
 
@@ -81,6 +82,59 @@
 //   }
 // }
 
+=======
+//   pinMode(ENCODER_BUTTON, INPUT_PULLUP);
+//   pinMode(registerButton,INPUT);
+//   encoder.attachHalfQuad(DT, CLK);
+//   encoder.setCount(0);
+//   printLcdWelcome();
+//   NUM_SCREENS = 3;
+// }
+
+// void registerMenu::set_num_screens(int screens){
+//   NUM_SCREENS = screens;
+// }
+
+// void registerMenu::displayMenu() {
+//   Serial.print(currentScreen);
+//   switch (currentScreen) {
+//     case 0:
+//       add_a_tag();
+//       break;
+//     case 1:
+//       refund_tag();
+//       break;
+//     case 2:
+//       check_balance();
+//       break;
+//     //make a case to resetAll
+//   }
+//   waiting = false;
+// }
+
+
+// void registerMenu::run() {
+//   if(menuTriggeredTime != 0 && currentScreen != -1) {
+//     displayMenu();
+//     if(menuTriggeredTime + 30000 < millis()) {
+//     // if(menuTriggeredTime + 4000 < millis()) {
+
+//       menuTriggeredTime = 0;
+//       currentScreen = -1;
+//       encoder.setCount(initPosition);
+//       oldPosition = initPosition;
+//       newPosition = initPosition;
+//       initPosition = 0;
+//       waitScreen();
+//     }
+//   }
+
+//   else if(!waiting){
+//     waitScreen();
+//   }
+// }
+
+>>>>>>> 271edda (newMenu working)
 // void registerMenu::waitScreen() {
 //   waiting = true;
   

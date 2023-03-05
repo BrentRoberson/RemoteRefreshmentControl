@@ -31,6 +31,15 @@ void Customer::print() {
   }
 }
 
+void removeCustomer() {
+  customers.deleteAt(currentScannedIndex);
+}
+void makeManager() {
+  customers[currentScannedIndex].manager = true;
+}
+
+
+
 void Customer::lcdPrint() {
   lcd.clear();
   lcd.setCursor(0,0);
@@ -48,9 +57,3 @@ void Customer::lcdPrint() {
 
 }
 
-void Customer::editCustomer(Customer customer){
-
-}
-void addCustomer(){
-  //add customer
-}

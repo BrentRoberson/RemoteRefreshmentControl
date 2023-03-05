@@ -23,12 +23,8 @@
 #define DONE_BUTTON  35
 #define LED_STRIP 17
 #define BUZZER_PIN  12 
-#define SCK_RFID  18
-#define MISO_RFID  19
-#define MOSI_RFID  23
-#define SCK_SD 18
-#define MISO_SD 19
-#define MOSI_SD 23
+#define NUM_SETTINGS 7
+
 
 
 
@@ -48,18 +44,10 @@ LCD connections:
 SDA - 21
 SCL - 22
 
-SD connections:
-CS (SS) - GND (only one slave on SPI bus HSPI)
-MISO - 23
-MOSI - 19
-SCK - 18
-
-
 
 */
 
 class Customer;
-extern String drinkOTD;
 extern double pricePerOunce; // = .40;
 extern double totalQuarts; // = 640;
 extern int maxDrinks; // 
@@ -73,7 +61,7 @@ extern LiquidCrystal_I2C lcd;
 extern SPIClass spi;
 extern ESP32Encoder encoder;
 extern DynamicArray<Customer> customers;
-extern Customer lastCustomerScanned;
+extern int currentScannedIndex;
 
 
 #endif 

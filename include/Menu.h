@@ -49,6 +49,8 @@
 //     template <typename T>
 //     void editSetting(T & value, double increment, double decrement);
 
+//     void resetParams();
+
 //     void printSettingTitle();
 
 //     void openDoorScreen();
