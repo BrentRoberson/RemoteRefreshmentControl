@@ -12,20 +12,34 @@
 #include <Pitches.h>
 #include <PinButton.h>
 
-void editLastCustomerScreen(String title, String action, std::function<void()> onValidation);
-template <typename T>
-void editSetting(T & value, double increment, double decrement);
-template <typename T>
-void displaySetting(const char* title, T value);
+class NewMenu {
+  public:
+    NewMenu();
+    void menuSetup();
+    void run();
 
-void openDoorScreen();
-void enterSettings();
-void printLcdWelcome();
-void encoderPushed();
-void menuSetup();
-void waitScreen();
-void dispenseScreen();
-void settingsScreen();
-void run();
+  protected:
+    void waitScreen();
+    
+    void dispenseScreen();
+
+    void settingsScreen();
+
+    void printLcdWelcome();
+
+    void openDoorScreen();
+
+    void enterSettings();
+
+    void encoderPushed();
+
+    void editLastCustomerScreen(String title, String action, std::function<void()> onValidation);
+
+    template <typename T>
+    void editSetting(T & value, double increment, double decrement);
+
+    template <typename T>
+    void displaySetting(const char* title, T value);
+};
 
 #endif

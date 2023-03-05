@@ -99,52 +99,24 @@ void displaySetting(const char* title, T value) {
   }
 }
 
-// void openDoorScreen(){
-//   if(updateScreen){
-//     lcd.clear();
-//     lcd.setCursor(0,0);
-//     lcd.print("Turn to Open Door");
-//     lcd.setCursor(0, 1);
-//     lcd.print(5 - validationTurns);
-//     lcd.print(" Turns Left");
-//     updateScreen = false;
-//   }
-//   if (validated())
-//   {
-//     lcd.clear();
-//     lcd.setCursor(3,1);
-//     lcd.print("Door Opened!");
-//     digitalWrite(DOOR_LOCK,HIGH);
-//     validationTurns = -1; //successful validation
-//     updateScreen = false;
-//     delay(5000);
-//     digitalWrite(DOOR_LOCK,LOW);
-//     currentSetting +=1;
-
-//   }
-// } 
-
 void openDoor(){
   digitalWrite(DOOR_LOCK, HIGH);
   delay(2000);
   digitalWrite(DOOR_LOCK, LOW);
 }
 
-void doOnSwipe(String title, String action, std::function<void()> onSwipe) {
+void editCustOnSwipe(String title, String action, std::function<void()> onSwipe) {
   if (updateScreen) {
     printSettingTitle();
     lcd.setCursor(0, 1);
     lcd.print("Swipe Card To");
     lcd.setCursor(0, 2);
     lcd.print(title); // make manager, //remove customer //open door
-    Serial.print("in update screen: New Tap is: ");
-    Serial.println(newTap);
     newTap = false;
     updateScreen = false;
   }
   readTag = rfidScan();
   if(readTag!=""){
-    Serial.println("in readTag if");
     rfidTriggerTime = millis();
     settingsTriggeredTime = millis();
     newTap = true;
@@ -174,8 +146,6 @@ void doOnSwipe(String title, String action, std::function<void()> onSwipe) {
   }
 
 }
-
-
 
 void addMoneyOnSwipe(){
   editSetting(addAmount,1,1);
@@ -254,14 +224,14 @@ void settingsScreen(){
         editSetting(maxDrinks, 1, 1);
         break;
       case 3:
-        doOnSwipe("Remove Customer", "Removed!", removeCustomer);
+        editCustOnSwipe("Remove Customer", "Removed!", removeCustomer);
         break;
       case 4:
-        doOnSwipe("Make Manager", "Made Manager!", makeManager);
+        editCustOnSwipe("Make Manager", "Made Manager!", makeManager);
         break;
         //open door
       case 5:
-        doOnSwipe("Open Door", "Door Opened!", openDoor);
+        editCustOnSwipe("Open Door", "Door Opened!", openDoor);
         break;
       case 6:
         addMoneyOnSwipe();
@@ -285,17 +255,13 @@ void settingsScreen(){
 
 }
 
-
 void waitScreen(){
-  
   if (updateScreen){
     updateScreen = false;
     printLcdWelcome();
   }
   encoderButton.update();
-
   readTag = rfidScan();
-
   encoderButton.update();
   if(encoderButton.isSingleClick()){
     updateScreen = true;
