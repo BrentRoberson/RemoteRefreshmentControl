@@ -29,8 +29,6 @@ class registerMenu: public NewMenu {
     void refund_tag();
     void check_balance();
     static void triggerMenu();
-
-
     static int currentScreen;
     bool waiting;
     static unsigned long menuTriggeredTime;
@@ -40,13 +38,18 @@ class registerMenu: public NewMenu {
     static long initPosition;
     static int validationTurns;
     static bool updateScreen;
+    static bool buttonState;
+    int payment_amount;
+    double payment_count;
+    bool scan;
+    bool register_sent;
+    bool bal_received;
+    double returned_balance;
+    bool refund_received;
+    double refund_amount;
+    unsigned long startTime;
+    unsigned long startTimeScan;
 };
-
-int registerMenu::NUM_SCREENS;
-int registerMenu::currentScreen;
-long registerMenu::oldPosition;
-unsigned long registerMenu::menuTriggeredTime;
-long registerMenu::initPosition;
 
 
 

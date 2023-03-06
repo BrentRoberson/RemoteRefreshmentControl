@@ -3,8 +3,6 @@
 PinButton encoderButton(ENCODER_BUTTON);
 PinButton doneButton(DONE_BUTTON);
 
-ESP32Encoder encoder;
-double totalQuarts;
 
 NewMenu::NewMenu() {
   oldPosition = 0;
@@ -22,7 +20,6 @@ NewMenu::NewMenu() {
   String readTag = "";
   newTap = false;
   addAmount = 15;
-  validationTurns=0;
   currentSetting = 0;
 
   encoder.attachHalfQuad(DT, CLK);
@@ -191,7 +188,6 @@ void NewMenu:: settingsScreen(){
     encoderButton.update();
     if(encoderButton.isSingleClick()){
       currentSetting +=1;
-      validationTurns = 0;
       updateScreen = true;
       settingsTriggeredTime = millis();
     }

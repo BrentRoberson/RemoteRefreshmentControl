@@ -1,30 +1,11 @@
 #include "registerMenu.h"
 
-double payment_count = 0;
-bool scan;
-bool register_sent;
-bool bal_received;
-double returned_balance;
-bool refund_received;
-double refund_amount;
 
-ESP32NOW espNow;
-registerMenu menu;
-
-unsigned long startTime;
-unsigned long startTimeScan;
-long oldPosition = 0;
-long newPosition = 0;
-long initPosition = 0;
-double payment_amount = 0;
-int buttonState;
-int currentScreen = -1;
-int validationTurns = 0;
-bool updateScreen = true;
-int maxDrinks = 0;
-
-registerMenu::registerMenu(){ NUM_SCREENS = 3; waiting = false; }
 struct_message message;
+
+registerMenu::registerMenu(){ 
+  
+}
 
 void registerMenu::setup()  {
   pinMode(ENCODER_BUTTON, INPUT_PULLUP);
@@ -70,7 +51,6 @@ void registerMenu:: triggerMenu()
       currentScreen = -1;
       // menuTriggeredTime = -50000;
     }
-    validationTurns = 0;
     updateScreen = true;
   }
 }
@@ -347,59 +327,4 @@ void registerMenu:: check_balance(){
         }
     }
   }
- }
-
- void loop() {
-  menu.run();
-// Format structured data
-  // readTag = waitForTag();
-  // if (readTag!=""){
-  // float input_amount = 5.0;
-
-  // myData.rfid = readTag;
-  // myData.amount = input_amount;
- 
-  
-  // // Send message via ESP-NOW
-  // Serial.println("SENT!!!!");
-  // esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *) &myData, sizeof(myData));
-   
-  // if (result == ESP_OK) {
-  //   Serial.println("Sending confirmed");
-  //   readTag = "";
-  // }
-  // else {
-  //   Serial.println("Sending error");
-  //   readTag= "";
-  // }
-  // delay(2000);
-  // }
-
-}
-
-void setup() {
-  
-//   // Set up Serial Monitor
-//   Serial.begin(115200);
-//   delay(400);
-
-//  // rfid init 
-//   RFIDsetup();
-//   // Register the send callback
-//   // Set ESP32 as a Wi-Fi Station
-//   WiFi.mode(WIFI_STA);
-//   // WiFi.mode(WIFI_MODE_STA);
-
-  
-//   espNow.init();
-//   espNow.addPeer(Dispenser_broadcastAddress);
-//   espNow.registerDataSentCallback(OnDataSent);
-//   espNow.registerDataReceivedCallback(OnDataRecv);
-//   lcd.init();
-//   lcd.backlight();
-
-//   Serial.println("Register steup");
-//   lcd.print("Startup Completed!");
-//   startup();
-//   menu.setup();
  }
