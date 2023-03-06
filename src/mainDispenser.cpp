@@ -122,6 +122,7 @@ void setup() {
   espNow.addPeer(Register_broadcastAddress);
   espNow.registerDataSentCallback(OnDataSent);
   espNow.registerDataReceivedCallback(OnDataRecv);
+  attachInterrupt(digitalPinToInterrupt(SENSOR), pulseCounter, FALLING);
   
   
   lcd.init();

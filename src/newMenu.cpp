@@ -21,13 +21,9 @@ NewMenu::NewMenu() {
   addAmount = 15;
   validationTurns=0;
   currentSetting = 0;
-  lastButtonPressTime = 0; // Initialize variable to store the last button press time
-  currentTime = 0; // Get the current time in milliseconds
-  encoderPressed = 0; // Read the button state
 
   encoder.attachHalfQuad(DT, CLK);
   encoder.setCount(0);
-  attachInterrupt(digitalPinToInterrupt(SENSOR), pulseCounter, FALLING);
 
 }
 
