@@ -3,6 +3,9 @@
 PinButton encoderButton(ENCODER_BUTTON);
 PinButton doneButton(DONE_BUTTON);
 
+ESP32Encoder encoder;
+double totalQuarts;
+
 NewMenu::NewMenu() {
   oldPosition = 0;
   newPosition = 0;

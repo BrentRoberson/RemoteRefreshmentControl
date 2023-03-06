@@ -29,9 +29,9 @@
 
 
 // void Menu::setup()  {
-//   pinMode(BUTTON_PIN, INPUT_PULLUP);
-//   attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), Menu :: triggerMenu, FALLING);
-//   //  attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), [](){myMenu.triggerMenu();}, FALLING);
+//   pinMode(ENCODER_BUTTON, INPUT_PULLUP);
+//   attachInterrupt(digitalPinToInterrupt(ENCODER_BUTTON), Menu :: triggerMenu, FALLING);
+//   //  attachInterrupt(digitalPinToInterrupt(ENCODER_BUTTON), [](){myMenu.triggerMenu();}, FALLING);
 //   encoder.attachHalfQuad(DT, CLK);
 //   encoder.setCount(0);
 //   printLcdWelcome();

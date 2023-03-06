@@ -1,6 +1,12 @@
 #include <Customer.h>
 #include <Drink.h>
 #include <Globals.h>
+#include <LiquidCrystal_I2C.h>
+
+int currentScannedIndex = 0;
+DynamicArray<Customer> customers;
+double pricePerOunce;
+LiquidCrystal_I2C lcd(0x27, 20, 4);
 
 Customer::Customer(String id, double balance) {
   this -> ID = id;

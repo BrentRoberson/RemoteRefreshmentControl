@@ -17,6 +17,9 @@ class Customer {
     double balance;
     DynamicArray<Drink>* drinks;
     bool manager;
+    int currentScannedIndex;
+    DynamicArray<Customer> customers;
+    double pricePerOunce;
 
     void lcdPrint();
     void print();

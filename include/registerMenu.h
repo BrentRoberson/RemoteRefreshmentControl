@@ -19,14 +19,34 @@ class registerMenu: public NewMenu {
  
   public:
     registerMenu();
+    void displayMenu(); 
     void waitScreen() override;
     void run() override;
+    void setup();
     void printLcdWelcome() override;
     void set_num_screens(int screens);
     void add_a_tag();
     void refund_tag();
     void check_balance();
+    static void triggerMenu();
+
+
+    static int currentScreen;
+    bool waiting;
+    static unsigned long menuTriggeredTime;
+    static int NUM_SCREENS;
+    static long oldPosition;
+    long newPosition;
+    static long initPosition;
+    static int validationTurns;
+    static bool updateScreen;
 };
+
+int registerMenu::NUM_SCREENS;
+int registerMenu::currentScreen;
+long registerMenu::oldPosition;
+unsigned long registerMenu::menuTriggeredTime;
+long registerMenu::initPosition;
 
 
 

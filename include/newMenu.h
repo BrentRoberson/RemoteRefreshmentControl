@@ -20,6 +20,8 @@ class NewMenu {
   virtual void run();
   virtual void waitScreen();
   virtual void printLcdWelcome();
+  void displayMenu();
+  static void triggerMenu();
 
   protected:
     virtual void printSettingTitle();
