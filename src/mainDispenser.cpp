@@ -132,6 +132,7 @@ void setup() {
 
   startup();
   RFIDsetup();
+  Menu.printLcdWelcome();
 
 
 

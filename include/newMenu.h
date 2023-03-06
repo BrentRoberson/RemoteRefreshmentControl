@@ -18,6 +18,7 @@ class NewMenu {
   NewMenu();
   virtual void run();
   virtual void waitScreen();
+  virtual void printLcdWelcome();
 
   protected:
     virtual void printSettingTitle();
@@ -30,7 +31,6 @@ class NewMenu {
 
     virtual void settingsScreen();
 
-    virtual void printLcdWelcome();
 
 
     template <typename T>

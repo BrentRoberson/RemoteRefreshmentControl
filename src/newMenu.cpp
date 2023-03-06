@@ -27,7 +27,6 @@ NewMenu::NewMenu() {
 
   encoder.attachHalfQuad(DT, CLK);
   encoder.setCount(0);
-  printLcdWelcome();
   attachInterrupt(digitalPinToInterrupt(SENSOR), pulseCounter, FALLING);
 
 }
