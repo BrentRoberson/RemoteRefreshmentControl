@@ -13,7 +13,7 @@
 // #define NUM_SCREENS 5  //settings 
 #define CLK 2 // CLK ENCODER
 #define DT 4 // DT ENCODER
-// #define CS_PIN_RFID  32  // For RFID
+#define CS_PIN_RFID  32  // For RFID
 #define RST_PIN 33 // For RFID
 #define PUMP 16
 #define DOOR_LOCK 14

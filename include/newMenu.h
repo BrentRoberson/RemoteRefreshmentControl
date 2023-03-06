@@ -10,6 +10,7 @@
 #include <RFID.h>
 #include <Pitches.h>
 #include <PinButton.h>
+#include <Jug.h>
 
 void editLastCustomerScreen(String title, String action, std::function<void()> onValidation);
 template <typename T>

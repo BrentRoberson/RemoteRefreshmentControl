@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <Menu.h>
+#include <Globals.h>
 
 class Jug {
   private: 
@@ -13,5 +14,8 @@ class Jug {
 
     // add any public member functions here
 };
+
+void IRAM_ATTR pulseCounter();
+void dispense();
 
 #endif
