@@ -10,6 +10,12 @@ void IRAM_ATTR pulseCounter()
   pulseCount++;
 }
 
+void openDoor(){
+  digitalWrite(DOOR_LOCK, HIGH);
+  delay(2000);
+  digitalWrite(DOOR_LOCK, LOW);
+}
+
 void dispense() {
   pulseCount = 0;
   float calibrationFactor = .6;

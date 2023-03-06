@@ -14,32 +14,50 @@
 
 class NewMenu {
   public:
-    NewMenu();
-    void menuSetup();
-    void run();
+
+  NewMenu();
+  virtual void run();
+  virtual void waitScreen();
 
   protected:
-    void waitScreen();
+    virtual void printSettingTitle();
+
+    void editCustOnSwipe(String title, String action, std::function<void()> onSwipe) ;
     
-    void dispenseScreen();
+    void addMoneyOnSwipe();
 
-    void settingsScreen();
+    virtual void dispenseScreen();
 
-    void printLcdWelcome();
+    virtual void settingsScreen();
 
-    void openDoorScreen();
+    virtual void printLcdWelcome();
 
-    void enterSettings();
-
-    void encoderPushed();
-
-    void editLastCustomerScreen(String title, String action, std::function<void()> onValidation);
 
     template <typename T>
     void editSetting(T & value, double increment, double decrement);
 
     template <typename T>
     void displaySetting(const char* title, T value);
+
+    long oldPosition;
+    long newPosition;
+    long initPosition;
+    unsigned long buttonJustPressed;
+    unsigned long settingsTriggeredTime;
+    unsigned long dispenseLastTouched;
+    int currentScreen;
+    bool updateScreen;
+    unsigned long rfidTriggerTime;
+    bool waiting;
+    bool scanTimeout;
+    String readTag;
+    bool newTap;
+    int addAmount;
+    int validationTurns;
+    int currentSetting;
+    unsigned long lastButtonPressTime;
+    unsigned long currentTime;
+    bool encoderPressed;
 };
 
 #endif

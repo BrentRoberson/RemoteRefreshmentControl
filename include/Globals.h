@@ -23,6 +23,7 @@
 #define DONE_BUTTON  35
 #define LED_STRIP 17
 #define BUZZER_PIN  12 
+#define NUM_SETTINGS 7
 
 
 

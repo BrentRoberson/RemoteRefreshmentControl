@@ -28,6 +28,7 @@ ESP32NOW espNow;
 /// Make globals for this address 
 uint8_t Register_broadcastAddress[] = {0xC8, 0xF0, 0x9E, 0x74, 0xE1, 0xC0};
 
+NewMenu Menu;
 // Callback function executed when data is received
 // When data is received from the other controller this function will run automatically
 void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
@@ -107,7 +108,8 @@ void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
 void setup() {
   // Set up Serial Monitor
   Serial.begin(115200);
-
+  pinMode(DISPENSE_BUTTON, INPUT);
+  pinMode(DONE_BUTTON, INPUT);
   // Set ESP32 as a Wi-Fi Station
   WiFi.mode(WIFI_STA);
   // WiFi.mode(WIFI_MODE_STA);
@@ -130,7 +132,6 @@ void setup() {
 
   startup();
   RFIDsetup();
-  menuSetup();
 
 
 
@@ -138,6 +139,6 @@ void setup() {
 
 
 void loop() {
-  run();
+  Menu.run();
   
 }

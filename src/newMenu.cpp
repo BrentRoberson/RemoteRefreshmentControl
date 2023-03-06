@@ -1,34 +1,39 @@
 
 #include <newMenu.h>
-//#include <ESP32_ISR_Servo.h>
-
-static int NUM_SETTINGS = 7;
-static long oldPosition = 0;
-long newPosition = 0;
-static long initPosition = 0;
-static unsigned long buttonJustPressed = 0;
-static unsigned long settingsTriggeredTime=0;
-static unsigned long dispenseLastTouched=0;
-//0: Waiting 1: Dispensing 2: Settings 
-static int currentScreen = 0;
-static bool updateScreen = 0;
-unsigned long rfidTriggerTime = 0;
-bool waiting = false;
-bool scanTimeout = false;
-String readTag = "";
-bool newTap = false;
-int addAmount = 15;
-static int validationTurns=0;
-static int currentSetting = 0;
-unsigned long lastButtonPressTime = 0; // Initialize variable to store the last button press time
-const unsigned long debounceDelay = 50; // Set debounce delay to 50 milliseconds
-unsigned long currentTime = 0; // Get the current time in milliseconds
-bool encoderPressed = 0; // Read the button state
 PinButton encoderButton(ENCODER_BUTTON);
 PinButton doneButton(DONE_BUTTON);
 
+NewMenu::NewMenu() {
+  oldPosition = 0;
+  newPosition = 0;
+  initPosition = 0;
+  buttonJustPressed = 0;
+  settingsTriggeredTime=0;
+  dispenseLastTouched=0;
+  //0: Waiting 1: Dispensing 2: Settings 
+  currentScreen = 0;
+  updateScreen = 0;
+  rfidTriggerTime = 0;
+  waiting = false;
+  scanTimeout = false;
+  String readTag = "";
+  newTap = false;
+  addAmount = 15;
+  validationTurns=0;
+  currentSetting = 0;
+  lastButtonPressTime = 0; // Initialize variable to store the last button press time
+  currentTime = 0; // Get the current time in milliseconds
+  encoderPressed = 0; // Read the button state
 
-void printLcdWelcome(){
+  encoder.attachHalfQuad(DT, CLK);
+  encoder.setCount(0);
+  printLcdWelcome();
+  attachInterrupt(digitalPinToInterrupt(SENSOR), pulseCounter, FALLING);
+
+}
+
+
+void NewMenu:: printLcdWelcome(){
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("Welcome to RRC!");
@@ -44,29 +49,19 @@ void printLcdWelcome(){
 
 }
 
-void menuSetup()  {
-  pinMode(DISPENSE_BUTTON, INPUT);
-  pinMode(DONE_BUTTON, INPUT);
-  encoder.attachHalfQuad(DT, CLK);
-  encoder.setCount(0);
-  printLcdWelcome();
-  attachInterrupt(digitalPinToInterrupt(SENSOR), pulseCounter, FALLING);
-
-}
-
-bool validated(){
-  //if we are not waiting for a successful validation to complete
-  if (validationTurns!=-1)
-  {
-    editSetting(validationTurns, 1, -1);
-  }
-  //if turned 5 times, return true for validated
-  return(validationTurns>=5);
-}
+// bool validated(){
+//   //if we are not waiting for a successful validation to complete
+//   if (validationTurns!=-1)
+//   {
+//     editSetting(validationTurns, 1, -1);
+//   }
+//   //if turned 5 times, return true for validated
+//   return(validationTurns>=5);
+// }
 
 
 template <typename T>
-void editSetting(T & value, double increment, double decrement) {
+void NewMenu::editSetting(T & value, double increment, double decrement) {
   newPosition = encoder.getCount();
   if (newPosition != oldPosition && newPosition % 2 == 0) {
     if(newPosition > oldPosition) {
@@ -80,7 +75,7 @@ void editSetting(T & value, double increment, double decrement) {
   }
 }
 
-void printSettingTitle(){
+void NewMenu:: printSettingTitle(){
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print(" ***  SETTINGS  *** ");
@@ -89,7 +84,7 @@ void printSettingTitle(){
 
 
 template <typename T>
-void displaySetting(const char* title, T value) {
+void NewMenu:: displaySetting(const char* title, T value) {
   if (updateScreen) {
     printSettingTitle();
     lcd.print(title);
@@ -99,13 +94,8 @@ void displaySetting(const char* title, T value) {
   }
 }
 
-void openDoor(){
-  digitalWrite(DOOR_LOCK, HIGH);
-  delay(2000);
-  digitalWrite(DOOR_LOCK, LOW);
-}
 
-void editCustOnSwipe(String title, String action, std::function<void()> onSwipe) {
+void NewMenu:: editCustOnSwipe(String title, String action, std::function<void()> onSwipe) {
   if (updateScreen) {
     printSettingTitle();
     lcd.setCursor(0, 1);
@@ -147,7 +137,7 @@ void editCustOnSwipe(String title, String action, std::function<void()> onSwipe)
 
 }
 
-void addMoneyOnSwipe(){
+void NewMenu:: addMoneyOnSwipe(){
   editSetting(addAmount,1,1);
   if (updateScreen) {
     printSettingTitle();
@@ -192,7 +182,8 @@ void addMoneyOnSwipe(){
 }
 
 
-void settingsScreen(){
+
+void NewMenu:: settingsScreen(){
   delay(100);
   settingsTriggeredTime = millis();
   //exits the while loop when current setting exceeds the NUM_SETTINGS
@@ -255,7 +246,7 @@ void settingsScreen(){
 
 }
 
-void waitScreen(){
+void NewMenu:: waitScreen(){
   if (updateScreen){
     updateScreen = false;
     printLcdWelcome();
@@ -300,7 +291,7 @@ void waitScreen(){
   }
 }
 
-void dispenseScreen(){
+void NewMenu:: dispenseScreen(){
   bool done = false;
   dispenseLastTouched = millis();
   updateScreen = true;
@@ -325,7 +316,7 @@ void dispenseScreen(){
 }
 
 
-void run(){
+void NewMenu:: run(){
   switch(currentScreen){
     case 0: 
       waitScreen();

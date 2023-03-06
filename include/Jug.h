@@ -5,4 +5,5 @@
 
 void dispense();
 void IRAM_ATTR pulseCounter();
+void openDoor();
 #endif
