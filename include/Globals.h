@@ -5,6 +5,7 @@
 #include <LiquidCrystal_I2C.h>
 #include <ESP32Encoder.h>
 #include <DynamicArray.h>
+#include <PinButton.h>
 #include <Customer.h>
 #include <ESPNow.h>
 #include "SPI.h"
@@ -62,6 +63,8 @@ extern SPIClass spi;
 extern ESP32Encoder encoder;
 extern DynamicArray<Customer> customers;
 extern int currentScannedIndex;
+extern PinButton encoderButton;
+extern PinButton sendButton;
 
 
 #endif 

@@ -1,7 +1,5 @@
 #include <Customer.h>
-#include <Drink.h>
-#include <Globals.h>
-#include <LiquidCrystal_I2C.h>
+
 
 
 Customer::Customer(String id, double balance) {

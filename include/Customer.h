@@ -4,8 +4,8 @@
 
 #include <DynamicArray.cpp>
 #include <Drink.h>
-#include <LiquidCrystal_I2C.h>
 #include <Globals.h>
+#include <LiquidCrystal_I2C.h>
 //#include <Menu.h>
 
 class Customer {
@@ -17,9 +17,7 @@ class Customer {
     double balance;
     DynamicArray<Drink>* drinks;
     bool manager;
-    int currentScannedIndex;
-    DynamicArray<Customer> customers;
-    double pricePerOunce;
+    
 
     void lcdPrint();
     void print();

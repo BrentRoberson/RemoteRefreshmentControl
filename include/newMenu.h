@@ -16,12 +16,10 @@
 class NewMenu {
   public:
 
-  NewMenu();
-  virtual void run();
-  virtual void waitScreen();
-  virtual void printLcdWelcome();
-  void displayMenu();
-  static void triggerMenu();
+    NewMenu();
+    virtual void run();
+    virtual void waitScreen();
+    virtual void printLcdWelcome();
 
   protected:
     virtual void printSettingTitle();
@@ -33,8 +31,6 @@ class NewMenu {
     virtual void dispenseScreen();
 
     virtual void settingsScreen();
-
-
 
     template <typename T>
     void editSetting(T & value, double increment, double decrement);

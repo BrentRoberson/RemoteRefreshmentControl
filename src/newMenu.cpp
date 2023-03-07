@@ -1,7 +1,6 @@
 
 #include <newMenu.h>
-PinButton encoderButton(ENCODER_BUTTON);
-PinButton doneButton(DONE_BUTTON);
+
 
 
 NewMenu::NewMenu() {
@@ -33,7 +32,7 @@ void NewMenu:: printLcdWelcome(){
   lcd.setCursor(0,0);
   lcd.print("Welcome to RRC!");
   lcd.setCursor(0, 1);
-  lcd.print(" Scan to Begin!");
+  lcd.print("Scan to Begin!");
   lcd.setCursor(0, 2);
   lcd.print("Price/Oz: $");
   lcd.print(pricePerOunce);
@@ -43,16 +42,6 @@ void NewMenu:: printLcdWelcome(){
   lcd.print("oz");
 
 }
-
-// bool validated(){
-//   //if we are not waiting for a successful validation to complete
-//   if (validationTurns!=-1)
-//   {
-//     editSetting(validationTurns, 1, -1);
-//   }
-//   //if turned 5 times, return true for validated
-//   return(validationTurns>=5);
-// }
 
 
 template <typename T>

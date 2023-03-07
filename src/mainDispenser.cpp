@@ -13,6 +13,8 @@
 #define DT_PIN 26
 #define SW_PIN 13
 
+PinButton encoderButton(ENCODER_BUTTON);
+PinButton doneButton(DONE_BUTTON);
 double pricePerOunce = .20;
 double totalQuarts = 20;
 int maxDrinks = 6;
