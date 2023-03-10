@@ -85,6 +85,7 @@ void setup() {
   lcd.print("Startup Completed!");
   startup();
   menu.setup();
+  pinMode(DONE_BUTTON,INPUT);
 }
 
 

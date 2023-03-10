@@ -58,7 +58,6 @@ void registerMenu::printLcdWelcome(){
 }
 
 void registerMenu:: add_a_tag(){
-  register_sent = false;
   payment_amount = 1;
   if (updateScreen){
     printLcdWelcome();
@@ -73,33 +72,45 @@ void registerMenu:: add_a_tag(){
   startTime = millis();
   readTag = rfidScan();
   if(readTag!="") {
-    while (millis() - startTime < 5000 && currentScreen==0 && register_sent == false) {
+    while (millis() - startTime < 5000 && currentScreen==0) {
       
       if(readTag!="") {
         newTap = true;
         rfidGoodTap();
-        lcd.clear();
-        lcd.setCursor(0,0);
-        lcd.print("Tag Read!");
+        updateScreen = true;
+        // lcd.clear();
+        // lcd.setCursor(0,0);
+        // lcd.print("Tag Read!");
         // Send message to add balance 
         while (!register_sent && currentScreen ==0) {
           encoderButton.update();
+          // buttonState = digitalRead(DONE_BUTTON);
           if(encoderButton.isSingleClick()){
             updateScreen = true;
             currentScreen = 1;
           }
-          sendButton.update();
-          if(sendButton.isSingleClick() && payment_amount>0){
+          // sendButton.update();
+          if(digitalRead(DONE_BUTTON)==LOW && payment_amount>0){
+          //if(buttonState == HIGH && payment_amount>0){
             message.amount = payment_amount;
             message.rfid = readTag;
+            Serial.println("read");
+
             espNow.sendData( (uint8_t *) &message,sizeof(message));
             lcd.clear();
             lcd.setCursor(0,0);
             lcd.print("Sent");
             register_sent = true;
+            Serial.println("Sent");
+            Serial.println(register_sent);
+
+            // break;
           }
-          displaySetting("Payment Amount",payment_amount);
-          editSetting(payment_amount, .25, .25);
+          if (!register_sent){
+            displaySetting("Payment Amount",payment_amount);
+            editSetting(payment_amount, .25, .25);
+            // Serial.println(register_sent);
+          }
         }
         startTimeScan = millis();
         bool waitprnt = false;
@@ -122,7 +133,10 @@ void registerMenu:: add_a_tag(){
             delay(2000);
             bal_received = false;
             register_sent = false;
+            readTag = "";
+            updateScreen = true;
             payment_count++;
+            // break;
           }
           else {
             lcd.clear();
@@ -132,6 +146,8 @@ void registerMenu:: add_a_tag(){
             lcd.print("Payment Failed!!!");
             delay(2000);
             bal_received = false;
+            readTag = "";
+            updateScreen = true;
             register_sent = false;
           }
         }   
@@ -143,7 +159,9 @@ void registerMenu:: add_a_tag(){
         lcd.print("Coms Failed!!!");
         delay(2000);
         currentScreen = 0;
+        updateScreen = true;
         bal_received = false;
+        readTag = "";
         register_sent = false;
       }   
                   
@@ -158,6 +176,7 @@ void registerMenu:: add_a_tag(){
 }
 
 void registerMenu:: refund_tag(){
+  register_sent = false;
   printSettingTitle();
   lcd.setCursor(0, 1);
   lcd.print("Refund Tag");
