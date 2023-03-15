@@ -85,15 +85,13 @@ void dispense() {
     Serial.println(totalOz);
     Serial.println();
   }
-  Serial.println("before balance update:");
-  Serial.println(totalOz);
-  Serial.println();
   subtractFromBalance = totalOz * pricePerOunce;
   customers[currentScannedIndex].balance -=subtractFromBalance;
+  customers[currentScannedIndex].ouncesDrank +=totalOz;
   if (customers[currentScannedIndex].balance<0){
     customers[currentScannedIndex].balance = 0.00;
   }
-  Serial.println("after balance update:");
+
   Serial.println(totalOz);
   Serial.println();
   lcd.clear();

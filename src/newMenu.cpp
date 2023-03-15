@@ -140,6 +140,7 @@ void NewMenu:: addMoneyOnSwipe(){
     newTap = true;
     int customerIndex = customers.search(readTag);
     printSettingTitle();
+    Customer temp = Customer();
     if(customerIndex>-1)
     {
       addedTap();
@@ -149,6 +150,8 @@ void NewMenu:: addMoneyOnSwipe(){
       lcd.print("Added $");
       lcd.print(addAmount);
       customers[currentScannedIndex].balance +=addAmount;
+      temp = customers[currentScannedIndex];
+      
     }
     else{
       newAddedTap();
@@ -156,8 +159,10 @@ void NewMenu:: addMoneyOnSwipe(){
       lcd.print("Given $");
       lcd.print(addAmount);
       customers.push_back(Customer(readTag, addAmount));
-    } 
+      temp = Customer(readTag, addAmount);
 
+    } 
+    SdData.addOrUpdateCustomer(temp);
   }
   if(rfidTriggerTime + 1500 < millis() && newTap){
     newTap = false;
@@ -234,6 +239,10 @@ void NewMenu:: waitScreen(){
     updateScreen = false;
     printLcdWelcome();
   }
+  if (new_sd_data){
+    SdData.addOrUpdateCustomer(customers[currentScannedIndex]);
+    new_sd_data = false;
+  }
   encoderButton.update();
   readTag = rfidScan();
   encoderButton.update();
@@ -264,7 +273,9 @@ void NewMenu:: waitScreen(){
       lcd.print("Please check in");
       Serial.print("Customer not added");
       Serial.println("(For testing purposes, customer is added) ");
-      customers.push_back(Customer(readTag, 10));
+      Customer temp = Customer(readTag, 10);
+      customers.push_back(temp);
+      SdData.addOrUpdateCustomer(temp);
     } 
       
     }

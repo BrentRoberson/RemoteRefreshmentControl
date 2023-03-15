@@ -1,20 +1,22 @@
-#ifndef SDCard_h
-#define SDCard_h
+#ifndef SDCARD_H
+#define SDCARD_H
 
+#include <Globals.h>
 #include <ArduinoJson.h>
 #include <SD.h>
-#include "DynamicArray.h"
-#include "Customer.h"
-#include "Globals.h"
+#include <DynamicArray.h>
+#include <Customer.h>
+
+class Customer;
 
 class SDCard {
   public:
-    SDCard(const char* filename);
-    void addOrUpdateCustomer(Customer* customer);
+    SDCard(const String filename);
+    void addOrUpdateCustomer(Customer & customer);
     void readCustomers();
-    
+    void updateCustomers();
   private:
-    const char* filename;
+    String filename;
 };
 
 #endif

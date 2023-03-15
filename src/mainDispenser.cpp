@@ -9,6 +9,8 @@
 //#include <Menu.h>
 #include <ESPNow.h>
 #include <newMenu.H>
+#include <SDCard.h>
+
 #define CLK_PIN 14
 #define DT_PIN 26
 #define SW_PIN 13
@@ -22,15 +24,17 @@ ESP32Encoder encoder;
 bool readError;
 DynamicArray<Customer> customers;
 int currentScannedIndex;
+bool new_sd_data = false;
 struct_message myData;
 struct_message response_message;
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 //Menu menu;
+SDCard SdData("/DATA.txt");
 ESP32NOW espNow;
 /// Make globals for this address 
 uint8_t Register_broadcastAddress[] = {0xC8, 0xF0, 0x9E, 0x74, 0xE1, 0xC0};
-
 NewMenu Menu;
+
 // Callback function executed when data is received
 // When data is received from the other controller this function will run automatically
 void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
@@ -40,11 +44,12 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
     // new customer
     if (customer_index ==-1){
     Serial.print("New Customer");
-
       customers.push_back(Customer(myData.rfid,myData.amount));
       response_message.amount =  myData.amount; 
       response_message.rfid = String("Bal");
       espNow.sendData( (uint8_t *) &response_message,sizeof(response_message));
+      new_sd_data = true;
+      currentScannedIndex = -1;
     }
     // Add to balance
     else {
@@ -53,6 +58,8 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
       response_message.amount =  customers[customer_index].balance;
       response_message.rfid = String("Bal");
       espNow.sendData( (uint8_t *) &response_message,sizeof(response_message));
+      new_sd_data = true;
+      currentScannedIndex = customer_index;
     }
 
   }
@@ -86,7 +93,10 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
     else {
       Serial.print("Refund issued");
       response_message.amount =  customers[customer_index].balance;
-      customers.deleteAt(customer_index);
+      customers[customer_index].balance = 0;
+      customers[customer_index].ouncesDrank = 0;
+      currentScannedIndex = customer_index;
+      new_sd_data = true;
       response_message.rfid = String("rfnd");
       espNow.sendData( (uint8_t *) &response_message,sizeof(response_message));
 
@@ -98,8 +108,9 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   Serial.println(myData.rfid);
   Serial.print("Amount Transfered Value: ");
   Serial.println(myData.amount);
-  // response_message.rfid = "";
+    // response_message.rfid = "";
   // espNow.sendData((uint8_t *) &response_message, sizeof(response_message));
+  
 }
 
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
@@ -109,6 +120,7 @@ void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
 
 void setup() {
   // Set up Serial Monitor
+  
   Serial.begin(115200);
   pinMode(DISPENSE_BUTTON, INPUT);
   pinMode(DONE_BUTTON, INPUT);
@@ -130,11 +142,17 @@ void setup() {
   lcd.init();
   lcd.backlight();
   // esp_now_register_recv_cb(OnDataRecv);
-  Serial.println("Dispenser steup");
+  Serial.println("Dispenser setup");
   lcd.print("Startup Completed!");
 
   startup();
   RFIDsetup();
+  if(!SD.begin(CS_SD)) {
+    Serial.println("initialization failed!");
+    return;
+  }
+  Serial.println("initialization done.");
+  SdData.readCustomers();
   Menu.printLcdWelcome();
 
 

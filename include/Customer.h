@@ -15,7 +15,7 @@ class Customer {
     //eventually make private with accessor functions
     String ID;
     double balance;
-    DynamicArray<Drink>* drinks;
+    double ouncesDrank;
     bool manager;
     
 

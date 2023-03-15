@@ -8,13 +8,15 @@
 #include <PinButton.h>
 #include <Customer.h>
 #include <ESPNow.h>
-#include "SPI.h"
+#include <SPI.h>
+#include <SDCard.h>
 
 #define ENCODER_BUTTON 13
 // #define NUM_SCREENS 5  //settings 
 #define CLK 2 // CLK ENCODER
 #define DT 4 // DT ENCODER
 #define CS_PIN_RFID  32  // For RFID
+#define CS_SD 5
 #define RST_PIN 33 // For RFID
 #define PUMP 16
 #define DOOR_LOCK 14
@@ -25,8 +27,7 @@
 #define LED_STRIP 17
 #define BUZZER_PIN  12 
 #define NUM_SETTINGS 7
-
-
+#define JSON_SIZE 3000
 
 
 
@@ -47,7 +48,7 @@ SCL - 22
 
 
 */
-
+class SDCard;
 class Customer;
 extern double pricePerOunce; // = .40;
 extern double totalQuarts; // = 640;
@@ -57,6 +58,7 @@ extern bool register_sent;
 extern bool refund_received;
 extern bool bal_received;
 extern double returned_balance;
+extern bool new_sd_data;
 extern ESP32NOW espNow; 
 extern LiquidCrystal_I2C lcd;
 extern SPIClass spi;
@@ -65,6 +67,6 @@ extern DynamicArray<Customer> customers;
 extern int currentScannedIndex;
 extern PinButton encoderButton;
 extern PinButton sendButton;
-
+extern SDCard SdData;
 
 #endif 

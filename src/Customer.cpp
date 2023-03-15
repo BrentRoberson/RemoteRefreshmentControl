@@ -5,7 +5,7 @@
 Customer::Customer(String id, double balance) {
   this -> ID = id;
   this -> balance = balance;
-  this -> drinks = new DynamicArray<Drink>(maxDrinks);
+  this -> ouncesDrank = 0;
   this -> manager = false;
 }
 
@@ -16,24 +16,18 @@ void Customer::print() {
   Serial.println();
   Serial.print("ID: ");
   Serial.print(this->ID);
-  Serial.print(" Ounces Left: ");
+  Serial.print("Balance: ");
   Serial.println(this->balance);
+  Serial.print("Ounces Drank: ");
+  Serial.println(this->ouncesDrank);
 
-  for(int i = 0; i<this->drinks->getSize(); i++ )
-  {
-    
-    Serial.print("Drink Number: ");
-    Serial.print(i+1);
-    Serial.print(" Ounces purchased: ");
-    Serial.print(drinks->array[i].getOunces());
-    Serial.print(" Time Purchased: ");
-    Serial.println(drinks->array[i].getTime());
-  }
+  
 }
 
 void removeCustomer() {
   customers.deleteAt(currentScannedIndex);
 }
+
 void makeManager() {
   customers[currentScannedIndex].manager = true;
 }
@@ -52,8 +46,8 @@ void Customer::lcdPrint() {
   lcd.print("Ounces Left:");
   lcd.print(this->balance/pricePerOunce);
   lcd.setCursor(0, 3);
-  lcd.print("Drinks Purchased: ");
-  lcd.print(this->drinks->getSize());
+  lcd.print("Ounces Drank: ");
+  lcd.print(this->ouncesDrank);
 
 }
 
