@@ -78,20 +78,13 @@ void registerMenu:: add_a_tag(){
         newTap = true;
         rfidGoodTap();
         updateScreen = true;
-        // lcd.clear();
-        // lcd.setCursor(0,0);
-        // lcd.print("Tag Read!");
-        // Send message to add balance 
         while (!register_sent && currentScreen ==0) {
           encoderButton.update();
-          // buttonState = digitalRead(DONE_BUTTON);
           if(encoderButton.isSingleClick()){
             updateScreen = true;
             currentScreen = 1;
           }
-          // sendButton.update();
-          if(digitalRead(DONE_BUTTON)==LOW && payment_amount>0){
-          //if(buttonState == HIGH && payment_amount>0){
+          if(digitalRead(registerButton)==LOW && payment_amount>0){
             message.amount = payment_amount;
             message.rfid = readTag;
             Serial.println("read");
@@ -208,11 +201,8 @@ void registerMenu:: refund_tag(){
           updateScreen = true;
           currentScreen = 2;
         }
-        buttonState = digitalRead(DONE_BUTTON);
-        if (buttonState == LOW) {
-          espNow.sendData( (uint8_t *) &message,sizeof(message));
-          register_sent = true;
-        }
+        espNow.sendData( (uint8_t *) &message,sizeof(message));
+        register_sent = true;
       }
 
 

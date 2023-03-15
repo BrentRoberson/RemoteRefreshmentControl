@@ -20,7 +20,6 @@ DynamicArray<Customer> customers;
 int currentScannedIndex;
 uint8_t Dispenser_broadcastAddress[] = {0xCC, 0xDB, 0xA7, 0x14, 0xF4, 0x58};
 PinButton encoderButton(ENCODER_BUTTON);
-PinButton sendButton(DONE_BUTTON);
 
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
   Serial.print("\r\nLast Packet Send Status:\t");
@@ -85,7 +84,7 @@ void setup() {
   lcd.print("Startup Completed!");
   startup();
   menu.setup();
-  pinMode(DONE_BUTTON,INPUT);
+  pinMode(registerButton,INPUT_PULLUP);
 }
 
 
