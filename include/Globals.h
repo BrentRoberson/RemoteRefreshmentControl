@@ -27,7 +27,7 @@
 #define LED_STRIP 17
 #define BUZZER_PIN  12 
 #define NUM_SETTINGS 7
-#define JSON_SIZE 3000
+#define JSON_SIZE 20000
 
 
 
