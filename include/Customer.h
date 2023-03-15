@@ -10,12 +10,12 @@
 
 class Customer {
   public:
-    Customer(String id = "", double balance = 0);
+    Customer(String id = "", float balance = 0);
 
     //eventually make private with accessor functions
     String ID;
-    double balance;
-    double ouncesDrank;
+    float balance;
+    float ouncesDrank;
     bool manager;
     
 

@@ -17,8 +17,8 @@
 
 PinButton encoderButton(ENCODER_BUTTON);
 PinButton doneButton(DONE_BUTTON);
-double pricePerOunce = .20;
-double totalQuarts = 20;
+float pricePerOunce = .20;
+float totalQuarts = 20;
 int maxDrinks = 6;
 ESP32Encoder encoder;
 bool readError;

@@ -2,8 +2,8 @@
 #include <registerMenu.h>
  
 // Variables for test data
-double pricePerOunce = 0;
-double totalQuarts = 0;
+float pricePerOunce = 0;
+float totalQuarts = 0;
 int maxDrinks = 0;
 
 ESP32NOW espNow;
@@ -11,10 +11,10 @@ registerMenu menu;
 ESP32Encoder encoder;
 LiquidCrystal_I2C lcd(0x27, 16, 4);
 struct_message myData;
-double refund_amount = 0;
+float refund_amount = 0;
 bool refund_received = false;
 bool bal_received;
-double returned_balance;
+float returned_balance;
 bool register_sent = false;
 DynamicArray<Customer> customers;
 int currentScannedIndex;

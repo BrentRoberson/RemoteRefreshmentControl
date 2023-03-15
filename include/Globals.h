@@ -50,14 +50,14 @@ SCL - 22
 */
 class SDCard;
 class Customer;
-extern double pricePerOunce; // = .40;
-extern double totalQuarts; // = 640;
+extern float pricePerOunce; // = .40;
+extern float totalQuarts; // = 640;
 extern int maxDrinks; // 
-extern double refund_amount;
+extern float refund_amount;
 extern bool register_sent;
 extern bool refund_received;
 extern bool bal_received;
-extern double returned_balance;
+extern float returned_balance;
 extern bool new_sd_data;
 extern ESP32NOW espNow; 
 extern LiquidCrystal_I2C lcd;

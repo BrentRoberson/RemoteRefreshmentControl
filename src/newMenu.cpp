@@ -45,7 +45,7 @@ void NewMenu:: printLcdWelcome(){
 
 
 template <typename T>
-void NewMenu::editSetting(T & value, double increment, double decrement) {
+void NewMenu::editSetting(T & value, float increment, float decrement) {
   newPosition = encoder.getCount();
   if (newPosition != oldPosition && newPosition % 2 == 0) {
     if(newPosition > oldPosition) {
@@ -161,6 +161,7 @@ void NewMenu:: addMoneyOnSwipe(){
       customers.push_back(Customer(readTag, addAmount));
       currentScannedIndex = -1;
     } 
+
     SdData.addOrUpdateCustomer(customers[currentScannedIndex]);
   }
   if(rfidTriggerTime + 1500 < millis() && newTap){

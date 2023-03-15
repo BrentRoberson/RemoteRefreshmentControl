@@ -33,7 +33,7 @@ class NewMenu {
     virtual void settingsScreen();
 
     template <typename T>
-    void editSetting(T & value, double increment, double decrement);
+    void editSetting(T & value, float increment, float decrement);
 
     template <typename T>
     void displaySetting(const char* title, T value);

@@ -156,7 +156,7 @@
 // }
 
 // template <typename T>
-// void Menu:: editSetting(T & value, double increment, double decrement) {
+// void Menu:: editSetting(T & value, float increment, float decrement) {
 //   newPosition = encoder.getCount();
 //   if (newPosition != oldPosition && newPosition % 2 == 0) {
 //     // Serial.println(newPosition);

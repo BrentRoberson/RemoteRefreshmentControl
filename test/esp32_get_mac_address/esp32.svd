@@ -254,7 +254,7 @@
             </field>
             <field>
               <name>SARADC_WORK_MODE</name>
-              <description>0: single mode  1: double mode  2: alternate mode</description>
+              <description>0: single mode  1: float mode  2: alternate mode</description>
               <bitOffset>3</bitOffset>
               <bitWidth>2</bitWidth>
               <access>read-write</access>

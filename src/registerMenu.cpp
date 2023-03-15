@@ -1,11 +1,11 @@
 #include "registerMenu.h"
 
 
-double payment_count = 0;
+float payment_count = 0;
 
 unsigned long startTime;
 unsigned long startTimeScan;
-double payment_amount = 0;
+float payment_amount = 0;
 int buttonState;
 
 struct_message message;

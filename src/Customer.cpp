@@ -2,7 +2,7 @@
 
 
 
-Customer::Customer(String id, double balance) {
+Customer::Customer(String id, float balance) {
   this -> ID = id;
   this -> balance = balance;
   this -> ouncesDrank = 0;

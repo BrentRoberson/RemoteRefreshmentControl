@@ -47,7 +47,7 @@
 //     virtual void printLcdWelcome();
 
 //     template <typename T>
-//     void editSetting(T & value, double increment, double decrement);
+//     void editSetting(T & value, float increment, float decrement);
 
 //     void resetParams();
 

@@ -104,7 +104,7 @@ void SDCard::updateCustomers(){
       }
       for (JsonVariant jsonCustomer : jsonCustomers) {
         String JsonId = jsonCustomer["ID"].as<String>();
-        double jsonBalance = jsonCustomer["balance"].as<double>();
+        float jsonBalance = jsonCustomer["balance"].as<float>();
         if (customers[i].ID == JsonId) {
           found = true;
           if (jsonBalance != customers[i].balance) {
@@ -166,8 +166,8 @@ void SDCard::readCustomers() {
     // Loop over each JsonObject in the JsonArray and create a new Customer object for each one
     for (JsonVariant jsonCustomer : jsonCustomers) {
       String id = jsonCustomer["ID"].as<String>();
-      double balance = jsonCustomer["balance"].as<double>();
-      double ouncesDrank = jsonCustomer["ouncesDrank"].as<double>();
+      float balance = jsonCustomer["balance"].as<float>();
+      float ouncesDrank = jsonCustomer["ouncesDrank"].as<float>();
       customers.push_back(Customer(id, balance));
     }
 

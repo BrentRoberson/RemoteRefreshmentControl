@@ -3,5 +3,5 @@
 // This will be the data structure for the received message 
 typedef struct struct_message {
   String rfid;
-  double amount;
+  float amount;
 } struct_message;

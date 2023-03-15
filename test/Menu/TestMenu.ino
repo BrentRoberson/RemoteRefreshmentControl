@@ -82,7 +82,7 @@ void loop() {
 void initScreen() {
   
   lcd.init();
-  lcd.init(); // double init clears any previous text
+  lcd.init(); // float init clears any previous text
   // Print a message to the LCD.
   lcd.backlight();
   lcd.setCursor(3,0);
