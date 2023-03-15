@@ -91,7 +91,7 @@ void dispense() {
   if (customers[currentScannedIndex].balance<0){
     customers[currentScannedIndex].balance = 0.00;
   }
-
+  SdData.addOrUpdateCustomer(customers[currentScannedIndex]);
   Serial.println(totalOz);
   Serial.println();
   lcd.clear();

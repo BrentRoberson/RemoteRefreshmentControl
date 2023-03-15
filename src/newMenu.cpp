@@ -109,9 +109,11 @@ void NewMenu:: editCustOnSwipe(String title, String action, std::function<void()
       newAddedTap();
       lcd.print("New Card");
       customers.push_back(Customer(readTag, 0));
+      currentScannedIndex = -1;
       lcd.setCursor(0,2);
       lcd.print(action); //Made Manager! or Removed!
     } 
+    SdData.addOrUpdateCustomer(customers[currentScannedIndex]);
 
   }
   if(rfidTriggerTime + 1500 < millis() && newTap){
@@ -140,7 +142,6 @@ void NewMenu:: addMoneyOnSwipe(){
     newTap = true;
     int customerIndex = customers.search(readTag);
     printSettingTitle();
-    Customer temp = Customer();
     if(customerIndex>-1)
     {
       addedTap();
@@ -150,7 +151,6 @@ void NewMenu:: addMoneyOnSwipe(){
       lcd.print("Added $");
       lcd.print(addAmount);
       customers[currentScannedIndex].balance +=addAmount;
-      temp = customers[currentScannedIndex];
       
     }
     else{
@@ -159,10 +159,9 @@ void NewMenu:: addMoneyOnSwipe(){
       lcd.print("Given $");
       lcd.print(addAmount);
       customers.push_back(Customer(readTag, addAmount));
-      temp = Customer(readTag, addAmount);
-
+      currentScannedIndex = -1;
     } 
-    SdData.addOrUpdateCustomer(temp);
+    SdData.addOrUpdateCustomer(customers[currentScannedIndex]);
   }
   if(rfidTriggerTime + 1500 < millis() && newTap){
     newTap = false;

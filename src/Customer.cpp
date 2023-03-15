@@ -25,7 +25,8 @@ void Customer::print() {
 }
 
 void removeCustomer() {
-  customers.deleteAt(currentScannedIndex);
+  customers[currentScannedIndex].balance = 0;
+  customers[currentScannedIndex].ouncesDrank = 0;
 }
 
 void makeManager() {
