@@ -19,7 +19,7 @@ void rainbowCycle(int DelayDuration) {
 
 
 void LEDSetup(){
-  FastLED.addLeds<WS2812B, PIN, GRB>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<WS2812B, LED_STRIP, GRB>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
   FastLED.setMaxPowerInVoltsAndMilliamps(12, 1500);    // Set power limit of LED strip to 5V, 1500mA
   FastLED.clear();        
 }

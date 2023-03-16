@@ -10,6 +10,7 @@
 #include <ESPNow.h>
 #include <SPI.h>
 #include <SDCard.h>
+#include <FastLED.h>
 
 #define ENCODER_BUTTON 13
 // #define NUM_SCREENS 5  //settings 
@@ -28,6 +29,7 @@
 #define BUZZER_PIN  12 
 #define NUM_SETTINGS 7
 #define JSON_SIZE 20000
+#define NUM_LEDS  90    // Enter the total number of LEDs on the strip
 
 
 
@@ -69,5 +71,4 @@ extern int currentScannedIndex;
 extern PinButton encoderButton;
 extern PinButton sendButton;
 extern SDCard SdData;
-
 #endif 
