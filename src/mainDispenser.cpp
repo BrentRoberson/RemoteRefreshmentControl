@@ -19,7 +19,7 @@
 PinButton encoderButton(ENCODER_BUTTON);
 PinButton doneButton(DONE_BUTTON);
 float pricePerOunce = .25;
-float totalQuarts = 20;
+float totalQuarts = 16;
 
 ESP32Encoder encoder;
 bool readError;
