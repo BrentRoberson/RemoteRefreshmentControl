@@ -27,6 +27,7 @@ class registerMenu: public NewMenu {
     void add_a_tag();
     void refund_tag();
     void check_balance();
+    void waitScreen() override;
 
     byte NUM_SCREENS;
     

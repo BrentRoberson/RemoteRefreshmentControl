@@ -22,6 +22,7 @@ float totalQuarts = 20;
 int maxDrinks = 6;
 ESP32Encoder encoder;
 bool readError;
+Customer curr_cust = Customer();
 DynamicArray<Customer> customers;
 int currentScannedIndex;
 bool new_sd_data = false;
@@ -49,7 +50,8 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
       response_message.rfid = String("Bal");
       espNow.sendData( (uint8_t *) &response_message,sizeof(response_message));
       new_sd_data = true;
-      currentScannedIndex = -1;
+      currentScannedIndex = customers.getSize()-1;
+      curr_cust  = Customer(myData.rfid,myData.amount);
     }
     // Add to balance
     else {
@@ -60,6 +62,8 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
       espNow.sendData( (uint8_t *) &response_message,sizeof(response_message));
       new_sd_data = true;
       currentScannedIndex = customer_index;
+      curr_cust  =  customers[customer_index];
+
     }
 
   }
@@ -97,6 +101,7 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
       customers[customer_index].ouncesDrank = 0;
       currentScannedIndex = customer_index;
       new_sd_data = true;
+      curr_cust = customers[customer_index];
       response_message.rfid = String("rfnd");
       espNow.sendData( (uint8_t *) &response_message,sizeof(response_message));
 

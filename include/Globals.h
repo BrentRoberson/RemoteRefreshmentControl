@@ -59,6 +59,7 @@ extern bool refund_received;
 extern bool bal_received;
 extern float returned_balance;
 extern bool new_sd_data;
+extern Customer curr_cust;
 extern ESP32NOW espNow; 
 extern LiquidCrystal_I2C lcd;
 extern SPIClass spi;

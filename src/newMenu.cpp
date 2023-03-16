@@ -137,6 +137,7 @@ void NewMenu:: addMoneyOnSwipe(){
   }
   readTag = rfidScan();
   if(readTag!=""){
+    Customer temp = Customer();
     rfidTriggerTime = millis();
     settingsTriggeredTime = millis();
     newTap = true;
@@ -150,6 +151,7 @@ void NewMenu:: addMoneyOnSwipe(){
       lcd.setCursor(0,1);
       lcd.print("Added $");
       lcd.print(addAmount);
+      temp = customers[currentScannedIndex];
       customers[currentScannedIndex].balance +=addAmount;
       
     }
@@ -159,10 +161,11 @@ void NewMenu:: addMoneyOnSwipe(){
       lcd.print("Given $");
       lcd.print(addAmount);
       customers.push_back(Customer(readTag, addAmount));
-      currentScannedIndex = -1;
+      temp = Customer(readTag,addAmount);
     } 
 
-    SdData.addOrUpdateCustomer(customers[currentScannedIndex]);
+    SdData.addOrUpdateCustomer(temp);
+
   }
   if(rfidTriggerTime + 1500 < millis() && newTap){
     newTap = false;
@@ -240,16 +243,28 @@ void NewMenu:: waitScreen(){
     printLcdWelcome();
   }
   if (new_sd_data){
-    SdData.addOrUpdateCustomer(customers[currentScannedIndex]);
+    SdData.addOrUpdateCustomer(curr_cust);
     new_sd_data = false;
+    curr_cust = Customer();
   }
   encoderButton.update();
   readTag = rfidScan();
   encoderButton.update();
   if(encoderButton.isSingleClick()){
-    updateScreen = true;
-    currentSetting = 0;
-    currentScreen = 2;
+
+    if(customers[currentScannedIndex].manager && rfidTriggerTime +4000 >millis()) {
+      updateScreen = true;
+      currentSetting = 0;
+      currentScreen = 2;
+    }
+    else {
+      lcd.clear();
+      lcd.setCursor(0,2);
+      lcd.print("Manager Not Found");
+      delay(2000);
+      updateScreen = true;
+    }
+    
   }
 
   if(readTag!=""){

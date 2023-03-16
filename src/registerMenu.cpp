@@ -356,3 +356,45 @@ void registerMenu:: check_balance(){
     }
   }
  }
+
+void registerMenu:: waitScreen(){
+  if (updateScreen){
+    updateScreen = false;
+    printLcdWelcome();
+  }
+  encoderButton.update();
+  readTag = rfidScan();
+  encoderButton.update();
+  if(encoderButton.isSingleClick()){
+    updateScreen = true;
+    currentSetting = 0;
+    currentScreen = 2;
+  }
+
+  if(readTag!=""){
+    rfidTriggerTime = millis();
+    newTap = true;
+    int customerIndex = customers.search(readTag);
+    lcd.clear();
+    lcd.setCursor(0,0);
+    if(customerIndex>-1)
+    {
+      rfidGoodTap();
+      currentScannedIndex = customerIndex;
+      newTap = false;
+      currentScreen = 1; //dispense
+      updateScreen = true;
+    }
+    else{
+      rfidBadTap();
+      lcd.print("Unknown ID");
+      lcd.setCursor(0,1);
+      lcd.print("Please check in");
+    } 
+      
+    }
+  if(rfidTriggerTime + 4000 < millis() && newTap){
+    newTap = false;
+    updateScreen = true;
+  }
+}

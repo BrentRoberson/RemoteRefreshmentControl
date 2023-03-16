@@ -72,75 +72,6 @@ void SDCard::addOrUpdateCustomer(Customer & customer) {
   digitalWrite(CS_SD,HIGH);
 }
 
-void SDCard::updateCustomers(){
-  digitalWrite(CS_SD,LOW);
-  File dataFile = SD.open(filename);
-  if (dataFile) {
-    String jsonString = "";
-    while (dataFile.available()) {
-      jsonString += dataFile.readString();
-    }
-    dataFile.close();
-
-    DynamicJsonDocument doc(JSON_SIZE);
-    // Parse the JSON string into a DynamicJsonDocument object
-    DeserializationError error = deserializeJson(doc, jsonString);
-    if (error) {
-      Serial.println("Failed to deserialize JSON data in update customers");
-    }
-    else{
-      Serial.print("no deserialization error in update customers\n");
-    }
-
-    // Extract the JsonArray from the JSON data
-    JsonArray jsonCustomers = doc["customers"];
-    bool found = false;
-
-    // Loop over each customer in the customerArray and create a new Customer object for each one
-
-    for (int i = 0; i<customers.getSize(); i++) {
-      if(found){
-        break;
-      }
-      for (JsonVariant jsonCustomer : jsonCustomers) {
-        String JsonId = jsonCustomer["ID"].as<String>();
-        float jsonBalance = jsonCustomer["balance"].as<float>();
-        if (customers[i].ID == JsonId) {
-          found = true;
-          if (jsonBalance != customers[i].balance) {
-            jsonCustomer["balance"] = customers[i].balance;
-          }
-          if (jsonBalance != customers[i].ouncesDrank) {
-            jsonCustomer["ouncesDrank"] = customers[i].ouncesDrank;
-          }
-          if (jsonBalance != customers[i].manager) {
-            jsonCustomer["manager"] = customers[i].manager;
-          }
-          break;
-        }
-      }
-      //if customer not in jsonCustomers
-      if (!found) {
-        Serial.print("customer not found, Adding Here!");
-        JsonObject newJsonCustomer = doc.createNestedObject();
-        newJsonCustomer["ID"] = customers[i].ID;
-        newJsonCustomer["balance"] = customers[i].balance;
-        newJsonCustomer["ouncesDrank"] = customers[i].ouncesDrank;
-        newJsonCustomer["manager"] = customers[i].manager;
-        Serial.print("After making json newobject");
-        break;
-      }
-    }
-    if (serializeJson(doc, dataFile) == 0) {
-        Serial.println(F("Failed to write to file"));
-      }
-        dataFile.close();
-        Serial.println("Successfully closed file");
-  } else {
-    Serial.println("Could not open file");
-  }
-  digitalWrite(CS_SD,HIGH);
-}
 
 //only on setup
 void SDCard::readCustomers() {
@@ -168,7 +99,8 @@ void SDCard::readCustomers() {
       String id = jsonCustomer["ID"].as<String>();
       float balance = jsonCustomer["balance"].as<float>();
       float ouncesDrank = jsonCustomer["ouncesDrank"].as<float>();
-      customers.push_back(Customer(id, balance));
+      bool manager = jsonCustomer["manager"].as<bool>();
+      customers.push_back(Customer(id, balance,manager));
     }
 
   } else {

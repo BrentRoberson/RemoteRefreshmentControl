@@ -10,7 +10,7 @@
 
 class Customer {
   public:
-    Customer(String id = "", float balance = 0);
+    Customer(String id = "", float balance = 0, bool manager = false);
 
     //eventually make private with accessor functions
     String ID;
