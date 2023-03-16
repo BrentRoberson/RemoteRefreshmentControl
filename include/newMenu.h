@@ -12,6 +12,7 @@
 #include <Pitches.h>
 #include <PinButton.h>
 #include <Jug.h>
+#include <Rainbow.h>
 
 class NewMenu {
   public:

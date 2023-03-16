@@ -201,25 +201,25 @@ void NewMenu:: settingsScreen(){
         displaySetting("Price per ounce:", pricePerOunce);
         editSetting(pricePerOunce, .01, .01);
         break;
+      // case 2: make max ounces
+      //   displaySetting("Max drinks:", maxDrinks);
+      //   editSetting(maxDrinks, 1, 1);
+      //   break;
       case 2:
-        displaySetting("Max drinks:", maxDrinks);
-        editSetting(maxDrinks, 1, 1);
-        break;
-      case 3:
         editCustOnSwipe("Remove Customer", "Removed!", removeCustomer);
         break;
-      case 4:
+      case 3:
         editCustOnSwipe("Make Manager", "Made Manager!", makeManager);
         break;
         //open door
-      case 5:
+      case 4:
         editCustOnSwipe("Open Door", "Door Opened!", openDoor);
         break;
-      case 6:
+      case 5:
         addMoneyOnSwipe();
         break;
         
-      case 7:
+      case 6:
         if(updateScreen){
           lcd.clear();
           lcd.setCursor(0,0);
@@ -238,6 +238,7 @@ void NewMenu:: settingsScreen(){
 }
 
 void NewMenu:: waitScreen(){
+  rainbowCycle(10);
   if (updateScreen){
     updateScreen = false;
     printLcdWelcome();

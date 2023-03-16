@@ -10,6 +10,7 @@
 #include <ESPNow.h>
 #include <newMenu.H>
 #include <SDCard.h>
+#include <Rainbow.h>
 
 #define CLK_PIN 14
 #define DT_PIN 26
@@ -17,9 +18,9 @@
 
 PinButton encoderButton(ENCODER_BUTTON);
 PinButton doneButton(DONE_BUTTON);
-float pricePerOunce = .20;
+float pricePerOunce = .25;
 float totalQuarts = 20;
-int maxDrinks = 6;
+
 ESP32Encoder encoder;
 bool readError;
 Customer curr_cust = Customer();
@@ -149,7 +150,7 @@ void setup() {
   // esp_now_register_recv_cb(OnDataRecv);
   Serial.println("Dispenser setup");
   lcd.print("Startup Completed!");
-
+  LEDSetup();
   startup();
   RFIDsetup();
   if(!SD.begin(CS_SD)) {

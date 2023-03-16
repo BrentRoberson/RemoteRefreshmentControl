@@ -3,6 +3,7 @@
 #include <Arduino.h>
 #include <Menu.h>
 #include <Globals.h>
+#include <Rainbow.h>
 
 class Jug {
   private: 

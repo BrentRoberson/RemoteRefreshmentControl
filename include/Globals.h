@@ -24,9 +24,9 @@
 #define registerButton 27
 #define DISPENSE_BUTTON 34
 #define DONE_BUTTON  35
-#define LED_STRIP 17
+#define LED_STRIP 26
 #define BUZZER_PIN  12 
-#define NUM_SETTINGS 7
+#define NUM_SETTINGS 6
 #define JSON_SIZE 20000
 
 

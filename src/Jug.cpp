@@ -18,10 +18,11 @@ void openDoor(){
 
 void dispense() {
   pulseCount = 0;
-  float calibrationFactor = .6;
+  float calibrationFactor = .525;
   float toOz = 29.5735;
   float totalOz = 0; 
-  unsigned int currentTime = 0;
+  float displayOz = 0;
+  unsigned int dispenseTime = 0;
   float subtractFromBalance = 0;
   lcd.clear();
   lcd.setCursor(0,0);
@@ -37,17 +38,23 @@ void dispense() {
   lcd.print(String(customers[currentScannedIndex].balance));
   while(digitalRead(DISPENSE_BUTTON)==LOW && customers[currentScannedIndex].balance>totalOz*pricePerOunce){
     digitalWrite(PUMP,HIGH);
-    // if(currentTime+250<millis())
-    // {
+    rainbowCycle(1);
+
+    if(dispenseTime+250<millis())
+    {
+      if(totalOz>10){
+        displayOz = (totalOz - 10)*.5+ totalOz;
+      }
       lcd.setCursor(4,1);
-      lcd.print(String(totalOz));
+      lcd.print(String(displayOz));
       lcd.setCursor(7,2);
-      lcd.print(String(totalOz*pricePerOunce));
-      currentTime = millis();
-    // }
-    totalOz += pulseCount/calibrationFactor/toOz;
-    pulseCount=0;
-    delay(250);
+      lcd.print(String(displayOz*pricePerOunce));
+      dispenseTime = millis();
+      totalOz += pulseCount/calibrationFactor/toOz;
+      displayOz = totalOz;
+      pulseCount=0;
+    }
+
   }
   Serial.println();
   Serial.println(totalOz);
