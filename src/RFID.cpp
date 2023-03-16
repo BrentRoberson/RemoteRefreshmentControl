@@ -8,13 +8,17 @@
 
 #include<RFID.h>
 #include <LiquidCrystal_I2C.h>
+#include "FastLED.h"
+
 bool tagRead = false;
 MFRC522 rfid(CS_PIN_RFID, RST_PIN);
+CRGB leds[100];
 
 void RFIDsetup() {
   SPI.begin();
   rfid.PCD_Init(); // init MFRC522
   Serial.println("Tap an RFID/NFC tag on the RFID-RC522 reader");
+  randomSeed(analogRead(17));
 }
 
 String rfidScan() {
@@ -25,6 +29,10 @@ String rfidScan() {
     for (int i = 0; i < rfid.uid.size; i++) {
       temp+=(rfid.uid.uidByte[i]);
       }
+    for(uint16_t i=0; i < 100; i++) {
+      leds[100 - 1 - i].setRGB(random(255),random(100,255), random(255));
+    }
+    FastLED.show();
     }
   }
   rfid.PICC_HaltA(); // halt PICC

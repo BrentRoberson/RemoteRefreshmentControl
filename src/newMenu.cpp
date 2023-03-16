@@ -123,14 +123,18 @@ void NewMenu:: editCustOnSwipe(String title, String action, std::function<void()
 
 }
 
-void NewMenu:: addMoneyOnSwipe(){
+void NewMenu:: addMoneyOnSwipe(bool setAmount){
   editSetting(addAmount,1,1);
   if (updateScreen) {
     printSettingTitle();
     lcd.setCursor(0, 1);
     lcd.print("Swipe Card To");
     lcd.setCursor(0, 2);
-    lcd.print("Add: $");
+    if(setAmount){
+      lcd.print("Set: $");
+    } else{
+      lcd.print("Add: $");
+    }
     lcd.print(addAmount);
     newTap = false;
     updateScreen = false;
@@ -152,7 +156,11 @@ void NewMenu:: addMoneyOnSwipe(){
       lcd.print("Added $");
       lcd.print(addAmount);
       temp = customers[currentScannedIndex];
-      customers[currentScannedIndex].balance +=addAmount;
+      if(setAmount){
+        customers[currentScannedIndex].balance =addAmount;
+      }else{
+        customers[currentScannedIndex].balance +=addAmount;
+      }
       
     }
     else{
@@ -216,10 +224,13 @@ void NewMenu:: settingsScreen(){
         editCustOnSwipe("Open Door", "Door Opened!", openDoor);
         break;
       case 5:
-        addMoneyOnSwipe();
+        addMoneyOnSwipe(false);
+        break;
+      case 6:
+        addMoneyOnSwipe(true);
         break;
         
-      case 6:
+      case 7:
         if(updateScreen){
           lcd.clear();
           lcd.setCursor(0,0);
@@ -288,10 +299,6 @@ void NewMenu:: waitScreen(){
       lcd.setCursor(0,1);
       lcd.print("Please check in");
       Serial.print("Customer not added");
-      Serial.println("(For testing purposes, customer is added) ");
-      Customer temp = Customer(readTag, 10);
-      customers.push_back(temp);
-      SdData.addOrUpdateCustomer(temp);
     } 
       
     }

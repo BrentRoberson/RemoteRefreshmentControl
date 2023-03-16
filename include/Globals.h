@@ -26,7 +26,7 @@
 #define DONE_BUTTON  35
 #define LED_STRIP 26
 #define BUZZER_PIN  12 
-#define NUM_SETTINGS 6
+#define NUM_SETTINGS 7
 #define JSON_SIZE 20000
 
 
