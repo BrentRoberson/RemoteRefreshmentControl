@@ -12,7 +12,7 @@
 
 bool tagRead = false;
 MFRC522 rfid(CS_PIN_RFID, RST_PIN);
-CRGB rfidLEDs[NUM_LEDS];
+// CRGB rfidLEDs[NUM_LEDS];
 
 
 void RFIDsetup() {
@@ -30,10 +30,10 @@ String rfidScan() {
       for (int i = 0; i < rfid.uid.size; i++) {
         temp+=(rfid.uid.uidByte[i]);
         }
-      for(uint16_t i=0; i < 100; i++) {
-        rfidLEDs[100 - 1 - i].setRGB(random(255),random(100,255), random(255));
-      }
-      FastLED.show();
+      // for(uint16_t i=0; i < 100; i++) {
+      //   rfidLEDs[100 - 1 - i].setRGB(random(255),random(100,255), random(255));
+      // }
+      // FastLED.show();
     }
   }
   rfid.PICC_HaltA(); // halt PICC
