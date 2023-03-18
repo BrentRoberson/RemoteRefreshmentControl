@@ -27,7 +27,7 @@ class NewMenu {
 
     void editCustOnSwipe(String title, String action, std::function<void()> onSwipe) ;
     
-    void addMoneyOnSwipe(bool setAmount);
+    void addOrSetMoneyOnSwipe(bool setAmount);
 
     virtual void dispenseScreen();
 

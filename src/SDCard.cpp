@@ -10,11 +10,6 @@ void SDCard::addOrUpdateCustomer(Customer & customer) {
   digitalWrite(CS_SD,LOW);
   File dataFile = SD.open(filename);
   if (dataFile) {
-    // Serial.println("Successfully opened file: Printing out: ");
-    // while (dataFile.available()) {
-    // Serial.print((char)dataFile.read());
-    // }
-    // Serial.println();
     DynamicJsonDocument doc(JSON_SIZE);
     DeserializationError error = deserializeJson(doc, dataFile);
     if (error) {
@@ -38,7 +33,6 @@ void SDCard::addOrUpdateCustomer(Customer & customer) {
         break;
       }
     }
-    
     // If the customer does not exist, add it to the JSON data
     if (!foundCustomer) {
       Serial.println("CUSTOMER NOT FOUND!!!!");

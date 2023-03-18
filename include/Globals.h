@@ -28,7 +28,7 @@
 #define LED_STRIP 26
 #define BUZZER_PIN  12 
 #define NUM_SETTINGS 7
-#define JSON_SIZE 25000
+#define JSON_SIZE 50000
 #define NUM_LEDS  90    // Enter the total number of LEDs on the strip
 
 

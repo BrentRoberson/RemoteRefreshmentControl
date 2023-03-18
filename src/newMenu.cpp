@@ -123,7 +123,7 @@ void NewMenu:: editCustOnSwipe(String title, String action, std::function<void()
 
 }
 
-void NewMenu:: addMoneyOnSwipe(bool setAmount){
+void NewMenu:: addOrSetMoneyOnSwipe(bool setAmount){
   editSetting(addAmount,1,1);
   if (updateScreen) {
     printSettingTitle();
@@ -172,14 +172,13 @@ void NewMenu:: addMoneyOnSwipe(bool setAmount){
       lcd.print("New Card");
       lcd.print("Given $");
       lcd.print(addAmount);
-      customers.push_back(Customer(readTag, addAmount));
       temp = Customer(readTag,addAmount);
+      customers.push_back(temp);
     } 
-
     SdData.addOrUpdateCustomer(temp);
 
   }
-  if(rfidTriggerTime + 1500 < millis() && newTap){
+  if(rfidTriggerTime + 2000 < millis() && newTap){
     newTap = false;
     updateScreen = true;
   }
@@ -191,19 +190,23 @@ void NewMenu:: settingsScreen(){
   delay(100);
   settingsTriggeredTime = millis();
   //exits the while loop when current setting exceeds the NUM_SETTINGS
-  while(settingsTriggeredTime + 10000 > millis() && currentSetting < NUM_SETTINGS){
+  while(settingsTriggeredTime + 10000 > millis() && currentSetting < NUM_SETTINGS && currentSetting >= 0){
 
     //ESP32_ISR_Disable(ENCODER_BUTTON);
     encoderButton.update();
     if(encoderButton.isSingleClick()){
-      currentSetting +=1;
+      currentSetting += 1;
       updateScreen = true;
       settingsTriggeredTime = millis();
+    }
+    if(encoderButton.isDoubleClick()){
+      currentSetting -= 1 ; //effectively returns to waitScreen
+      settingsTriggeredTime = millis();
+      updateScreen = true;
     }
     if(encoderButton.isLongClick()){
       currentSetting = 99; //effectively returns to waitScreen
     }
-
     switch (currentSetting) {
       case 0:
         displaySetting("Total Quarts:", totalQuarts);
@@ -228,12 +231,11 @@ void NewMenu:: settingsScreen(){
         editCustOnSwipe("Open Door", "Door Opened!", openDoor);
         break;
       case 5:
-        addMoneyOnSwipe(false);
+        addOrSetMoneyOnSwipe(false);
         break;
       case 6:
-        addMoneyOnSwipe(true);
+        addOrSetMoneyOnSwipe(true);
         break;
-        
       case 7:
         if(updateScreen){
           lcd.clear();
@@ -258,11 +260,11 @@ void NewMenu:: waitScreen(){
     updateScreen = false;
     printLcdWelcome();
   }
-  if (new_sd_data){
-    SdData.addOrUpdateCustomer(curr_cust);
-    new_sd_data = false;
-    curr_cust = Customer();
-  }
+  // if (new_sd_data){
+  //   SdData.addOrUpdateCustomer(curr_cust);
+  //   new_sd_data = false;
+  //   curr_cust = Customer();
+  // }
   encoderButton.update();
   readTag = rfidScan();
   encoderButton.update();
@@ -280,7 +282,6 @@ void NewMenu:: waitScreen(){
       delay(2000);
       updateScreen = true;
     }
-    
   }
 
   if(readTag!=""){
@@ -304,9 +305,8 @@ void NewMenu:: waitScreen(){
       lcd.print("Please check in");
       Serial.print("Customer not added");
     } 
-      
     }
-  if(rfidTriggerTime + 4000 < millis() && newTap){
+  if(rfidTriggerTime + 2500 < millis() && newTap){
     newTap = false;
     updateScreen = true;
   }
@@ -316,7 +316,7 @@ void NewMenu:: dispenseScreen(){
   bool done = false;
   dispenseLastTouched = millis();
   updateScreen = true;
-  while(dispenseLastTouched + 10000 > millis() && !done){
+  while(dispenseLastTouched + 5000 > millis() && !done){
     if(updateScreen){
       customers[currentScannedIndex].lcdPrint();
       updateScreen = false;
