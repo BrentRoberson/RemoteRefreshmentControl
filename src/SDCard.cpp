@@ -41,14 +41,12 @@ void SDCard::addOrUpdateCustomer(Customer & customer) {
     
     // If the customer does not exist, add it to the JSON data
     if (!foundCustomer) {
-        Serial.print("customer not found, Mem usage: ");
-        Serial.println(doc.memoryUsage());
+      Serial.println("CUSTOMER NOT FOUND!!!!");
         JsonObject newJsonCustomer = jsonCustomers.createNestedObject();
         newJsonCustomer["ID"] = customer.ID;
         newJsonCustomer["balance"] = customer.balance;
         newJsonCustomer["ouncesDrank"] = customer.ouncesDrank;
         newJsonCustomer["manager"] = customer.manager;
-        Serial.println(doc.memoryUsage());
         if(newJsonCustomer.isNull()){
           Serial.println("Memory alloc error");
         }
@@ -96,6 +94,7 @@ void SDCard::readCustomers() {
 
     // Loop over each JsonObject in the JsonArray and create a new Customer object for each one
     for (JsonVariant jsonCustomer : jsonCustomers) {
+      
       String id = jsonCustomer["ID"].as<String>();
       float balance = jsonCustomer["balance"].as<float>();
       float ouncesDrank = jsonCustomer["ouncesDrank"].as<float>();

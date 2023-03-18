@@ -17,6 +17,12 @@ void rainbowCycle(int DelayDuration) {
   }
 }
 
+void changeColor(char r, char g, char b){
+      for(uint16_t i=0; i < NUM_LEDS; i++) {
+        leds[i].setRGB(r,g,b);
+      }
+      FastLED.show();
+}
 
 void LEDSetup(){
   FastLED.addLeds<WS2812B, LED_STRIP, GRB>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);

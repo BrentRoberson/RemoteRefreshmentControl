@@ -153,13 +153,17 @@ void NewMenu:: addMoneyOnSwipe(bool setAmount){
       currentScannedIndex = customerIndex;
       lcd.print("Customer ");
       lcd.setCursor(0,1);
-      lcd.print("Added $");
+      if(setAmount){
+        lcd.print("Set: $");
+      } else{
+        lcd.print("Added: $");
+      }
       lcd.print(addAmount);
       temp = customers[currentScannedIndex];
       if(setAmount){
-        customers[currentScannedIndex].balance =addAmount;
+        customers[currentScannedIndex].balance = addAmount;
       }else{
-        customers[currentScannedIndex].balance +=addAmount;
+        customers[currentScannedIndex].balance += addAmount;
       }
       
     }

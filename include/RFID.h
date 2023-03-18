@@ -3,9 +3,8 @@
 
 #include <SPI.h>
 #include <MFRC522.h>
-#include <Globals.h>
 #include <Customer.h>
-
+#include <Rainbow.h>
 
 
 void RFIDsetup();
