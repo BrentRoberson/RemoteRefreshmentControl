@@ -277,7 +277,7 @@ void NewMenu:: waitScreen(){
     }
     else {
       lcd.clear();
-      lcd.setCursor(0,2);
+      lcd.setCursor(0,1);
       lcd.print("Manager Not Found");
       delay(2000);
       updateScreen = true;
