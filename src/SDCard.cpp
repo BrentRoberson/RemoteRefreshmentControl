@@ -1,13 +1,12 @@
-#include "SDCard.h"
+                                                                                                                                                                                                                                                                                                                                                                                                         #include "SDCard.h"
 
 
 SDCard::SDCard(const String filename) {
   this->filename = filename;
 }
 
-void SDCard::addOrUpdateCustomer(Customer & customer) {
-  // Open the SD card file and read its contents into a String variable
-  digitalWrite(CS_SD,LOW);
+void SDCard::updateSettings() {
+  digitalWrite(CS_SD, LOW);
   File dataFile = SD.open(filename);
   if (dataFile) {
     DynamicJsonDocument doc(JSON_SIZE);
@@ -18,55 +17,87 @@ void SDCard::addOrUpdateCustomer(Customer & customer) {
     }
     Serial.println("Successfully deserialized existing JSON data");
 
-    // Check if the customer already exists in the data
-    bool foundCustomer = false;
-    JsonArray jsonCustomers = doc["customers"];
-    for (JsonVariant jsonCustomer : jsonCustomers) {
-      String id = jsonCustomer["ID"].as<String>();
-      if (id == customer.ID) {
-        Serial.println("Id found");
-        jsonCustomer["balance"] = customer.balance;
-        jsonCustomer["ouncesDrank"] = customer.ouncesDrank;
-        jsonCustomer["manager"] = customer.manager;
-        Serial.print("After making json newobject");
-        foundCustomer = true;
-        break;
-      }
-    }
-    // If the customer does not exist, add it to the JSON data
-    if (!foundCustomer) {
-      Serial.println("CUSTOMER NOT FOUND!!!!");
-        JsonObject newJsonCustomer = jsonCustomers.createNestedObject();
-        newJsonCustomer["ID"] = customer.ID;
-        newJsonCustomer["balance"] = customer.balance;
-        newJsonCustomer["ouncesDrank"] = customer.ouncesDrank;
-        newJsonCustomer["manager"] = customer.manager;
-        if(newJsonCustomer.isNull()){
-          Serial.println("Memory alloc error");
-        }
-        jsonCustomers.add(newJsonCustomer);
-        Serial.println("After making json newobject");
-      }
+    // Update the properties if they exist
+      doc["pricePerOunce"] = pricePerOunce;
+      doc["totalQuarts"] = totalQuarts;
+      doc["maxOunces"] = maxOunces;
 
     // Serialize the updated JSON data into a string
     dataFile.close();
     dataFile = SD.open(filename, FILE_WRITE);
 
     if (serializeJson(doc, dataFile) == 0) {
-        Serial.println(F("Failed to write to file"));
-      }
+      Serial.println(F("Failed to write to file"));
+    }
     dataFile.close();
-    Serial.println("closed file");
+    Serial.println("Closed file");
     // Write the updated JSON data to the SD card file
   } else {
     Serial.println("Could not open file");
   }
-  digitalWrite(CS_SD,HIGH);
+  digitalWrite(CS_SD, HIGH);
 }
 
 
+
+void SDCard::addOrUpdateCustomer(Customer & customer) {
+  digitalWrite(CS_SD, LOW);
+  File dataFile = SD.open(filename);
+  if (dataFile) {
+    DynamicJsonDocument doc(JSON_SIZE);
+    DeserializationError error = deserializeJson(doc, dataFile);
+    if (error) {
+      Serial.println("Failed to deserialize existing JSON data");
+      return;
+    }
+    Serial.println("Successfully deserialized existing JSON data");
+
+
+    // Check if the customer already exists in the data
+    bool foundCustomer = false;
+    JsonArray jsonCustomers = doc["customers"];
+    for (JsonVariant jsonCustomer : jsonCustomers) {
+      String id = jsonCustomer["ID"].as<String>();
+      if (id == customer.ID) {
+        Serial.println("Customer found");
+        jsonCustomer["balance"] = customer.balance;
+        jsonCustomer["ouncesDrank"] = customer.ouncesDrank;
+        jsonCustomer["manager"] = customer.manager;
+        foundCustomer = true;
+        break;
+      }
+    }
+    // If the customer does not exist, add it to the JSON data
+    if (!foundCustomer) {
+      Serial.println("Customer not found");
+      JsonObject newJsonCustomer = jsonCustomers.createNestedObject();
+      newJsonCustomer["ID"] = customer.ID;
+      newJsonCustomer["balance"] = customer.balance;
+      newJsonCustomer["ouncesDrank"] = customer.ouncesDrank;
+      newJsonCustomer["manager"] = customer.manager;
+      jsonCustomers.add(newJsonCustomer);
+    }
+  
+    // Serialize the updated JSON data into a string
+    dataFile.close();
+    dataFile = SD.open(filename, FILE_WRITE);
+
+    if (serializeJson(doc, dataFile) == 0) {
+      Serial.println(F("Failed to write to file"));
+    }
+    dataFile.close();
+    Serial.println("Closed file");
+    // Write the updated JSON data to the SD card file
+  } else {
+    Serial.println("Could not open file");
+  }
+  digitalWrite(CS_SD, HIGH);
+}
+
+
+
 //only on setup
-void SDCard::readCustomers() {
+void SDCard::readInSD() {
   // Open the SD card file and read its contents into a String variable
   digitalWrite(CS_SD,LOW);
   File dataFile = SD.open(filename);
@@ -95,6 +126,10 @@ void SDCard::readCustomers() {
       bool manager = jsonCustomer["manager"].as<bool>();
       customers.push_back(Customer(id, balance,manager));
     }
+    pricePerOunce = doc["pricePerOunce"].as<float>();
+    totalQuarts = doc["totalQuarts"].as<float>();
+    maxOunces = doc["maxOunces"].as<int>();
+
 
   } else {
     Serial.println("Could not open file");

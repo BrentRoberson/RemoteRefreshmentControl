@@ -54,7 +54,7 @@ class SDCard;
 class Customer;
 extern float pricePerOunce; // = .40;
 extern float totalQuarts; // = 640;
-extern int maxDrinks; // 
+extern int maxOunces; // 
 extern float refund_amount;
 extern bool register_sent;
 extern bool refund_received;

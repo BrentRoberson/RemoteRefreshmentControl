@@ -13,8 +13,8 @@ class SDCard {
   public:
     SDCard(const String filename);
     void addOrUpdateCustomer(Customer & customer);
-    void readCustomers();
-    void updateCustomers();
+    void updateSettings();
+    void readInSD();
   private:
     String filename;
 };

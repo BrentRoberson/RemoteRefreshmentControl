@@ -217,8 +217,8 @@ void NewMenu:: settingsScreen(){
         editSetting(pricePerOunce, .01, .01);
         break;
       // case 2: make max ounces
-      //   displaySetting("Max drinks:", maxDrinks);
-      //   editSetting(maxDrinks, 1, 1);
+      //   displaySetting("Max drinks:", maxOunces);
+      //   editSetting(maxOunces, 1, 1);
       //   break;
       case 2:
         editCustOnSwipe("Remove Customer", "Removed!", removeCustomer);

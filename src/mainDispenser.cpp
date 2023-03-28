@@ -18,8 +18,9 @@
 
 PinButton encoderButton(ENCODER_BUTTON);
 PinButton doneButton(DONE_BUTTON);
-float pricePerOunce = .25;
-float totalQuarts = 16;
+float pricePerOunce= .30;
+float totalQuarts = 10;
+int maxOunces = 80;
 
 ESP32Encoder encoder;
 bool readError;
@@ -158,7 +159,7 @@ void setup() {
     return;
   }
   Serial.println("initialization done.");
-  SdData.readCustomers();
+  SdData.readInSD();
   Menu.printLcdWelcome();
 
 
