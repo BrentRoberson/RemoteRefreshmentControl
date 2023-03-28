@@ -206,6 +206,7 @@ void NewMenu:: settingsScreen(){
     }
     if(encoderButton.isLongClick()){
       currentSetting = 99; //effectively returns to waitScreen
+
     }
     switch (currentSetting) {
       case 0:
@@ -247,11 +248,11 @@ void NewMenu:: settingsScreen(){
       //make a case to resetAll
     }
   }
+  SdData.updateSettings();
   currentSetting = 0;
   settingsTriggeredTime = 0;
   currentScreen = 0;
   updateScreen = true;
-
 }
 
 void NewMenu:: waitScreen(){
@@ -260,11 +261,6 @@ void NewMenu:: waitScreen(){
     updateScreen = false;
     printLcdWelcome();
   }
-  // if (new_sd_data){
-  //   SdData.addOrUpdateCustomer(curr_cust);
-  //   new_sd_data = false;
-  //   curr_cust = Customer();
-  // }
   readTag = rfidScan();
   
 
@@ -312,6 +308,7 @@ void NewMenu:: dispenseScreen(){
         Serial.println("manager and click");
         currentSetting = 0;
         currentScreen = 2;
+        updateScreen= true;
         return;
       }
       else {
