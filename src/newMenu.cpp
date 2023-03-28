@@ -265,24 +265,8 @@ void NewMenu:: waitScreen(){
   //   new_sd_data = false;
   //   curr_cust = Customer();
   // }
-  encoderButton.update();
   readTag = rfidScan();
-  encoderButton.update();
-  if(encoderButton.isSingleClick()){
-
-    if(customers[currentScannedIndex].manager && rfidTriggerTime +4000 >millis()) {
-      updateScreen = true;
-      currentSetting = 0;
-      currentScreen = 2;
-    }
-    else {
-      lcd.clear();
-      lcd.setCursor(0,1);
-      lcd.print("Manager Not Found");
-      delay(2000);
-      updateScreen = true;
-    }
-  }
+  
 
   if(readTag!=""){
     rfidTriggerTime = millis();
@@ -321,6 +305,25 @@ void NewMenu:: dispenseScreen(){
       customers[currentScannedIndex].lcdPrint();
       updateScreen = false;
     }
+    encoderButton.update();
+    if(encoderButton.isSingleClick()){
+      if(customers[currentScannedIndex].manager) {
+        done = true;
+        Serial.println("manager and click");
+        currentSetting = 0;
+        currentScreen = 2;
+        return;
+      }
+      else {
+        Serial.println("not manager");
+
+        lcd.clear();
+        lcd.setCursor(0,1);
+        lcd.print("Manager Not Found");
+        delay(2000);
+        updateScreen = true;
+      }
+    }
     if(digitalRead(DISPENSE_BUTTON)==LOW){
       dispense();
       dispenseLastTouched = millis();
@@ -329,7 +332,6 @@ void NewMenu:: dispenseScreen(){
       done = true;
     }
   }
-  dispenseLastTouched = 0;
   currentScreen = 0;
   updateScreen = true;
   delay(100);
