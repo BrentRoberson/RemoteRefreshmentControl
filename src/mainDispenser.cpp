@@ -11,7 +11,7 @@
 #include <newMenu.H>
 #include <SDCard.h>
 #include <Rainbow.h>
-
+#include <ESP32API.h>
 #define CLK_PIN 14
 #define DT_PIN 26
 #define SW_PIN 13
@@ -132,20 +132,20 @@ void setup() {
   pinMode(DISPENSE_BUTTON, INPUT);
   pinMode(DONE_BUTTON, INPUT);
   // Set ESP32 as a Wi-Fi Station
-  WiFi.mode(WIFI_STA);
+  // WiFi.mode(WIFI_STA);
   // WiFi.mode(WIFI_MODE_STA);
   pinMode(DOOR_LOCK, OUTPUT);
   pinMode(PUMP, OUTPUT);
   pinMode(BUZZER_PIN, OUTPUT);
   pinMode(SENSOR, INPUT_PULLUP);
 
-  espNow.init();
-  espNow.addPeer(Register_broadcastAddress);
-  espNow.registerDataSentCallback(OnDataSent);
-  espNow.registerDataReceivedCallback(OnDataRecv);
-  attachInterrupt(digitalPinToInterrupt(SENSOR), pulseCounter, FALLING);
+  // espNow.init();
+  // espNow.addPeer(Register_broadcastAddress);
+  // espNow.registerDataSentCallback(OnDataSent);
+  // espNow.registerDataReceivedCallback(OnDataRecv);
+  // attachInterrupt(digitalPinToInterrupt(SENSOR), pulseCounter, FALLING);
   
-  
+  setupAPI();
   lcd.init();
   lcd.backlight();
   // esp_now_register_recv_cb(OnDataRecv);
@@ -168,6 +168,6 @@ void setup() {
 
 
 void loop() {
-  Menu.run();
-  
+  //Menu.run();
+  handleClient();
 }

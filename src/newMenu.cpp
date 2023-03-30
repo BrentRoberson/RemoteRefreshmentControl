@@ -261,6 +261,8 @@ void NewMenu:: waitScreen(){
     updateScreen = false;
     printLcdWelcome();
   }
+  //scan for API post/get
+  handleClient();
   readTag = rfidScan();
   
 

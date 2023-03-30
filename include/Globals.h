@@ -11,6 +11,7 @@
 #include <SPI.h>
 #include <SDCard.h>
 #include <FastLED.h>
+#include <Webserver.h>
 
 #define ENCODER_BUTTON 13
 // #define NUM_SCREENS 5  //settings 
@@ -52,6 +53,7 @@ SCL - 22
 */
 class SDCard;
 class Customer;
+extern WebServer server;
 extern float pricePerOunce; // = .40;
 extern float totalQuarts; // = 640;
 extern int maxOunces; // 
