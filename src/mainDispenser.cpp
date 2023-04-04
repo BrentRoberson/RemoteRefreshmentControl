@@ -168,6 +168,5 @@ void setup() {
 
 
 void loop() {
-  //Menu.run();
-  handleClient();
+  Menu.run();
 }

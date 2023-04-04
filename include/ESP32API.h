@@ -6,10 +6,14 @@
 #include <WebServer.h>
 #include <ArduinoJson.h>
 #include <Customer.h>
+#include <SDCard.h>
 
 void setupAPI();
 void handlePostCustomer();
 void handleGetCustomer();
+void handleGetAllCustomers();
 void handleClient();
+void handleEditCustomer();
+
 
 #endif

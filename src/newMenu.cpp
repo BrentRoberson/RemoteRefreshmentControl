@@ -191,6 +191,8 @@ void NewMenu:: settingsScreen(){
   settingsTriggeredTime = millis();
   //exits the while loop when current setting exceeds the NUM_SETTINGS
   while(settingsTriggeredTime + 10000 > millis() && currentSetting < NUM_SETTINGS && currentSetting >= 0){
+    //check for website updates
+    handleClient();
 
     //ESP32_ISR_Disable(ENCODER_BUTTON);
     encoderButton.update();
@@ -261,7 +263,7 @@ void NewMenu:: waitScreen(){
     updateScreen = false;
     printLcdWelcome();
   }
-  //scan for API post/get
+  //check for website updates
   handleClient();
   readTag = rfidScan();
   
@@ -299,6 +301,8 @@ void NewMenu:: dispenseScreen(){
   dispenseLastTouched = millis();
   updateScreen = true;
   while(dispenseLastTouched + 5000 > millis() && !done){
+    //check for website updates
+    handleClient();
     if(updateScreen){
       customers[currentScannedIndex].lcdPrint();
       updateScreen = false;
@@ -307,15 +311,12 @@ void NewMenu:: dispenseScreen(){
     if(encoderButton.isSingleClick()){
       if(customers[currentScannedIndex].manager) {
         done = true;
-        Serial.println("manager and click");
         currentSetting = 0;
         currentScreen = 2;
         updateScreen= true;
         return;
       }
       else {
-        Serial.println("not manager");
-
         lcd.clear();
         lcd.setCursor(0,1);
         lcd.print("Manager Not Found");

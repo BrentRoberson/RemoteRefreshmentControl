@@ -1,6 +1,3 @@
-#include <WiFi.h>
-#include <WebServer.h>
-#include <ArduinoJson.h>
 #include <ESP32API.h>
 
 const char* ssid = "FBI-Surveillence-Van";
@@ -8,35 +5,75 @@ const char* password = "brentiepoo";
 
 WebServer server(80);
 
-void handlePost() {
+void handlePostCustomer() {
   String body = server.arg("plain");
   DynamicJsonDocument jsonDoc(1024);
   deserializeJson(jsonDoc, body);
-
-  String id = jsonDoc["id"];
+  Customer temp = Customer();
+  String id = jsonDoc["ID"];
+  float balance = jsonDoc["balance"].as<float>();
+  bool manager = jsonDoc["manager"].as<bool>();
   String name = jsonDoc["name"];
-  float balance = jsonDoc["balance"];
-
+  Serial.println(id);
+  Serial.println(balance);
+  Serial.println(manager);
+  Serial.println(name);
   // Save the customer data in the ESP32's memory
-  // ...
-
+  temp = Customer(id,balance,manager, name);
+  customers.push_back(temp);
+  SdData.addOrUpdateCustomer(temp);
   server.send(200);
 }
 
-void handleGet() {
+//pass an existing customer in the body of the post request. If it is found, it will convert 
+//all member variables to the ones passed in
+void handleEditCustomer(){
+  String body = server.arg("plain");
+  DynamicJsonDocument jsonDoc(1024);
+  deserializeJson(jsonDoc, body);
+  String id = jsonDoc["ID"];
+  float balance = jsonDoc["amount"].as<float>();
+  bool manager = jsonDoc["manager"].as<bool>();
+  String name = jsonDoc["name"];
+  int addSetOrRefund = jsonDoc["addSetOrRefund"];
+  int customerIndex = customers.search(id);
+  if(customerIndex>-1)
+  {
+    customers[customerIndex].balance = balance;
+    customers[customerIndex].manager = manager;
+    customers[customerIndex].name = name;
+  }
+  else{
+    Serial.print("CUSTOMER NOT FOUND");
+  } 
+  SdData.addOrUpdateCustomer(customers[customerIndex]);
+  server.send(200);
+
+}
+
+void handleGetCustomer() {
   Serial.print("got customer");
   String id = server.arg("id");
   int customerIndex = customers.search(id);
-  
-  // Get the customer data from the ESP32's memory
-  // ...
-
-  // Send the customer data as a JSON response
   DynamicJsonDocument jsonDoc(1024);
-  jsonDoc["name"] = "John Doe";
-  jsonDoc["balance"] = 100.0;
   String jsonStr;
+
+  if (customerIndex>-1){
+    jsonDoc["id"] = customers[customerIndex].ID;
+    jsonDoc["balance"] = customers[customerIndex].balance;
+    jsonDoc["manager"] = customers[customerIndex].manager;
+    jsonDoc["name"] = customers[customerIndex].name;
+  }
+  else
+  {
+    jsonDoc["id"] = "NOT FOUND";
+    jsonDoc["balance"] = 0.0;
+    jsonDoc["manager"] =false;
+    jsonDoc["name"] ="";
+  }
+
   serializeJson(jsonDoc, jsonStr);
+  
   server.send(200, "application/json", jsonStr);
 }
 
@@ -59,8 +96,9 @@ void setupAPI() {
   Serial.print("Access point IP address: ");
   Serial.println(WiFi.softAPIP());
   // Set up the API routes
-  server.on("/customer", HTTP_POST, handlePost);
-  server.on("/customer", HTTP_GET, handleGet);
+  server.on("/customer", HTTP_POST, handlePostCustomer);
+  server.on("/customer", HTTP_GET, handleGetCustomer);
+  server.on("/editCustomer", HTTP_POST, handleEditCustomer);
   server.on("/allCustomers", HTTP_GET, handleGetAllCustomers);
 
   // Start the server
@@ -69,5 +107,4 @@ void setupAPI() {
 
 void handleClient() {
   server.handleClient();
-  
 }
