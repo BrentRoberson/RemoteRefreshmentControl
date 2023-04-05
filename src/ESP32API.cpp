@@ -79,14 +79,19 @@ void handleGetCustomer() {
 
 void handleGetAllCustomers() {
   Serial.print("got all customers");
-  String response;
+  DynamicJsonDocument doc(1024); // create a JSON document
+  JsonArray customersJson = doc.createNestedArray("customers"); // create a nested array of customers
   Serial.println("Get for all customers received");
-  for (int i = 0; i<customers.getSize(); i++) {
-    response += "ID: " + customers[i].ID + ", Name: " + 
-    "customers[i].name" + ", Balance: " + String(customers[i].balance) 
-    + " Ounces Drank:"+ customers[i].ouncesDrank+ "\n";
+  for (int i = 0; i < customers.getSize(); i++) {
+    JsonObject customerJson = customersJson.createNestedObject(); // create a nested object for each customer
+    customerJson["ID"] = customers[i].ID;
+    customerJson["Name"] = customers[i].name;
+    customerJson["Balance"] = customers[i].balance;
+    customerJson["Ounces Drank"] = customers[i].ouncesDrank;
   }
-  server.send(200, "text/plain", response);
+  String response;
+  serializeJson(doc, response); // serialize the JSON document to a string
+  server.send(200, "application/json", response); // send the response as JSON
 }
 
 void setupAPI() {
