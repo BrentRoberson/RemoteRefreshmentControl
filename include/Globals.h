@@ -7,7 +7,6 @@
 #include <DynamicArray.h>
 #include <PinButton.h>
 #include <Customer.h>
-#include <ESPNow.h>
 #include <SPI.h>
 #include <SDCard.h>
 #include <FastLED.h>
@@ -61,7 +60,6 @@ extern bool bal_received;
 extern float returned_balance;
 extern bool new_sd_data;
 extern Customer curr_cust;
-extern ESP32NOW espNow; 
 extern LiquidCrystal_I2C lcd;
 extern SPIClass spi;
 extern ESP32Encoder encoder;

@@ -53,7 +53,6 @@ String rfidScan() {
     Serial.println(temp);
     Serial.println("");
     changeColor(random(255),random(100,255),random(255));
-
   
   }
   return temp;

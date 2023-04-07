@@ -1,72 +1,63 @@
-// #ifndef MENU_H
-// #define MENU_H
+#ifndef Menu_H
+#define Menu_H
 
-// #include <Arduino.h>
-// #include <Wire.h>
-// #include <LiquidCrystal_I2C.h>
-// #include <ESP32Encoder.h>
-// #include <Globals.h>
-// #include <Customer.h>
-// #include <NFC.h>
-// #include <Pitches.h>
-// #include <NFC.h>
-// //https://www.youtube.com/watch?v=P36GIB0dYks&list=PLfwpK3RIxFR39m27Q8C6zjnj9kOjJz3VV&index=5
-// //heavily relied on this menu system^
+#include <Jug.h>
+#include <Arduino.h>
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+#include <ESP32Encoder.h>
+#include <Globals.h>
+#include <Customer.h>
+#include <NFC.h>
+#include <Pitches.h>
+#include <PinButton.h>
+#include <Jug.h>
+#include <Rainbow.h>
+#include <ESP32API.h>
+class Menu {
+  public:
 
+    Menu();
+    virtual void run();
+    virtual void waitScreen();
+    virtual void printLcdWelcome();
 
-// class Menu {
- 
-//   public:
-//     Menu();
-//     virtual void setup();
-//     virtual void run();
-//     virtual void waitScreen();
-//     void clearLCDLine(int line);
-//     static void triggerMenu();
-//     // void triggerMenu();
+  protected:
+    virtual void printSettingTitle();
 
-//     virtual void displayMenu();
-
-//     // public member variables of the function 
-//     static int NUM_SCREENS;
-//     static long oldPosition;
-//     long newPosition;
-//     static long initPosition;
-//     static unsigned long menuTriggeredTime;
-//     static int currentScreen;
-//     static bool updateScreen;
-//     bool updateJustVal = true;
-//     unsigned long rfidTriggerTime = 0;
-//     bool waiting = false;
-//     bool scanTimeout = false;
-//     String readTag = "";
-//     bool newTap = false;
-//     static int validationTurns;
+    void editCustOnSwipe(String title, String action, std::function<void()> onSwipe) ;
     
-//   protected:
-//     virtual void printLcdWelcome();
+    void addOrSetMoneyOnSwipe(bool setAmount);
 
-//     template <typename T>
-//     void editSetting(T & value, float increment, float decrement);
+    virtual void dispenseScreen();
 
-//     void resetParams();
+    virtual void settingsScreen();
 
-//     void printSettingTitle();
+    template <typename T>
+    void editSetting(T & value, float increment, float decrement);
 
-//     void openDoorScreen();
+    template <typename T>
+    void displaySetting(const char* title, T value);
 
-//     template <typename T>
-//     void displaySetting(const char* title, T value);
+    long oldPosition;
+    long newPosition;
+    long initPosition;
+    unsigned long buttonJustPressed;
+    unsigned long settingsTriggeredTime;
+    unsigned long dispenseLastTouched;
+    int currentScreen;
+    bool updateScreen;
+    unsigned long rfidTriggerTime;
+    bool waiting;
+    bool scanTimeout;
+    String readTag;
+    bool newTap;
+    int addAmount;
+    int validationTurns;
+    int currentSetting;
+    unsigned long lastButtonPressTime;
+    unsigned long currentTime;
+    bool encoderPressed;
+};
 
-//     bool validated();
-
-//     void editLastCustomerScreen(String title, String action, std::function<void()> onValidation);
-
-// };
-
-
-
-
-
-// #endif
-
+#endif

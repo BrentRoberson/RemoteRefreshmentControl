@@ -1,6 +1,6 @@
 #include <ESP32API.h>
 
-const char* ssid = "FBI-Surveillence-Van";
+const char* ssid = "FBI-Sting-Van";
 const char* password = "brentiepoo";
 
 WebServer server(80);

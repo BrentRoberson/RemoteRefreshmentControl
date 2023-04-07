@@ -1,9 +1,9 @@
 
-#include <newMenu.h>
+#include <Menu.h>
 
 
 
-NewMenu::NewMenu() {
+Menu::Menu() {
   oldPosition = 0;
   newPosition = 0;
   initPosition = 0;
@@ -27,7 +27,7 @@ NewMenu::NewMenu() {
 }
 
 
-void NewMenu:: printLcdWelcome(){
+void Menu:: printLcdWelcome(){
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("Welcome to RRC!");
@@ -45,7 +45,7 @@ void NewMenu:: printLcdWelcome(){
 
 
 template <typename T>
-void NewMenu::editSetting(T & value, float increment, float decrement) {
+void Menu::editSetting(T & value, float increment, float decrement) {
   newPosition = encoder.getCount();
   if (newPosition != oldPosition && newPosition % 2 == 0) {
     if(newPosition > oldPosition) {
@@ -59,7 +59,7 @@ void NewMenu::editSetting(T & value, float increment, float decrement) {
   }
 }
 
-void NewMenu:: printSettingTitle(){
+void Menu:: printSettingTitle(){
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print(" ***  SETTINGS  *** ");
@@ -68,7 +68,7 @@ void NewMenu:: printSettingTitle(){
 
 
 template <typename T>
-void NewMenu:: displaySetting(const char* title, T value) {
+void Menu:: displaySetting(const char* title, T value) {
   if (updateScreen) {
     printSettingTitle();
     lcd.print(title);
@@ -79,7 +79,7 @@ void NewMenu:: displaySetting(const char* title, T value) {
 }
 
 
-void NewMenu:: editCustOnSwipe(String title, String action, std::function<void()> onSwipe) {
+void Menu:: editCustOnSwipe(String title, String action, std::function<void()> onSwipe) {
   if (updateScreen) {
     printSettingTitle();
     lcd.setCursor(0, 1);
@@ -123,7 +123,7 @@ void NewMenu:: editCustOnSwipe(String title, String action, std::function<void()
 
 }
 
-void NewMenu:: addOrSetMoneyOnSwipe(bool setAmount){
+void Menu:: addOrSetMoneyOnSwipe(bool setAmount){
   editSetting(addAmount,1,1);
   if (updateScreen) {
     printSettingTitle();
@@ -186,7 +186,7 @@ void NewMenu:: addOrSetMoneyOnSwipe(bool setAmount){
 
 
 
-void NewMenu:: settingsScreen(){
+void Menu:: settingsScreen(){
   delay(100);
   settingsTriggeredTime = millis();
   //exits the while loop when current setting exceeds the NUM_SETTINGS
@@ -257,7 +257,7 @@ void NewMenu:: settingsScreen(){
   updateScreen = true;
 }
 
-void NewMenu:: waitScreen(){
+void Menu:: waitScreen(){
   rainbowCycle(10);
   if (updateScreen){
     updateScreen = false;
@@ -296,7 +296,7 @@ void NewMenu:: waitScreen(){
   }
 }
 
-void NewMenu:: dispenseScreen(){
+void Menu:: dispenseScreen(){
   bool done = false;
   dispenseLastTouched = millis();
   updateScreen = true;
@@ -339,7 +339,7 @@ void NewMenu:: dispenseScreen(){
 }
 
 
-void NewMenu:: run(){
+void Menu:: run(){
   switch(currentScreen){
     case 0: 
       waitScreen();
