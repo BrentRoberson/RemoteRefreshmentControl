@@ -15,6 +15,7 @@ class SDCard {
     void addOrUpdateCustomer(Customer & customer);
     void updateSettings();
     void readInSD();
+    void removeCustomer(Customer & customer);
   private:
     String filename;
 };

@@ -28,6 +28,8 @@ void Customer::print() {
 void removeCustomer() {
   customers[currentScannedIndex].balance = 0;
   customers[currentScannedIndex].ouncesDrank = 0;
+  customers.deleteAt(currentScannedIndex);
+  SdData.removeCustomer(customers[currentScannedIndex]);
 }
 
 void makeManager() {

@@ -138,3 +138,58 @@ void SDCard::readInSD() {
   digitalWrite(CS_SD,HIGH);
 }
 
+void SDCard::removeCustomer(Customer & customer) {
+  digitalWrite(CS_SD, LOW);
+
+  File dataFile = SD.open(filename);
+  if (!dataFile) {
+    Serial.println("Could not open file");
+    digitalWrite(CS_SD, HIGH);
+    return;
+  }
+
+  DynamicJsonDocument doc(JSON_SIZE);
+  DeserializationError error = deserializeJson(doc, dataFile);
+  if (error) {
+    Serial.println("Failed to deserialize existing JSON data");
+    dataFile.close();
+    digitalWrite(CS_SD, HIGH);
+    return;
+  }
+  Serial.println("Successfully deserialized existing JSON data");
+
+  bool customerRemoved = false;
+  JsonArray jsonCustomers = doc["customers"];
+  String customerID = customer.ID;
+
+  for (size_t i = 0; i < jsonCustomers.size(); i++) {
+    JsonObject jsonCustomer = jsonCustomers[i].as<JsonObject>();
+    if (jsonCustomer.containsKey("ID") && jsonCustomer["ID"] == customerID) {
+      Serial.println("Customer found, removing...");
+      jsonCustomers.remove(i);
+      customerRemoved = true;
+      break;
+    }
+  }
+
+  if (!customerRemoved) {
+    Serial.println("Customer not found");
+    dataFile.close();
+    digitalWrite(CS_SD, HIGH);
+    return;
+  }
+
+  // Serialize the updated JSON data into a string
+  dataFile.close();
+  dataFile = SD.open(filename, FILE_WRITE);
+
+  if (serializeJson(doc, dataFile) == 0) {
+    Serial.println(F("Failed to write to file"));
+  }
+  dataFile.close();
+  Serial.println("Closed file");
+
+  digitalWrite(CS_SD, HIGH);
+}
+
+

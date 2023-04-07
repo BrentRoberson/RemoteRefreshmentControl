@@ -145,6 +145,7 @@ void handleRemoveCustomers() {
   int idx = customers.search(id);
   Serial.println(id);
   if (idx >-1) {
+    SdData.removeCustomer(customers[idx]);
     customers.deleteAt(idx);
     Serial.print("Customer Deleted!");
     server.send(200);
