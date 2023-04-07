@@ -66,7 +66,7 @@ void setup() {
   delay(400);
 
  // rfid init 
-  RFIDsetup();
+  NFCsetup();
   // Register the send callback
   // Set ESP32 as a Wi-Fi Station
   WiFi.mode(WIFI_STA);

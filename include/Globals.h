@@ -38,12 +38,9 @@
 RFID is SPI communication, LCD is I2C
 SD card also uses SPI communication
 
-RFID connections:
-CS (SS) - GND (only one slave on SPI bus VSPI)
-RST - 33 
-MISO - 23
-MOSI - 19
-SCK - 18
+NFC connections:
+SDA - 21
+SCL - 22
 
 LCD connections:
 SDA - 21

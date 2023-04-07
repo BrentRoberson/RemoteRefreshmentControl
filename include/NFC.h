@@ -1,13 +1,14 @@
 #ifndef RFID_H
 #define RFID_H
 
-#include <SPI.h>
-#include <MFRC522.h>
+
 #include <Customer.h>
 #include <Rainbow.h>
+#include <Wire.h>
+#include <SPI.h>
+#include <Adafruit_PN532.h>
 
-
-void RFIDsetup();
+void NFCsetup();
 void printTag();
 
 //returns the ID of a scan

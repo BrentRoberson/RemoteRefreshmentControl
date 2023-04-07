@@ -8,7 +8,7 @@
 #include <ESP32Encoder.h>
 #include <Globals.h>
 #include <Customer.h>
-#include <RFID.h>
+#include <NFC.h>
 #include <Pitches.h>
 #include <PinButton.h>
 #include <Jug.h>

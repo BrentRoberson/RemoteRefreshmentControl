@@ -1,7 +1,7 @@
 #include <WiFi.h>
 #include <message.h>
 #include <Arduino.h>
-#include <RFID.h>
+#include <NFC.h>
 #include <Drink.h>
 #include <Customer.h>
 #include <Pitches.h>
@@ -153,7 +153,7 @@ void setup() {
   lcd.print("Startup Completed!");
   LEDSetup();
   startup();
-  RFIDsetup();
+  NFCsetup();
   if(!SD.begin(CS_SD)) {
     Serial.println("initialization failed!");
     return;
