@@ -102,10 +102,6 @@ void SDCard::readInSD() {
   digitalWrite(CS_SD,LOW);
   File dataFile = SD.open(filename);
   if (dataFile) {
-    // Serial.println("Successfully opened file: Printing out: ");
-    // while (dataFile.available()) {
-    // Serial.print((char)dataFile.read());}
-    // Parse the JSON string into a DynamicJsonDocument object
     DynamicJsonDocument doc(JSON_SIZE);
     DeserializationError error = deserializeJson(doc, dataFile);
     if (error) {
@@ -149,6 +145,7 @@ void SDCard::removeCustomer(Customer & customer) {
   }
 
   DynamicJsonDocument doc(JSON_SIZE);
+
   DeserializationError error = deserializeJson(doc, dataFile);
   if (error) {
     Serial.println("Failed to deserialize existing JSON data");

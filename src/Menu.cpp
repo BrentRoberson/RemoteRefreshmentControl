@@ -194,7 +194,6 @@ void Menu:: settingsScreen(){
     //check for website updates
     handleClient();
 
-    //ESP32_ISR_Disable(ENCODER_BUTTON);
     encoderButton.update();
     if(encoderButton.isSingleClick()){
       currentSetting += 1;
@@ -266,7 +265,6 @@ void Menu:: waitScreen(){
   //check for website updates
   handleClient();
   readTag = rfidScan();
-  
 
   if(readTag!=""){
     rfidTriggerTime = millis();
@@ -288,11 +286,12 @@ void Menu:: waitScreen(){
       lcd.setCursor(0,1);
       lcd.print("Please check in");
       Serial.print("Customer not added");
+      
+      while(rfidScan()!=""){
+        Serial.println("waiting");
+      }
+      updateScreen = true;
     } 
-    }
-  if(rfidTriggerTime + 2500 < millis() && newTap){
-    newTap = false;
-    updateScreen = true;
   }
 }
 
@@ -343,6 +342,7 @@ void Menu:: run(){
   switch(currentScreen){
     case 0: 
       waitScreen();
+      Serial.println("after wait screen");
       break;
 
     case 1:

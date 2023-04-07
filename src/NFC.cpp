@@ -39,19 +39,13 @@ String rfidScan() {
   String temp = "";
   // Wait for an NTAG203 card.  When one is found 'uid' will be populated with
   // the UID, and uidLength will indicate the size of the UUID (normally 7)
-  success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength);
+  success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength, 500);
 
   if (success) {
     // Display some basic information about the card
-    Serial.println("Found an ISO14443A card");
-    Serial.print("  UID Length: ");Serial.print(uidLength, DEC);Serial.println(" bytes");
-    Serial.print("  UID Value: ");
     for (int i = 0; i < uidLength; i++) {
         temp+=(uid[i]);
         }    
-    nfc.PrintHex(uid, uidLength);
-    Serial.println(temp);
-    Serial.println("");
     changeColor(random(255),random(100,255),random(255));
   
   }
