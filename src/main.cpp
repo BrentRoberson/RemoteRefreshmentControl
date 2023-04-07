@@ -1,12 +1,10 @@
 #include <WiFi.h>
-#include <message.h>
 #include <Arduino.h>
 #include <NFC.h>
 #include <Drink.h>
 #include <Customer.h>
 #include <Pitches.h>
 #include <LiquidCrystal_I2C.h>
-//#include <Menu.h>
 #include <Menu.H>
 #include <SDCard.h>
 #include <Rainbow.h>
@@ -27,8 +25,6 @@ Customer curr_cust = Customer();
 DynamicArray<Customer> customers;
 int currentScannedIndex;
 bool new_sd_data = false;
-struct_message myData;
-struct_message response_message;
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 //Menu menu;
 SDCard SdData("/DATA.txt");
