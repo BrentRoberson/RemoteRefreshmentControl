@@ -97,6 +97,11 @@ void DynamicArray<T>::insertAt(int index, T value)
 template <typename T> 
 void DynamicArray<T>::deleteAt(int index)
 {
+    if (index < 0 || index >= size) {
+        // handle invalid index
+        Serial.print("Error");
+        return;
+    }
     for (int i = index; i < size; i++) {
         array[i] = array[i + 1];
     }

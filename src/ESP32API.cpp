@@ -14,14 +14,44 @@ void handlePostCustomer() {
   float balance = jsonDoc["balance"].as<float>();
   bool manager = jsonDoc["manager"].as<bool>();
   String name = jsonDoc["name"];
+  bool setVars = jsonDoc["setVars"].as<bool>();
+  float ouncesDrank = jsonDoc["ouncesDrank"].as<float>();
+
+  int customerIndex = customers.search(id);
+  if (customerIndex >-1)
+  {
+    if (setVars){
+      customers[customerIndex].balance = balance;
+      customers[customerIndex].manager = manager;
+      customers[customerIndex].name = name;
+      customers[customerIndex].ouncesDrank = ouncesDrank;
+      SdData.addOrUpdateCustomer(customers[customerIndex]);
+      Serial.println("updated old customer with set!");
+    }
+    else {
+      customers[customerIndex].balance =+ balance;
+      customers[customerIndex].manager = manager;
+      customers[customerIndex].name = name;
+      customers[customerIndex].ouncesDrank = ouncesDrank;
+
+      SdData.addOrUpdateCustomer(customers[customerIndex]);
+      Serial.println("updated old customer with add!");
+    }   
+  }
+  else {
+    // Save the customer data in the ESP32's memory
+    temp = Customer(id,balance,manager, name);
+    customers.push_back(temp);
+    SdData.addOrUpdateCustomer(temp);
+    Serial.println("Added new customer!");
+  }
   Serial.println(id);
   Serial.println(balance);
   Serial.println(manager);
   Serial.println(name);
-  // Save the customer data in the ESP32's memory
-  temp = Customer(id,balance,manager, name);
-  customers.push_back(temp);
-  SdData.addOrUpdateCustomer(temp);
+  Serial.println(setVars);
+
+  
   server.send(200);
 }
 
@@ -35,13 +65,25 @@ void handleEditCustomer(){
   float balance = jsonDoc["amount"].as<float>();
   bool manager = jsonDoc["manager"].as<bool>();
   String name = jsonDoc["name"];
+  bool setVars = jsonDoc["setVars"].as<bool>();
   int addSetOrRefund = jsonDoc["addSetOrRefund"];
   int customerIndex = customers.search(id);
   if(customerIndex>-1)
   {
-    customers[customerIndex].balance = balance;
-    customers[customerIndex].manager = manager;
-    customers[customerIndex].name = name;
+    if(setVars)
+    {
+      customers[customerIndex].balance = balance;
+      customers[customerIndex].manager = manager;
+      customers[customerIndex].name = name;
+    }
+    else {
+      customers[customerIndex].balance + balance;
+      customers[customerIndex].manager = manager;
+      customers[customerIndex].name = name;
+      customers[customerIndex].ouncesDrank + name;
+
+    }
+   
   }
   else{
     Serial.print("CUSTOMER NOT FOUND");
@@ -78,8 +120,7 @@ void handleGetCustomer() {
 }
 
 void handleGetAllCustomers() {
-  Serial.print("got all customers");
-  DynamicJsonDocument doc(1024); // create a JSON document
+  DynamicJsonDocument doc(25000); // create a JSON document
   JsonArray customersJson = doc.createNestedArray("customers"); // create a nested array of customers
   Serial.println("Get for all customers received");
   for (int i = 0; i < customers.getSize(); i++) {
@@ -91,7 +132,28 @@ void handleGetAllCustomers() {
   }
   String response;
   serializeJson(doc, response); // serialize the JSON document to a string
+  Serial.println(response);
+  Serial.println(customers.getSize());
   server.send(200, "application/json", response); // send the response as JSON
+}
+void handleRemoveCustomers() {
+  String body = server.arg("plain");
+  DynamicJsonDocument jsonDoc(1024);
+  deserializeJson(jsonDoc, body);
+  Customer temp = Customer();
+  String id = jsonDoc["ID"];
+  int idx = customers.search(id);
+  Serial.println(id);
+  if (idx >-1) {
+    customers.deleteAt(idx);
+    Serial.print("Customer Deleted!");
+    server.send(200);
+  }
+  else {
+    Serial.print("Customer deletion error!!");
+    server.send(100);
+  }
+
 }
 
 void setupAPI() {
@@ -105,6 +167,8 @@ void setupAPI() {
   server.on("/customer", HTTP_GET, handleGetCustomer);
   server.on("/editCustomer", HTTP_POST, handleEditCustomer);
   server.on("/allCustomers", HTTP_GET, handleGetAllCustomers);
+  server.on("/removeCustomers", HTTP_POST, handleRemoveCustomers);
+
 
   // Start the server
   server.begin();
