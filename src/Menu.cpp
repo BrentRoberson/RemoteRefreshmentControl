@@ -257,7 +257,7 @@ void Menu:: settingsScreen(){
 }
 
 void Menu:: waitScreen(){
-  rainbowCycle(10);
+  rainbowCycle(1);
   if (updateScreen){
     updateScreen = false;
     printLcdWelcome();
@@ -286,8 +286,9 @@ void Menu:: waitScreen(){
       lcd.setCursor(0,1);
       lcd.print("Please check in");
       Serial.print("Customer not added");
-      
-      while(rfidScan()!=""){
+      changeColor(255,0,0);
+      while(rfidScan(500)!=""){
+
         Serial.println("waiting");
       }
       updateScreen = true;
@@ -299,8 +300,9 @@ void Menu:: dispenseScreen(){
   bool done = false;
   dispenseLastTouched = millis();
   updateScreen = true;
-  while(dispenseLastTouched + 5000 > millis() && !done){
+  while(rfidScan(200)!=""){
     //check for website updates
+    Serial.println("in dispense while");
     handleClient();
     if(updateScreen){
       customers[currentScannedIndex].lcdPrint();
@@ -323,12 +325,9 @@ void Menu:: dispenseScreen(){
         updateScreen = true;
       }
     }
-    if(digitalRead(DISPENSE_BUTTON)==LOW){
+    //may need to change to low later, check limit switch functionality
+    if(digitalRead(DISPENSE_BUTTON)==HIGH){
       dispense();
-      dispenseLastTouched = millis();
-    }
-    if(digitalRead(DONE_BUTTON)==LOW){
-      done = true;
     }
   }
   currentScreen = 0;

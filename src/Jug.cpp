@@ -56,9 +56,9 @@ void dispense() {
     }
 
   }
-  Serial.println();
-  Serial.println(totalOz);
-  Serial.println();
+  // Serial.println();
+  // Serial.println(totalOz);
+  // Serial.println();
 
   digitalWrite(PUMP,LOW);
   if(totalOz<=4){
@@ -117,5 +117,5 @@ void dispense() {
   Serial.println();
   Serial.println(totalOz);
   Serial.println();
-  delay(1250);
+  delay(500);
 }

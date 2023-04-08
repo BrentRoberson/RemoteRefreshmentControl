@@ -60,8 +60,6 @@ void setup() {
   SdData.readInSD();
   menu.printLcdWelcome();
 
-
-
 }
 
 

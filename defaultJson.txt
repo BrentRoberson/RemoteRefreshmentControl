@@ -1,0 +1,1 @@
+{"customers":[{"ID":"42107186121","balance":100,"manager":true,"ouncesDrank":0},{"ID":"53215185121","balance":100,"manager":true,"ouncesDrank":0},{"ID":"17999117152","balance":94.67678833,"manager":true,"ouncesDrank":0}],"pricePerOunce":0.25,"totalQuarts":18,"maxOunces":72}

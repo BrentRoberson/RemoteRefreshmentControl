@@ -12,7 +12,7 @@ void NFCsetup();
 void printTag();
 
 //returns the ID of a scan
-String rfidScan();
+String rfidScan(int timeout = 50);
 
 
 #endif

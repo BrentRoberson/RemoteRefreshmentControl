@@ -32,14 +32,14 @@ void NFCsetup() {
   Serial.println("Waiting for an ISO14443A Card ...");
 }
 
-String rfidScan() {
+String rfidScan(int timeout) {
   uint8_t success;
   uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };  // Buffer to store the returned UID
   uint8_t uidLength;                        // Length of the UID (4 or 7 bytes depending on ISO14443A card type)
   String temp = "";
   // Wait for an NTAG203 card.  When one is found 'uid' will be populated with
   // the UID, and uidLength will indicate the size of the UUID (normally 7)
-  success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength, 500);
+  success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength, timeout);
 
   if (success) {
     // Display some basic information about the card
