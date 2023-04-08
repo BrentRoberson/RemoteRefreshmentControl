@@ -22,8 +22,8 @@
 #define PUMP 16
 #define DOOR_LOCK 14
 #define SENSOR 27
-#define registerButton 27
-#define DISPENSE_BUTTON 34
+
+#define DISPENSE_BUTTON 32
 #define DONE_BUTTON  35
 #define LED_STRIP 26
 #define BUZZER_PIN  12 
