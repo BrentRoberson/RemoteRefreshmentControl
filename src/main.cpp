@@ -36,7 +36,7 @@ void setup() {
   // Set up Serial Monitor
   
   Serial.begin(115200);
-  pinMode(DISPENSE_BUTTON, INPUT);
+  pinMode(DISPENSE_BUTTON, INPUT_PULLUP);
   pinMode(DONE_BUTTON, INPUT);
   pinMode(DOOR_LOCK, OUTPUT);
   pinMode(PUMP, OUTPUT);
