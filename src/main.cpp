@@ -46,7 +46,7 @@ void setup() {
   setupAPI();
   lcd.init();
   lcd.backlight();
-  // esp_now_register_recv_cb(OnDataRecv);
+  attachInterrupt(digitalPinToInterrupt(SENSOR), pulseCounter, FALLING);
   Serial.println("Dispenser setup");
   lcd.print("Startup Completed!");
   LEDSetup();

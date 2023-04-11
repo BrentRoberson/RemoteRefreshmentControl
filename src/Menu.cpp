@@ -257,7 +257,7 @@ void Menu:: settingsScreen(){
 }
 
 void Menu:: waitScreen(){
-  rainbowCycle(1);
+  rainbowCycle(50);
   if (updateScreen){
     updateScreen = false;
     printLcdWelcome();
