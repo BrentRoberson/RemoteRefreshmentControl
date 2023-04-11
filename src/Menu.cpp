@@ -341,7 +341,6 @@ void Menu:: run(){
   switch(currentScreen){
     case 0: 
       waitScreen();
-      Serial.println("after wait screen");
       break;
 
     case 1:

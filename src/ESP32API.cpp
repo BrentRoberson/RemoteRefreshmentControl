@@ -1,5 +1,7 @@
 #include <ESP32API.h>
 
+const char* routerSsid = "The Dawg House";
+const char* routerPassword = "kodabear";
 const char* ssid = "FBI-Sting-Van";
 const char* password = "brentiepoo";
 
@@ -105,17 +107,15 @@ void handleGetCustomer() {
     jsonDoc["balance"] = customers[customerIndex].balance;
     jsonDoc["manager"] = customers[customerIndex].manager;
     jsonDoc["name"] = customers[customerIndex].name;
+    jsonDoc["ouncesDrank"] = customers[customerIndex].ouncesDrank;
   }
   else
   {
     jsonDoc["id"] = "NOT FOUND";
-    jsonDoc["balance"] = 0.0;
-    jsonDoc["manager"] =false;
-    jsonDoc["name"] ="";
   }
 
   serializeJson(jsonDoc, jsonStr);
-  
+  Serial.print(jsonStr);
   server.send(200, "application/json", jsonStr);
 }
 
@@ -159,17 +159,23 @@ void handleRemoveCustomers() {
 
 void setupAPI() {
   // Set up the ESP32 as an access point
-  WiFi.softAP(ssid, password);
+  WiFi.begin(routerSsid, routerPassword);
+  while (WiFi.status() != WL_CONNECTED) {
+      delay(1000);
+      Serial.println("Connecting to WiFi...");
+  }
+  Serial.println("Connected to WiFi!");
+  //WiFi.softAP(ssid, password);
   // Print the IP address of the access point
   Serial.print("Access point IP address: ");
-  Serial.println(WiFi.softAPIP());
+  //Serial.println(WiFi.softAPIP());
   // Set up the API routes
   server.on("/customer", HTTP_POST, handlePostCustomer);
   server.on("/customer", HTTP_GET, handleGetCustomer);
   server.on("/editCustomer", HTTP_POST, handleEditCustomer);
   server.on("/allCustomers", HTTP_GET, handleGetAllCustomers);
   server.on("/removeCustomers", HTTP_POST, handleRemoveCustomers);
-
+  Serial.println(WiFi.localIP());
 
   // Start the server
   server.begin();

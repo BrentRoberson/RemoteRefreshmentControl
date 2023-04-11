@@ -39,16 +39,16 @@ String rfidScan(int timeout) {
   String temp = "";
   // Wait for an NTAG203 card.  When one is found 'uid' will be populated with
   // the UID, and uidLength will indicate the size of the UUID (normally 7)
-  success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength, timeout);
+  // success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength, timeout);
 
-  if (success) {
-    // Display some basic information about the card
-    for (int i = 0; i < uidLength; i++) {
-        temp+=(uid[i]);
-        }    
-    changeColor(random(255),random(100,255),random(255));
+  // if (success) {
+  //   // Display some basic information about the card
+  //   for (int i = 0; i < uidLength; i++) {
+  //       temp+=(uid[i]);
+  //       }    
+  //   changeColor(random(255),random(100,255),random(255));
   
-  }
+  // }
   return temp;
 }
 

@@ -51,7 +51,7 @@ void setup() {
   lcd.print("Startup Completed!");
   LEDSetup();
   startup();
-  NFCsetup();
+  //NFCsetup();
   if(!SD.begin(CS_SD)) {
     Serial.println("initialization failed!");
     return;

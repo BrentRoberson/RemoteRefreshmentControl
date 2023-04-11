@@ -7,6 +7,7 @@
 #include <ArduinoJson.h>
 #include <Customer.h>
 #include <SDCard.h>
+#include <WiFiAP.h>
 
 void setupAPI();
 void handlePostCustomer();
