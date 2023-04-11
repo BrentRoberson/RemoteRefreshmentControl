@@ -12,30 +12,33 @@
 #include <FastLED.h>
 #include <Webserver.h>
 
-#define ENCODER_BUTTON 13
+#define ENCODER_BUTTON 16
 // #define NUM_SCREENS 5  //settings 
 #define CLK 2 // CLK ENCODER
 #define DT 4 // DT ENCODER
-#define CS_PIN_RFID  32  // For RFID
 #define CS_SD 5
 #define RST_PIN 33 // For RFID
-#define PUMP 16
+#define PUMP 13
 #define DOOR_LOCK 14
 #define SENSOR 27
 
 #define DISPENSE_BUTTON 32
-#define DONE_BUTTON  35
 #define LED_STRIP 26
 #define BUZZER_PIN  12 
 #define NUM_SETTINGS 7
-#define JSON_SIZE 50000
-#define NUM_LEDS  90    // Enter the total number of LEDs on the strip
+#define JSON_SIZE 30000
+#define NUM_LEDS  30    // Enter the total number of LEDs on the strip
 
 
 
 /*
-RFID is SPI communication, LCD is I2C
-SD card also uses SPI communication
+NFC is I2C communication, LCD is also I2C
+SD card uses SPI communication
+SD connections:
+DI - 23
+DO - 19
+CS - 5 
+CLK - 18
 
 NFC connections:
 SDA - 21

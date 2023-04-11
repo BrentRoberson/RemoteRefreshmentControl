@@ -14,7 +14,6 @@
 #define SW_PIN 13
 
 PinButton encoderButton(ENCODER_BUTTON);
-PinButton doneButton(DONE_BUTTON);
 float pricePerOunce= .30;
 float totalQuarts = 10;
 int maxOunces = 80;
@@ -37,7 +36,6 @@ void setup() {
   
   Serial.begin(115200);
   pinMode(DISPENSE_BUTTON, INPUT_PULLUP);
-  pinMode(DONE_BUTTON, INPUT);
   pinMode(DOOR_LOCK, OUTPUT);
   pinMode(PUMP, OUTPUT);
   pinMode(BUZZER_PIN, OUTPUT);

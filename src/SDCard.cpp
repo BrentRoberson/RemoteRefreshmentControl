@@ -75,7 +75,7 @@ void SDCard::addOrUpdateCustomer(Customer & customer) {
       newJsonCustomer["balance"] = customer.balance;
       newJsonCustomer["ouncesDrank"] = customer.ouncesDrank;
       newJsonCustomer["manager"] = customer.manager;
-      jsonCustomers.add(newJsonCustomer);
+      newJsonCustomer["name"] = customer.name;
     }
   
     // Serialize the updated JSON data into a string
