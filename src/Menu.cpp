@@ -30,7 +30,7 @@ Menu::Menu() {
 void Menu:: printLcdWelcome(){
   lcd.clear();
   lcd.setCursor(0,0);
-  lcd.print("Welcome to RRC!");
+  lcd.print("Welcome to BarBox!");
   lcd.setCursor(0, 1);
   lcd.print("Scan to Begin!");
   lcd.setCursor(0, 2);

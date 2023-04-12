@@ -63,6 +63,7 @@ void SDCard::addOrUpdateCustomer(Customer & customer) {
         jsonCustomer["balance"] = customer.balance;
         jsonCustomer["ouncesDrank"] = customer.ouncesDrank;
         jsonCustomer["manager"] = customer.manager;
+        jsonCustomer["name"] = customer.name;
         foundCustomer = true;
         break;
       }
@@ -115,12 +116,12 @@ void SDCard::readInSD() {
 
     // Loop over each JsonObject in the JsonArray and create a new Customer object for each one
     for (JsonVariant jsonCustomer : jsonCustomers) {
-      
       String id = jsonCustomer["ID"].as<String>();
       float balance = jsonCustomer["balance"].as<float>();
       float ouncesDrank = jsonCustomer["ouncesDrank"].as<float>();
       bool manager = jsonCustomer["manager"].as<bool>();
-      customers.push_back(Customer(id, balance,manager));
+      String name = jsonCustomer["name"].as<String>();
+      customers.push_back(Customer(id, balance,manager,ouncesDrank, name));
     }
     pricePerOunce = doc["pricePerOunce"].as<float>();
     totalQuarts = doc["totalQuarts"].as<float>();

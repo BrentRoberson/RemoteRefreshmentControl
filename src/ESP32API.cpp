@@ -9,6 +9,8 @@ WebServer server(80);
 
 void handlePostCustomer() {
   String body = server.arg("plain");
+  Serial.print(body);
+  Serial.println("POSTED");
   DynamicJsonDocument jsonDoc(1024);
   deserializeJson(jsonDoc, body);
   Customer temp = Customer();
@@ -16,42 +18,29 @@ void handlePostCustomer() {
   float balance = jsonDoc["balance"].as<float>();
   bool manager = jsonDoc["manager"].as<bool>();
   String name = jsonDoc["name"];
-  bool setVars = jsonDoc["setVars"].as<bool>();
   float ouncesDrank = jsonDoc["ouncesDrank"].as<float>();
 
   int customerIndex = customers.search(id);
   if (customerIndex >-1)
   {
-    if (setVars){
-      customers[customerIndex].balance = balance;
-      customers[customerIndex].manager = manager;
-      customers[customerIndex].name = name;
-      customers[customerIndex].ouncesDrank = ouncesDrank;
-      SdData.addOrUpdateCustomer(customers[customerIndex]);
-      Serial.println("updated old customer with set!");
-    }
-    else {
-      customers[customerIndex].balance =+ balance;
-      customers[customerIndex].manager = manager;
-      customers[customerIndex].name = name;
-      customers[customerIndex].ouncesDrank = ouncesDrank;
-
-      SdData.addOrUpdateCustomer(customers[customerIndex]);
-      Serial.println("updated old customer with add!");
-    }   
+    customers[customerIndex].balance = balance;
+    customers[customerIndex].manager = manager;
+    customers[customerIndex].name = name;
+    customers[customerIndex].ouncesDrank = ouncesDrank;
+    SdData.addOrUpdateCustomer(customers[customerIndex]);
+    Serial.println("updated customer with set!");
   }
   else {
     // Save the customer data in the ESP32's memory
-    temp = Customer(id,balance,manager, name);
+    temp = Customer(id,balance,manager,ouncesDrank , name);
     customers.push_back(temp);
-    SdData.addOrUpdateCustomer(temp);
     Serial.println("Added new customer!");
+    SdData.addOrUpdateCustomer(temp);
   }
   Serial.println(id);
   Serial.println(balance);
   Serial.println(manager);
   Serial.println(name);
-  Serial.println(setVars);
 
   
   server.send(200);
@@ -64,7 +53,8 @@ void handleEditCustomer(){
   DynamicJsonDocument jsonDoc(1024);
   deserializeJson(jsonDoc, body);
   String id = jsonDoc["ID"];
-  float balance = jsonDoc["amount"].as<float>();
+  float balance = jsonDoc["balance"].as<float>();
+  float ouncesDrank = jsonDoc["ouncesDrank"].as<float>();
   bool manager = jsonDoc["manager"].as<bool>();
   String name = jsonDoc["name"];
   bool setVars = jsonDoc["setVars"].as<bool>();
@@ -72,20 +62,10 @@ void handleEditCustomer(){
   int customerIndex = customers.search(id);
   if(customerIndex>-1)
   {
-    if(setVars)
-    {
       customers[customerIndex].balance = balance;
       customers[customerIndex].manager = manager;
       customers[customerIndex].name = name;
-    }
-    else {
-      customers[customerIndex].balance + balance;
-      customers[customerIndex].manager = manager;
-      customers[customerIndex].name = name;
-      customers[customerIndex].ouncesDrank + name;
-
-    }
-   
+      customers[customerIndex].ouncesDrank = ouncesDrank;
   }
   else{
     Serial.print("CUSTOMER NOT FOUND");
@@ -115,7 +95,6 @@ void handleGetCustomer() {
   }
 
   serializeJson(jsonDoc, jsonStr);
-  Serial.print(jsonStr);
   server.send(200, "application/json", jsonStr);
 }
 
@@ -128,11 +107,10 @@ void handleGetAllCustomers() {
     customerJson["ID"] = customers[i].ID;
     customerJson["Name"] = customers[i].name;
     customerJson["Balance"] = customers[i].balance;
-    customerJson["Ounces Drank"] = customers[i].ouncesDrank;
+    customerJson["OuncesDrank"] = customers[i].ouncesDrank;
   }
   String response;
   serializeJson(doc, response); // serialize the JSON document to a string
-  Serial.println(response);
   Serial.println(customers.getSize());
   server.send(200, "application/json", response); // send the response as JSON
 }

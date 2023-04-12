@@ -2,10 +2,10 @@
 
 
 
-Customer::Customer(String id, float balance, bool manager, String name) {
+Customer::Customer(String id, float balance, bool manager, float ouncesDrank, String name ) {
   this -> ID = id;
   this -> balance = balance;
-  this -> ouncesDrank = 0;
+  this -> ouncesDrank = ouncesDrank;
   this -> manager = manager;
   this -> name = name;
 }
