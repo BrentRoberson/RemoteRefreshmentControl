@@ -2,7 +2,7 @@
 
 const char* routerSsid = "The Dawg House";
 const char* routerPassword = "kodabear";
-const char* ssid = "FBI-Sting-Van";
+const char* ssid = "BarBox Wifi";
 const char* password = "brentiepoo";
 
 WebServer server(80);
@@ -144,16 +144,23 @@ void handlePostSettings() {
   pricePerOunce = jsonDoc["pricePerOunce"].as<float>();
   totalQuarts = jsonDoc["totalQuarts"].as<float>();
   maxOunces = jsonDoc["maxOunces"].as<float>();
-
   SdData.updateSettings();
 
 
   Serial.println("New Settings Found!");
-  Serial.println(pricePerOunce);
-  Serial.println(totalQuarts);
-  Serial.println(maxOunces);
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Welcome to BarBox!");
+  lcd.setCursor(0, 1);
+  lcd.print("Scan to Begin!");
+  lcd.setCursor(0, 2);
+  lcd.print("Price/Oz: $");
+  lcd.print(pricePerOunce);
+  lcd.setCursor(0, 3);
+  lcd.print("Oz Left: ");
+  lcd.print(totalQuarts*32.0);
+  lcd.print("oz");
 
-  
   server.send(200);
 }
 
@@ -172,16 +179,16 @@ void handleGetSettings() {
 
 void setupAPI() {
   // Set up the ESP32 as an access point
-  WiFi.begin(routerSsid, routerPassword);
-  while (WiFi.status() != WL_CONNECTED) {
-      delay(1000);
-      Serial.println("Connecting to WiFi...");
-  }
-  Serial.println("Connected to WiFi!");
-  //WiFi.softAP(ssid, password);
+  // WiFi.begin(routerSsid, routerPassword);
+  // while (WiFi.status() != WL_CONNECTED) {
+  //     delay(1000);
+  //     Serial.println("Connecting to WiFi...");
+  // }
+  // Serial.println("Connected to WiFi!");
+  WiFi.softAP(ssid, password);
   // Print the IP address of the access point
   Serial.print("Access point IP address: ");
-  //Serial.println(WiFi.softAPIP());
+  Serial.println(WiFi.softAPIP());
   // Set up the API routes
   server.on("/customer", HTTP_POST, handlePostCustomer);
   server.on("/customer", HTTP_GET, handleGetCustomer);
@@ -191,7 +198,7 @@ void setupAPI() {
   server.on("/settings", HTTP_GET, handleGetSettings);
   server.on("/settings", HTTP_POST, handlePostSettings);
   
-  Serial.println(WiFi.localIP());
+  // Serial.println(WiFi.localIP());
 
   // Start the server
   server.begin();

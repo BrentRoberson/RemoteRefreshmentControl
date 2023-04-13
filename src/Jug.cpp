@@ -20,7 +20,7 @@ void openDoor(){
 
 void dispense() {
   pulseCount = 0;
-  float calibrationFactor = 4;
+  float calibrationFactor = 2;
   float toOz = 29.5735;
   float totalOz = 0; 
   float displayOz = 0;
@@ -40,8 +40,7 @@ void dispense() {
   lcd.print(String(customers[currentScannedIndex].balance));
   while(digitalRead(DISPENSE_BUTTON)==LOW && customers[currentScannedIndex].balance>totalOz*pricePerOunce){
     digitalWrite(PUMP,LOW);
-    Serial.println("Dispensing!");
-    rainbowCycle(25);
+    rainbowCycle(15);
 
     if(dispenseTime+250<millis())
     {
@@ -61,37 +60,7 @@ void dispense() {
   }
 
   digitalWrite(PUMP,HIGH);
-  if(totalOz<=4){
-    totalOz -= (10-totalOz)*.2; //accounts for overshooting
-      Serial.println("4");
-      Serial.println(totalOz);
-      Serial.println();
-  }
-  else if(totalOz<=8){
-    totalOz -= (8-totalOz)*.1; //accounts for overshooting
-    Serial.println("8");
-    Serial.println(totalOz);
-    Serial.println(); 
-
-  }
-  else if(totalOz>=14){
-    totalOz += (totalOz-10)*.5; //undershooting
-    Serial.println("14");
-    Serial.println(totalOz);
-    Serial.println();
-  }
-  else if(totalOz>=10){
-    totalOz += (totalOz-10)*.3; //undershooting
-    Serial.println("after 10");
-    Serial.println(totalOz);
-    Serial.println();
-  }
-  if(totalOz<0){
-    totalOz = 0;
-    Serial.println("after 0");
-    Serial.println(totalOz);
-    Serial.println();
-  }
+  
   subtractFromBalance = totalOz * pricePerOunce;
   customers[currentScannedIndex].balance -=subtractFromBalance;
   customers[currentScannedIndex].ouncesDrank +=totalOz;
