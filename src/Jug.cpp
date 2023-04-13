@@ -11,14 +11,16 @@ void IRAM_ATTR pulseCounter()
 }
 
 void openDoor(){
-  digitalWrite(DOOR_LOCK, HIGH);
-  delay(2000);
   digitalWrite(DOOR_LOCK, LOW);
+  delay(1000);
+  digitalWrite(DOOR_LOCK, HIGH);
+  delay(500);
+  return; //is this the solution?
 }
 
 void dispense() {
   pulseCount = 0;
-  float calibrationFactor = .525;
+  float calibrationFactor = 4;
   float toOz = 29.5735;
   float totalOz = 0; 
   float displayOz = 0;
@@ -36,8 +38,9 @@ void dispense() {
   lcd.setCursor(0,3);
   lcd.print("Balance: $");
   lcd.print(String(customers[currentScannedIndex].balance));
-  while(digitalRead(DISPENSE_BUTTON)==HIGH && customers[currentScannedIndex].balance>totalOz*pricePerOunce){
-    digitalWrite(PUMP,HIGH);
+  while(digitalRead(DISPENSE_BUTTON)==LOW && customers[currentScannedIndex].balance>totalOz*pricePerOunce){
+    digitalWrite(PUMP,LOW);
+    Serial.println("Dispensing!");
     rainbowCycle(25);
 
     if(dispenseTime+250<millis())
@@ -56,11 +59,8 @@ void dispense() {
     }
 
   }
-  // Serial.println();
-  // Serial.println(totalOz);
-  // Serial.println();
 
-  digitalWrite(PUMP,LOW);
+  digitalWrite(PUMP,HIGH);
   if(totalOz<=4){
     totalOz -= (10-totalOz)*.2; //accounts for overshooting
       Serial.println("4");

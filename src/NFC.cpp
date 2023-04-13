@@ -36,20 +36,25 @@ String rfidScan(int timeout) {
   uint8_t success;
   uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };  // Buffer to store the returned UID
   uint8_t uidLength;                        // Length of the UID (4 or 7 bytes depending on ISO14443A card type)
-  String temp = "";
+  String hexUID = "";
   // Wait for an NTAG203 card.  When one is found 'uid' will be populated with
   // the UID, and uidLength will indicate the size of the UUID (normally 7)
-  // success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength, timeout);
+  success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength, timeout);
 
-  // if (success) {
-  //   // Display some basic information about the card
-  //   for (int i = 0; i < uidLength; i++) {
-  //       temp+=(uid[i]);
-  //       }    
-  //   changeColor(random(255),random(100,255),random(255));
-  
-  // }
-  return temp;
+  if (success) {
+    // Display some basic information about the card
+    for (int i = 0; i < uidLength; i++) {
+      // convert byte to uppercase hex string with leading zeros
+      String byteHex = String(uid[i], HEX);
+      if (byteHex.length() < 2) {
+        byteHex = "0" + byteHex;
+      }
+      byteHex.toUpperCase();
+      // append hex representation to hexUID string
+      hexUID += byteHex;
+    }  
+  }
+  return hexUID;
 }
 
 

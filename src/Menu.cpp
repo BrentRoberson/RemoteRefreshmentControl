@@ -286,7 +286,7 @@ void Menu:: waitScreen(){
       lcd.setCursor(0,1);
       lcd.print("Please check in");
       Serial.print("Customer not added");
-      changeColor(255,0,0);
+      changeColor(0,255,0);
       while(rfidScan(500)!=""){
 
         Serial.println("waiting");
@@ -302,11 +302,11 @@ void Menu:: dispenseScreen(){
   updateScreen = true;
   while(rfidScan(200)!=""){
     //check for website updates
-    Serial.println("in dispense while");
     handleClient();
     if(updateScreen){
       customers[currentScannedIndex].lcdPrint();
       updateScreen = false;
+      changeColor(random(255),random(100,255),random(255));
     }
     encoderButton.update();
     if(encoderButton.isSingleClick()){
@@ -326,7 +326,7 @@ void Menu:: dispenseScreen(){
       }
     }
     //may need to change to low later, check limit switch functionality
-    if(digitalRead(DISPENSE_BUTTON)==HIGH){
+    if(digitalRead(DISPENSE_BUTTON)==LOW){
       dispense();
     }
   }

@@ -144,8 +144,6 @@ void handlePostSettings() {
   pricePerOunce = jsonDoc["pricePerOunce"].as<float>();
   totalQuarts = jsonDoc["totalQuarts"].as<float>();
   maxOunces = jsonDoc["maxOunces"].as<float>();
-  String tst = jsonDoc["pricePerOunce"];
-  Serial.println(body);
 
   SdData.updateSettings();
 

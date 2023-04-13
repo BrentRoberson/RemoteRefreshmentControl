@@ -40,16 +40,21 @@ void setup() {
   pinMode(PUMP, OUTPUT);
   pinMode(BUZZER_PIN, OUTPUT);
   pinMode(SENSOR, INPUT_PULLUP);
-
+  digitalWrite(PUMP,HIGH);
+  digitalWrite(DOOR_LOCK,HIGH);
   setupAPI();
   lcd.init();
   lcd.backlight();
+  Serial.println("above interrupt");
   attachInterrupt(digitalPinToInterrupt(SENSOR), pulseCounter, FALLING);
-  Serial.println("Dispenser setup");
-  lcd.print("Startup Completed!");
+  Serial.println("after interrupt");
   LEDSetup();
+
   startup();
-  //NFCsetup();
+  Serial.println("NFC attempt");
+  NFCsetup();
+  Serial.println("NFC Sucess!");
+
   if(!SD.begin(CS_SD)) {
     Serial.println("initialization failed!");
     return;
@@ -57,6 +62,7 @@ void setup() {
   Serial.println("initialization done.");
   SdData.readInSD();
   menu.printLcdWelcome();
+  lcd.print("Startup Completed!");
 
 }
 
