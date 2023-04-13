@@ -36,9 +36,9 @@ void dispense() {
   lcd.setCursor(0,3);
   lcd.print("Balance: $");
   lcd.print(String(customers[currentScannedIndex].balance));
-  while(digitalRead(DISPENSE_BUTTON)==LOW && customers[currentScannedIndex].balance>totalOz*pricePerOunce){
+  while(digitalRead(DISPENSE_BUTTON)==HIGH && customers[currentScannedIndex].balance>totalOz*pricePerOunce){
     digitalWrite(PUMP,HIGH);
-    rainbowCycle(50);
+    rainbowCycle(25);
 
     if(dispenseTime+250<millis())
     {
