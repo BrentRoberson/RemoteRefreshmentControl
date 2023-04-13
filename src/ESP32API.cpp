@@ -135,6 +135,43 @@ void handleRemoveCustomers() {
 
 }
 
+void handlePostSettings() {
+  String body = server.arg("plain");
+  Serial.print(body);
+  Serial.println("POSTED Settings\n");
+  DynamicJsonDocument jsonDoc(1024);
+  deserializeJson(jsonDoc, body);
+  pricePerOunce = jsonDoc["pricePerOunce"].as<float>();
+  totalQuarts = jsonDoc["totalQuarts"].as<float>();
+  maxOunces = jsonDoc["maxOunces"].as<float>();
+  String tst = jsonDoc["pricePerOunce"];
+  Serial.println(body);
+
+  SdData.updateSettings();
+
+
+  Serial.println("New Settings Found!");
+  Serial.println(pricePerOunce);
+  Serial.println(totalQuarts);
+  Serial.println(maxOunces);
+
+  
+  server.send(200);
+}
+
+void handleGetSettings() {
+  Serial.print("got customer");
+  DynamicJsonDocument jsonDoc(1024);
+  String jsonStr;
+
+  jsonDoc["pricePerOunce"] = pricePerOunce;
+  jsonDoc["totalQuarts"] = totalQuarts;
+  jsonDoc["maxOunces"] = maxOunces;
+
+  serializeJson(jsonDoc, jsonStr);
+  server.send(200, "application/json", jsonStr);
+}
+
 void setupAPI() {
   // Set up the ESP32 as an access point
   WiFi.begin(routerSsid, routerPassword);
@@ -153,6 +190,9 @@ void setupAPI() {
   server.on("/editCustomer", HTTP_POST, handleEditCustomer);
   server.on("/allCustomers", HTTP_GET, handleGetAllCustomers);
   server.on("/removeCustomers", HTTP_POST, handleRemoveCustomers);
+  server.on("/settings", HTTP_GET, handleGetSettings);
+  server.on("/settings", HTTP_POST, handlePostSettings);
+  
   Serial.println(WiFi.localIP());
 
   // Start the server

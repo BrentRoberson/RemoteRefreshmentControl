@@ -17,10 +17,11 @@ void SDCard::updateSettings() {
     }
     Serial.println("Successfully deserialized existing JSON data");
 
-    // Update the properties if they exist
-      doc["pricePerOunce"] = pricePerOunce;
-      doc["totalQuarts"] = totalQuarts;
-      doc["maxOunces"] = maxOunces;
+    // Encapsulate the settings into a single dictionary
+    JsonObject settings = doc.createNestedObject("settings");
+    settings["pricePerOunce"] = pricePerOunce;
+    settings["totalQuarts"] = totalQuarts;
+    settings["maxOunces"] = maxOunces;
 
     // Serialize the updated JSON data into a string
     dataFile.close();
@@ -37,6 +38,7 @@ void SDCard::updateSettings() {
   }
   digitalWrite(CS_SD, HIGH);
 }
+
 
 
 
@@ -111,6 +113,13 @@ void SDCard::readInSD() {
     else{
       Serial.print("no deserialization error\n");
     }
+
+    // Read the settings object from the JSON data
+    JsonObject settings = doc["settings"];
+    pricePerOunce = settings["pricePerOunce"].as<float>();
+    totalQuarts = settings["totalQuarts"].as<float>();
+    maxOunces = settings["maxOunces"].as<int>();
+
     // Extract the JsonArray from the JSON data
     JsonArray jsonCustomers = doc["customers"];
 
@@ -123,10 +132,6 @@ void SDCard::readInSD() {
       String name = jsonCustomer["name"].as<String>();
       customers.push_back(Customer(id, balance,manager,ouncesDrank, name));
     }
-    pricePerOunce = doc["pricePerOunce"].as<float>();
-    totalQuarts = doc["totalQuarts"].as<float>();
-    maxOunces = doc["maxOunces"].as<int>();
-
 
   } else {
     Serial.println("Could not open file");
@@ -134,6 +139,7 @@ void SDCard::readInSD() {
   dataFile.close();
   digitalWrite(CS_SD,HIGH);
 }
+
 
 void SDCard::removeCustomer(Customer & customer) {
   digitalWrite(CS_SD, LOW);
