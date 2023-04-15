@@ -55,6 +55,7 @@ void setup() {
   NFCsetup();
   Serial.println("NFC Sucess!");
 
+  lcd.print("Sd error!!");
   if(!SD.begin(CS_SD)) {
     Serial.println("initialization failed!");
     return;
@@ -62,7 +63,6 @@ void setup() {
   Serial.println("initialization done.");
   SdData.readInSD();
   menu.printLcdWelcome();
-  lcd.print("Startup Completed!");
 
 }
 

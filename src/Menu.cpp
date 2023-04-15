@@ -289,7 +289,6 @@ void Menu:: waitScreen(){
       changeColor(0,255,0);
       while(rfidScan(500)!=""){
 
-        Serial.println("waiting");
       }
       updateScreen = true;
     } 
