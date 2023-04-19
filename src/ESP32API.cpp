@@ -15,10 +15,10 @@ void handlePostCustomer() {
   deserializeJson(jsonDoc, body);
   Customer temp = Customer();
   String id = jsonDoc["ID"];
-  float balance = jsonDoc["balance"].as<float>();
-  bool manager = jsonDoc["manager"].as<bool>();
-  String name = jsonDoc["name"];
-  float ouncesDrank = jsonDoc["ouncesDrank"].as<float>();
+  float balance = jsonDoc["B"].as<float>();
+  bool manager = jsonDoc["M"].as<bool>();
+  String name = jsonDoc["N"];
+  float ouncesDrank = jsonDoc["OD"].as<float>();
 
   int customerIndex = customers.search(id);
   if (customerIndex >-1)
@@ -53,12 +53,10 @@ void handleEditCustomer(){
   DynamicJsonDocument jsonDoc(1024);
   deserializeJson(jsonDoc, body);
   String id = jsonDoc["ID"];
-  float balance = jsonDoc["balance"].as<float>();
-  float ouncesDrank = jsonDoc["ouncesDrank"].as<float>();
-  bool manager = jsonDoc["manager"].as<bool>();
-  String name = jsonDoc["name"];
-  bool setVars = jsonDoc["setVars"].as<bool>();
-  int addSetOrRefund = jsonDoc["addSetOrRefund"];
+  float balance = jsonDoc["B"].as<float>();
+  float ouncesDrank = jsonDoc["OD"].as<float>();
+  bool manager = jsonDoc["M"].as<bool>();
+  String name = jsonDoc["N"];
   int customerIndex = customers.search(id);
   if(customerIndex>-1)
   {
@@ -83,11 +81,11 @@ void handleGetCustomer() {
   String jsonStr;
 
   if (customerIndex>-1){
-    jsonDoc["id"] = customers[customerIndex].ID;
-    jsonDoc["balance"] = customers[customerIndex].balance;
-    jsonDoc["manager"] = customers[customerIndex].manager;
-    jsonDoc["name"] = customers[customerIndex].name;
-    jsonDoc["ouncesDrank"] = customers[customerIndex].ouncesDrank;
+    jsonDoc["ID"] = customers[customerIndex].ID;
+    jsonDoc["B"] = customers[customerIndex].balance;
+    jsonDoc["M"] = customers[customerIndex].manager;
+    jsonDoc["N"] = customers[customerIndex].name;
+    jsonDoc["OD"] = customers[customerIndex].ouncesDrank;
   }
   else
   {
@@ -106,8 +104,8 @@ void handleGetAllCustomers() {
   //   JsonObject customerJson = customersJson.createNestedObject(); // create a nested object for each customer
   //   customerJson["ID"] = customers[i].ID;
   //   customerJson["Name"] = customers[i].name;
-  //   customerJson["Balance"] = customers[i].balance;
-  //   customerJson["OuncesDrank"] = customers[i].ouncesDrank;
+  //   customerJson["B"] = customers[i].balance;
+  //   customerJson["OD"] = customers[i].ouncesDrank;
   // }
   // String response;
   // serializeJson(doc, response); // serialize the JSON document to a string
