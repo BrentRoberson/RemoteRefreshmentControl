@@ -25,9 +25,7 @@ DynamicArray<Customer> customers;
 int currentScannedIndex;
 bool new_sd_data = false;
 LiquidCrystal_I2C lcd(0x27, 20, 4);
-//Menu menu;
 SDCard SdData("/DATA.txt");
-
 Menu menu;
 
 

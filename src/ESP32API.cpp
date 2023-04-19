@@ -99,26 +99,44 @@ void handleGetCustomer() {
 }
 
 void handleGetAllCustomers() {
-  DynamicJsonDocument doc(25000); // create a JSON document
-  JsonArray customersJson = doc.createNestedArray("customers"); // create a nested array of customers
-  Serial.println("Get for all customers received");
-  for (int i = 0; i < customers.getSize(); i++) {
-    JsonObject customerJson = customersJson.createNestedObject(); // create a nested object for each customer
-    customerJson["ID"] = customers[i].ID;
-    customerJson["Name"] = customers[i].name;
-    customerJson["Balance"] = customers[i].balance;
-    customerJson["OuncesDrank"] = customers[i].ouncesDrank;
+  // DynamicJsonDocument doc(JSON_SIZE); // create a JSON document
+  // JsonArray customersJson = doc.createNestedArray("customers"); // create a nested array of customers
+  // Serial.println("Get for all customers received");
+  // for (int i = 0; i < customers.getSize(); i++) {
+  //   JsonObject customerJson = customersJson.createNestedObject(); // create a nested object for each customer
+  //   customerJson["ID"] = customers[i].ID;
+  //   customerJson["Name"] = customers[i].name;
+  //   customerJson["Balance"] = customers[i].balance;
+  //   customerJson["OuncesDrank"] = customers[i].ouncesDrank;
+  // }
+  // String response;
+  // serializeJson(doc, response); // serialize the JSON document to a string
+  digitalWrite(CS_SD,LOW);
+  File dataFile = SD.open("/DATA.txt");
+  JsonArray jsonCustomers;
+  if (dataFile) {
+    DynamicJsonDocument doc(JSON_SIZE);
+    DeserializationError error = deserializeJson(doc, dataFile);
+    if (error) {
+      Serial.println("Failed to deserialize JSON data");
+    }
+    else{
+      Serial.print("no deserialization error\n");
+    }
+    jsonCustomers = doc["customers"];
+  } else {
+    Serial.println("Could not open file");
   }
   String response;
-  serializeJson(doc, response); // serialize the JSON document to a string
-  Serial.println(customers.getSize());
+  serializeJson(jsonCustomers, response);
+  dataFile.close();
+  digitalWrite(CS_SD,HIGH);
   server.send(200, "application/json", response); // send the response as JSON
 }
 void handleRemoveCustomers() {
   String body = server.arg("plain");
   DynamicJsonDocument jsonDoc(1024);
   deserializeJson(jsonDoc, body);
-  Customer temp = Customer();
   String id = jsonDoc["ID"];
   int idx = customers.search(id);
   Serial.println(id);

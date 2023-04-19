@@ -17,9 +17,8 @@
 #define CLK 2 // CLK ENCODER
 #define DT 4 // DT ENCODER
 #define CS_SD 5
-#define RST_PIN 33 // For RFID
 #define PUMP 13
-#define DOOR_LOCK 14
+#define DOOR_LOCK 25
 #define SENSOR 27
 
 #define DISPENSE_BUTTON 32
@@ -28,7 +27,6 @@
 #define NUM_SETTINGS 7
 #define JSON_SIZE 30000
 #define NUM_LEDS  30    // Enter the total number of LEDs on the strip
-
 
 
 /*
