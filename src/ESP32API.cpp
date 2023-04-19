@@ -15,10 +15,10 @@ void handlePostCustomer() {
   deserializeJson(jsonDoc, body);
   Customer temp = Customer();
   String id = jsonDoc["ID"];
-  float balance = jsonDoc["B"].as<float>();
-  bool manager = jsonDoc["M"].as<bool>();
-  String name = jsonDoc["N"];
-  float ouncesDrank = jsonDoc["OD"].as<float>();
+  float balance = jsonDoc["Balance"].as<float>();
+  bool manager = jsonDoc["Manager"].as<bool>();
+  String name = jsonDoc["Name"];
+  float ouncesDrank = jsonDoc["OuncesDrank"].as<float>();
 
   int customerIndex = customers.search(id);
   if (customerIndex >-1)
@@ -53,10 +53,10 @@ void handleEditCustomer(){
   DynamicJsonDocument jsonDoc(1024);
   deserializeJson(jsonDoc, body);
   String id = jsonDoc["ID"];
-  float balance = jsonDoc["B"].as<float>();
-  float ouncesDrank = jsonDoc["OD"].as<float>();
-  bool manager = jsonDoc["M"].as<bool>();
-  String name = jsonDoc["N"];
+  float balance = jsonDoc["Balance"].as<float>();
+  float ouncesDrank = jsonDoc["OuncesDrank"].as<float>();
+  bool manager = jsonDoc["Manager"].as<bool>();
+  String name = jsonDoc["Name"];
   int customerIndex = customers.search(id);
   if(customerIndex>-1)
   {
@@ -82,10 +82,10 @@ void handleGetCustomer() {
 
   if (customerIndex>-1){
     jsonDoc["ID"] = customers[customerIndex].ID;
-    jsonDoc["B"] = customers[customerIndex].balance;
-    jsonDoc["M"] = customers[customerIndex].manager;
-    jsonDoc["N"] = customers[customerIndex].name;
-    jsonDoc["OD"] = customers[customerIndex].ouncesDrank;
+    jsonDoc["Balance"] = customers[customerIndex].balance;
+    jsonDoc["Manager"] = customers[customerIndex].manager;
+    jsonDoc["Name"] = customers[customerIndex].name;
+    jsonDoc["OuncesDrank"] = customers[customerIndex].ouncesDrank;
   }
   else
   {
@@ -97,39 +97,19 @@ void handleGetCustomer() {
 }
 
 void handleGetAllCustomers() {
-  // DynamicJsonDocument doc(JSON_SIZE); // create a JSON document
-  // JsonArray customersJson = doc.createNestedArray("customers"); // create a nested array of customers
-  // Serial.println("Get for all customers received");
-  // for (int i = 0; i < customers.getSize(); i++) {
-  //   JsonObject customerJson = customersJson.createNestedObject(); // create a nested object for each customer
-  //   customerJson["ID"] = customers[i].ID;
-  //   customerJson["Name"] = customers[i].name;
-  //   customerJson["B"] = customers[i].balance;
-  //   customerJson["OD"] = customers[i].ouncesDrank;
-  // }
-  // String response;
-  // serializeJson(doc, response); // serialize the JSON document to a string
-  digitalWrite(CS_SD,LOW);
-  File dataFile = SD.open("/DATA.txt");
-  JsonArray jsonCustomers;
-  if (dataFile) {
-    DynamicJsonDocument doc(JSON_SIZE);
-    DeserializationError error = deserializeJson(doc, dataFile);
-    if (error) {
-      Serial.println("Failed to deserialize JSON data");
-    }
-    else{
-      Serial.print("no deserialization error\n");
-    }
-    jsonCustomers = doc["customers"];
-  } else {
-    Serial.println("Could not open file");
+  DynamicJsonDocument doc(JSON_SIZE); // create a JSON document
+  JsonArray customersJson = doc.createNestedArray("customers"); // create a nested array of customers
+  Serial.println("Get for all customers received");
+  for (int i = 0; i < customers.getSize(); i++) {
+    JsonObject customerJson = customersJson.createNestedObject(); // create a nested object for each customer
+    customerJson["ID"] = customers[i].ID;
+    customerJson["Name"] = customers[i].name;
+    customerJson["Balance"] = customers[i].balance;
+    customerJson["OuncesDrank"] = customers[i].ouncesDrank;
   }
   String response;
-  serializeJson(jsonCustomers, response);
-  dataFile.close();
-  digitalWrite(CS_SD,HIGH);
-  server.send(200, "application/json", response); // send the response as JSON
+  serializeJson(doc, response); // serialize the JSON document to a string
+  
 }
 
 
