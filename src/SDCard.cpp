@@ -62,10 +62,10 @@ void SDCard::addOrUpdateCustomer(Customer & customer) {
       String id = jsonCustomer["ID"].as<String>();
       if (id == customer.ID) {
         Serial.println("Customer found");
-        jsonCustomer["balance"] = customer.balance;
-        jsonCustomer["ouncesDrank"] = customer.ouncesDrank;
-        jsonCustomer["manager"] = customer.manager;
-        jsonCustomer["name"] = customer.name;
+        jsonCustomer["B"] = customer.balance;
+        jsonCustomer["OD"] = customer.ouncesDrank;
+        jsonCustomer["M"] = customer.manager;
+        jsonCustomer["N"] = customer.name;
         foundCustomer = true;
         break;
       }
@@ -75,8 +75,8 @@ void SDCard::addOrUpdateCustomer(Customer & customer) {
       Serial.println("Customer not found");
       JsonObject newJsonCustomer = jsonCustomers.createNestedObject();
       newJsonCustomer["ID"] = customer.ID;
-      newJsonCustomer["balance"] = customer.balance;
-      newJsonCustomer["ouncesDrank"] = customer.ouncesDrank;
+      newJsonCustomer["B"] = customer.balance;
+      newJsonCustomer["OD"] = customer.ouncesDrank;
       newJsonCustomer["manager"] = customer.manager;
       newJsonCustomer["name"] = customer.name;
     }
@@ -115,7 +115,7 @@ void SDCard::readInSD() {
     }
 
     // Read the settings object from the JSON data
-    JsonObject settings = doc["settings"];
+    JsonObject settings = doc["settings"];//settings
     pricePerOunce = settings["pricePerOunce"].as<float>();
     totalQuarts = settings["totalQuarts"].as<float>();
     maxOunces = settings["maxOunces"].as<int>();
@@ -126,10 +126,10 @@ void SDCard::readInSD() {
     // Loop over each JsonObject in the JsonArray and create a new Customer object for each one
     for (JsonVariant jsonCustomer : jsonCustomers) {
       String id = jsonCustomer["ID"].as<String>();
-      float balance = jsonCustomer["balance"].as<float>();
-      float ouncesDrank = jsonCustomer["ouncesDrank"].as<float>();
-      bool manager = jsonCustomer["manager"].as<bool>();
-      String name = jsonCustomer["name"].as<String>();
+      float balance = jsonCustomer["B"].as<float>();
+      float ouncesDrank = jsonCustomer["OD"].as<float>();
+      bool manager = jsonCustomer["M"].as<bool>();
+      String name = jsonCustomer["N"].as<String>();
       customers.push_back(Customer(id, balance,manager,ouncesDrank, name));
     }
 

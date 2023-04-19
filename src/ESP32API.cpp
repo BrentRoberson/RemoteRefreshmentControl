@@ -133,6 +133,8 @@ void handleGetAllCustomers() {
   digitalWrite(CS_SD,HIGH);
   server.send(200, "application/json", response); // send the response as JSON
 }
+
+
 void handleRemoveCustomers() {
   String body = server.arg("plain");
   DynamicJsonDocument jsonDoc(1024);
