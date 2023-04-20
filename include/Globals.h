@@ -20,17 +20,16 @@
 #define PUMP 13
 #define DOOR_LOCK 25
 #define SENSOR 27
-
+#define CD_SD 14
 #define DISPENSE_BUTTON 32
 #define LED_STRIP 26
 #define BUZZER_PIN  12 
 #define NUM_SETTINGS 7
 #define JSON_SIZE 30000
 #define NUM_LEDS  30    // Enter the total number of LEDs on the strip
-
+#define DISPENSE_LEDS 33
 
 /*
-NFC is I2C communication, LCD is also I2C
 SD card uses SPI communication
 SD connections:
 DI - 23
@@ -38,6 +37,7 @@ DO - 19
 CS - 5 
 CLK - 18
 
+NFC is I2C communication, LCD is also I2C
 NFC connections:
 SDA - 21
 SCL - 22
