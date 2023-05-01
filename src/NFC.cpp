@@ -54,6 +54,7 @@ String rfidScan(int timeout) {
       hexUID += byteHex;
     }  
   }
+  Serial.println(hexUID);
   return hexUID;
 }
 

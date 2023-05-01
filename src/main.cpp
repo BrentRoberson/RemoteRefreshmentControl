@@ -9,9 +9,17 @@
 #include <SDCard.h>
 #include <Rainbow.h>
 #include <ESP32API.h>
+#include <SdFat.h>
+
 #define CLK_PIN 14
 #define DT_PIN 26
 #define SW_PIN 13
+
+const int SCK_PIN = 18;
+const int MOSI_PIN = 19;
+const int MISO_PIN = 23;
+SPIClass spi(HSPI);
+SdFat sd;
 
 PinButton encoderButton(ENCODER_BUTTON);
 float pricePerOunce= .30;
@@ -31,15 +39,22 @@ Menu menu;
 
 void setup() {
   // Set up Serial Monitor
-  
+  pinMode(23, INPUT_PULLUP);
+  pinMode(19, INPUT_PULLUP);
+  pinMode(MISO_PIN, INPUT_PULLUP);
+
   Serial.begin(115200);
   pinMode(DISPENSE_BUTTON, INPUT_PULLUP);
   pinMode(DOOR_LOCK, OUTPUT);
   pinMode(PUMP, OUTPUT);
   pinMode(BUZZER_PIN, OUTPUT);
   pinMode(SENSOR, INPUT_PULLUP);
-  digitalWrite(PUMP,HIGH);
-  digitalWrite(DOOR_LOCK,HIGH);
+  digitalWrite(PUMP,LOW);
+  digitalWrite(DOOR_LOCK,LOW);
+  pinMode(CS_SD, OUTPUT);
+  spi.begin(SCK_PIN, MISO_PIN, MOSI_PIN); //Delete once uploading to new boards
+  SD.end(); // Release the default SPI pins
+
   setupAPI();
   lcd.init();
   lcd.backlight();
@@ -49,12 +64,11 @@ void setup() {
   LEDSetup();
 
   startup();
-  Serial.println("NFC attempt");
+  lcd.print("NFC Attempting...");
   NFCsetup();
-  Serial.println("NFC Sucess!");
-
-  lcd.print("Sd error!!");
-  if(!SD.begin(CS_SD)) {
+  lcd.clear();
+  lcd.print("SD Attempting...");
+  if(!SD.begin(CS_SD,spi)) {
     Serial.println("initialization failed!");
     return;
   }
