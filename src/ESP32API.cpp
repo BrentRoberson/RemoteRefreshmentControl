@@ -15,10 +15,10 @@ void handlePostCustomer() {
   deserializeJson(jsonDoc, body);
   Customer temp = Customer();
   String id = jsonDoc["ID"];
-  float balance = jsonDoc["Balance"].as<float>();
-  bool manager = jsonDoc["Manager"].as<bool>();
-  String name = jsonDoc["Name"];
-  float ouncesDrank = jsonDoc["OuncesDrank"].as<float>();
+  float balance = jsonDoc["B"].as<float>();
+  bool manager = jsonDoc["M"].as<bool>();
+  String name = jsonDoc["N"];
+  float ouncesDrank = jsonDoc["OD"].as<float>();
 
   int customerIndex = customers.search(id);
   if (customerIndex >-1)
@@ -53,10 +53,10 @@ void handleEditCustomer(){
   DynamicJsonDocument jsonDoc(1024);
   deserializeJson(jsonDoc, body);
   String id = jsonDoc["ID"];
-  float balance = jsonDoc["Balance"].as<float>();
-  float ouncesDrank = jsonDoc["OuncesDrank"].as<float>();
-  bool manager = jsonDoc["Manager"].as<bool>();
-  String name = jsonDoc["Name"];
+  float balance = jsonDoc["B"].as<float>();
+  float ouncesDrank = jsonDoc["OD"].as<float>();
+  bool manager = jsonDoc["M"].as<bool>();
+  String name = jsonDoc["N"];
   int customerIndex = customers.search(id);
   if(customerIndex>-1)
   {
@@ -82,14 +82,14 @@ void handleGetCustomer() {
 
   if (customerIndex>-1){
     jsonDoc["ID"] = customers[customerIndex].ID;
-    jsonDoc["Balance"] = customers[customerIndex].balance;
-    jsonDoc["Manager"] = customers[customerIndex].manager;
-    jsonDoc["Name"] = customers[customerIndex].name;
-    jsonDoc["OuncesDrank"] = customers[customerIndex].ouncesDrank;
+    jsonDoc["B"] = customers[customerIndex].balance;
+    jsonDoc["M"] = customers[customerIndex].manager;
+    jsonDoc["N"] = customers[customerIndex].name;
+    jsonDoc["OD"] = customers[customerIndex].ouncesDrank;
   }
   else
   {
-    jsonDoc["id"] = "NOT FOUND";
+    jsonDoc["ID"] = "NOT FOUND";
   }
 
   serializeJson(jsonDoc, jsonStr);
@@ -103,13 +103,14 @@ void handleGetAllCustomers() {
   for (int i = 0; i < customers.getSize(); i++) {
     JsonObject customerJson = customersJson.createNestedObject(); // create a nested object for each customer
     customerJson["ID"] = customers[i].ID;
-    customerJson["Name"] = customers[i].name;
-    customerJson["Balance"] = customers[i].balance;
-    customerJson["OuncesDrank"] = customers[i].ouncesDrank;
+    customerJson["N"] = customers[i].name;
+    customerJson["B"] = customers[i].balance;
+    customerJson["M"] = customers[i].manager;
+    customerJson["OD"] = customers[i].ouncesDrank;
   }
   String response;
   serializeJson(doc, response); // serialize the JSON document to a string
-  
+  server.send(200, "application/json", response);
 }
 
 
@@ -176,13 +177,13 @@ void handleGetSettings() {
 }
 
 void setupAPI() {
-  // Set up the ESP32 as an access point
-  // WiFi.begin(routerSsid, routerPassword);
-  // while (WiFi.status() != WL_CONNECTED) {
-  //     delay(1000);
-  //     Serial.println("Connecting to WiFi...");
-  // }
-  // Serial.println("Connected to WiFi!");
+  //Set up the ESP32 as an access point
+  WiFi.begin(routerSsid, routerPassword);
+  while (WiFi.status() != WL_CONNECTED) {
+      delay(1000);
+      Serial.println("Connecting to WiFi...");
+  }
+  Serial.println("Connected to WiFi!");
   WiFi.softAP(ssid, password);
   // Print the IP address of the access point
   Serial.print("Access point IP address: ");
@@ -196,7 +197,7 @@ void setupAPI() {
   server.on("/settings", HTTP_GET, handleGetSettings);
   server.on("/settings", HTTP_POST, handlePostSettings);
   
-  // Serial.println(WiFi.localIP());
+  Serial.println(WiFi.localIP());
 
   // Start the server
   server.begin();

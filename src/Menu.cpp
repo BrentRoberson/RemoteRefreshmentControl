@@ -299,7 +299,7 @@ void Menu:: dispenseScreen(){
   bool done = false;
   dispenseLastTouched = millis();
   updateScreen = true;
-  while(rfidScan(200)!=""){
+  while(rfidScan(2000)!=""){
     //check for website updates
     handleClient();
     if(updateScreen){
