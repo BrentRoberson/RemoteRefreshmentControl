@@ -1,9 +1,9 @@
-#include <ESP32API.h>
+#include <EspServer.h>
 
 const char* routerSsid = "The Dawg House";
 const char* routerPassword = "kodabear";
-const char* ssid = "BarBox Wifi";
-const char* password = "brentiepoo";
+const char* accessPointSSID = "BarBox Wifi";
+const char* accessPointPassword = "brentiepoo";
 
 WebServer server(80);
 
@@ -184,7 +184,7 @@ void setupAPI() {
       Serial.println("Connecting to WiFi...");
   }
   Serial.println("Connected to WiFi!");
-  WiFi.softAP(ssid, password);
+  WiFi.softAP(accessPointSSID, accessPointPassword);
   // Print the IP address of the access point
   Serial.print("Access point IP address: ");
   Serial.println(WiFi.softAPIP());
@@ -201,8 +201,4 @@ void setupAPI() {
 
   // Start the server
   server.begin();
-}
-
-void handleClient() {
-  server.handleClient();
 }

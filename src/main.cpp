@@ -8,7 +8,7 @@
 #include <Menu.H>
 #include <SDCard.h>
 #include <Rainbow.h>
-#include <ESP32API.h>
+#include <EspServer.h>
 #include <SdFat.h>
 
 #define CLK_PIN 14
@@ -22,10 +22,10 @@ SPIClass spi(HSPI);
 SdFat sd;
 
 PinButton encoderButton(ENCODER_BUTTON);
-float pricePerOunce= .30;
-float totalQuarts = 10;
-int maxOunces = 80;
-
+float pricePerOunce;
+float totalQuarts;
+int maxOunces;
+bool isServer = true;
 ESP32Encoder encoder;
 bool readError;
 Customer curr_cust = Customer();
@@ -69,13 +69,23 @@ void setup() {
   lcd.clear();
   lcd.print("SD Attempting...");
   if(!SD.begin(CS_SD,spi)) {
-    Serial.println("initialization failed!");
-    return;
+    Serial.println("initialization failed or no SD card!");
+    lcd.clear();
+    lcd.setCursor(3,0);
+    lcd.print("NO SD CARD");
+    lcd.setCursor(0,1);
+    lcd.print("Setting Station to");
+    lcd.setCursor(3,2);
+    lcd.print("Client Mode");
+    isServer= false;
+    //getSettings();
+    delay(5000);
+  }
+  else{
+    SdData.readInSD();
   }
   Serial.println("initialization done.");
-  SdData.readInSD();
   menu.printLcdWelcome();
-
 }
 
 

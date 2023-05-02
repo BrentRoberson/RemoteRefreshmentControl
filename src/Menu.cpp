@@ -192,7 +192,6 @@ void Menu:: settingsScreen(){
   //exits the while loop when current setting exceeds the NUM_SETTINGS
   while(settingsTriggeredTime + 10000 > millis() && currentSetting < NUM_SETTINGS && currentSetting >= 0){
     //check for website updates
-    handleClient();
 
     encoderButton.update();
     if(encoderButton.isSingleClick()){
@@ -263,7 +262,6 @@ void Menu:: waitScreen(){
     printLcdWelcome();
   }
   //check for website updates
-  handleClient();
   readTag = rfidScan();
 
   if(readTag!=""){
@@ -299,7 +297,6 @@ void Menu:: dispenseScreen(){
   updateScreen = true;
   while(rfidScan(1000)!=""){
     //check for website updates
-    handleClient();
     if(updateScreen){
       delay(100);
       customers[currentScannedIndex].lcdPrint();

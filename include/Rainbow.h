@@ -1,7 +1,6 @@
 
 #include <Arduino.h>
 #include <Globals.h>
-#include "FastLED.h"
 
 
 void LEDSetup();

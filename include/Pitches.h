@@ -5,7 +5,7 @@
 #include<Arduino.h>
 #include<Globals.h>
 
-#define B0 31
+#define NOTE_B0 31
 #define C1 33
 #define CS1 35
 #define D1 37
@@ -17,7 +17,7 @@
 #define GS1 52
 #define A1 55
 #define AS1 58
-#define B1 62
+#define NOTE_B1 62
 #define C2 65
 #define CS2 69
 #define D2 73
@@ -29,7 +29,7 @@
 #define GS2 104
 #define A2 110
 #define AS2 117
-#define B2 123
+#define NOTE_B2 123
 #define C3 131
 #define CS3 139
 #define D3 147
@@ -41,7 +41,7 @@
 #define GS3 208
 #define A3 220
 #define AS3 233
-#define B3 247
+#define NOTE_B3 247
 #define C4 262
 #define CS4 277
 #define D4 294
@@ -53,7 +53,7 @@
 #define GS4 415
 #define A4 440
 #define AS4 466
-#define B4 494
+#define NOTE_B4 494
 #define C5 523
 #define CS5 554
 #define D5 587
@@ -65,7 +65,7 @@
 #define GS5 831
 #define A5 880
 #define AS5 932
-#define B5 988
+#define NOTE_B5 988
 #define C6 1047
 #define CS6 1109
 #define D6 1175
@@ -77,7 +77,7 @@
 #define GS6 1661
 #define A6 1760
 #define AS6 1865
-#define B6 1976
+#define NOTE_B6 1976
 #define C7 2093
 #define CS7 2217
 #define D7 2349
@@ -89,7 +89,7 @@
 #define GS7 3322
 #define A7 3520
 #define AS7 3729
-#define B7 3951
+#define NOTE_B7 3951
 #define C8 4186
 #define CS8 4435
 #define D8 4699

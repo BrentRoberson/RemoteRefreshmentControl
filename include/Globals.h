@@ -9,8 +9,10 @@
 #include <Customer.h>
 #include <SPI.h>
 #include <SDCard.h>
-#include <FastLED.h>
 #include <Webserver.h>
+#define FASTLED_INTERNAL
+#include <FastLED.h>
+
 
 #define ENCODER_BUTTON 16
 // #define NUM_SCREENS 5  //settings 
@@ -69,5 +71,9 @@ extern int currentScannedIndex;
 extern PinButton encoderButton;
 extern PinButton sendButton;
 extern SDCard SdData;
-
+extern bool isServer;
+extern const char* routerSsid;
+extern const char* routerPassword;
+extern const char* accessPointSSID;
+extern const char* accessPointPassword;
 #endif 
