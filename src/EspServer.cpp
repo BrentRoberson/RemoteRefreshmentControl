@@ -5,10 +5,10 @@ const char* routerPassword = "kodabear";
 const char* accessPointSSID = "BarBox Wifi";
 const char* accessPointPassword = "brentiepoo";
 
-WebServer server(80);
+AsyncWebServer server(80);
 
-void handlePostCustomer() {
-  String body = server.arg("plain");
+void handlePostCustomer(AsyncWebServerRequest *request) {
+  String body = request->arg("plain");
   Serial.print(body);
   Serial.println("POSTED");
   DynamicJsonDocument jsonDoc(1024);
@@ -43,13 +43,13 @@ void handlePostCustomer() {
   Serial.println(name);
 
   
-  server.send(200);
+  request->send(200);
 }
 
 //pass an existing customer in the body of the post request. If it is found, it will convert 
 //all member variables to the ones passed in
-void handleEditCustomer(){
-  String body = server.arg("plain");
+void handleEditCustomer(AsyncWebServerRequest *request){
+  String body = request->arg("plain");
   DynamicJsonDocument jsonDoc(1024);
   deserializeJson(jsonDoc, body);
   String id = jsonDoc["ID"];
@@ -69,13 +69,14 @@ void handleEditCustomer(){
     Serial.print("CUSTOMER NOT FOUND");
   } 
   SdData.addOrUpdateCustomer(customers[customerIndex]);
-  server.send(200);
+   request->send(200);
+;
 
 }
 
-void handleGetCustomer() {
+void handleGetCustomer(AsyncWebServerRequest *request) {
   Serial.print("got customer");
-  String id = server.arg("id");
+  String id = request->arg("id");
   int customerIndex = customers.search(id);
   DynamicJsonDocument jsonDoc(1024);
   String jsonStr;
@@ -93,10 +94,10 @@ void handleGetCustomer() {
   }
 
   serializeJson(jsonDoc, jsonStr);
-  server.send(200, "application/json", jsonStr);
+  request->send(200, "application/json", jsonStr);
 }
 
-void handleGetAllCustomers() {
+void handleGetAllCustomers(AsyncWebServerRequest *request) {
   DynamicJsonDocument doc(JSON_SIZE); // create a JSON document
   JsonArray customersJson = doc.createNestedArray("customers"); // create a nested array of customers
   Serial.println("Get for all customers received");
@@ -110,12 +111,12 @@ void handleGetAllCustomers() {
   }
   String response;
   serializeJson(doc, response); // serialize the JSON document to a string
-  server.send(200, "application/json", response);
+  request->send(200, "application/json", response);
 }
 
 
-void handleRemoveCustomers() {
-  String body = server.arg("plain");
+void handleRemoveCustomers(AsyncWebServerRequest *request) {
+  String body = request->arg("plain");
   DynamicJsonDocument jsonDoc(1024);
   deserializeJson(jsonDoc, body);
   String id = jsonDoc["ID"];
@@ -125,17 +126,19 @@ void handleRemoveCustomers() {
     SdData.removeCustomer(customers[idx]);
     customers.deleteAt(idx);
     Serial.print("Customer Deleted!");
-    server.send(200);
+     request->send(200);
+
   }
   else {
     Serial.print("Customer deletion error!!");
-    server.send(100);
+     request->send(100);
+
   }
 
 }
 
-void handlePostSettings() {
-  String body = server.arg("plain");
+void handlePostSettings(AsyncWebServerRequest *request) {
+  String body = request->arg("plain");
   Serial.print(body);
   Serial.println("POSTED Settings\n");
   DynamicJsonDocument jsonDoc(1024);
@@ -160,10 +163,11 @@ void handlePostSettings() {
   lcd.print(totalQuarts*32.0);
   lcd.print("oz");
 
-  server.send(200);
+   request->send(200);
+;
 }
 
-void handleGetSettings() {
+void handleGetSettings(AsyncWebServerRequest *request) {
   Serial.print("got customer");
   DynamicJsonDocument jsonDoc(1024);
   String jsonStr;
@@ -173,30 +177,30 @@ void handleGetSettings() {
   jsonDoc["maxOunces"] = maxOunces;
 
   serializeJson(jsonDoc, jsonStr);
-  server.send(200, "application/json", jsonStr);
+  request->send(200, "application/json", jsonStr);
 }
 
-void setupAPI() {
-  //Set up the ESP32 as an access point
+void setupServer() {
+  // Set up the ESP32 as an access point
   WiFi.begin(routerSsid, routerPassword);
   while (WiFi.status() != WL_CONNECTED) {
-      delay(1000);
-      Serial.println("Connecting to WiFi...");
+    delay(1000);
+    Serial.println("Connecting to WiFi...");
   }
   Serial.println("Connected to WiFi!");
   WiFi.softAP(accessPointSSID, accessPointPassword);
   // Print the IP address of the access point
   Serial.print("Access point IP address: ");
   Serial.println(WiFi.softAPIP());
+
   // Set up the API routes
-  server.on("/customer", HTTP_POST, handlePostCustomer);
-  server.on("/customer", HTTP_GET, handleGetCustomer);
-  server.on("/editCustomer", HTTP_POST, handleEditCustomer);
-  server.on("/allCustomers", HTTP_GET, handleGetAllCustomers);
-  server.on("/removeCustomers", HTTP_POST, handleRemoveCustomers);
-  server.on("/settings", HTTP_GET, handleGetSettings);
-  server.on("/settings", HTTP_POST, handlePostSettings);
-  
+  server.on("/customer", HTTP_POST, [](AsyncWebServerRequest *request) {handlePostCustomer(request);});
+  server.on("/customer", HTTP_GET, [](AsyncWebServerRequest *request) {handleGetCustomer(request);});
+  server.on("/editCustomer", HTTP_POST, [](AsyncWebServerRequest *request) {handleEditCustomer(request);});
+  server.on("/allCustomers", HTTP_GET, [](AsyncWebServerRequest *request) {handleGetAllCustomers(request);});
+  server.on("/removeCustomers", HTTP_POST, [](AsyncWebServerRequest *request) {handleRemoveCustomers(request);});
+  server.on("/settings", HTTP_GET, [](AsyncWebServerRequest *request) {handleGetSettings(request);});
+  server.on("/settings", HTTP_POST, [](AsyncWebServerRequest *request) {handlePostSettings(request);});
   Serial.println(WiFi.localIP());
 
   // Start the server

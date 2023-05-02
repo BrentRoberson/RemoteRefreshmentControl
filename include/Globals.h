@@ -9,7 +9,6 @@
 #include <Customer.h>
 #include <SPI.h>
 #include <SDCard.h>
-#include <Webserver.h>
 #define FASTLED_INTERNAL
 #include <FastLED.h>
 
@@ -52,7 +51,6 @@ SCL - 22
 */
 class SDCard;
 class Customer;
-extern WebServer server;
 extern float pricePerOunce; // = .40;
 extern float totalQuarts; // = 640;
 extern int maxOunces; // 

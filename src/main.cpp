@@ -55,7 +55,7 @@ void setup() {
   spi.begin(SCK_PIN, MISO_PIN, MOSI_PIN); //Delete once uploading to new boards
   SD.end(); // Release the default SPI pins
 
-  setupAPI();
+  setupServer();
   lcd.init();
   lcd.backlight();
   Serial.println("above interrupt");
