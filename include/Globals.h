@@ -69,4 +69,5 @@ extern int currentScannedIndex;
 extern PinButton encoderButton;
 extern PinButton sendButton;
 extern SDCard SdData;
+
 #endif 

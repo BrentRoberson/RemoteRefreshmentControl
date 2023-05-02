@@ -296,13 +296,12 @@ void Menu:: waitScreen(){
 }
 
 void Menu:: dispenseScreen(){
-  bool done = false;
-  dispenseLastTouched = millis();
   updateScreen = true;
-  while(rfidScan(2000)!=""){
+  while(rfidScan(1000)!=""){
     //check for website updates
     handleClient();
     if(updateScreen){
+      delay(100);
       customers[currentScannedIndex].lcdPrint();
       updateScreen = false;
       changeColor(random(255),random(100,255),random(255));
@@ -310,7 +309,6 @@ void Menu:: dispenseScreen(){
     encoderButton.update();
     if(encoderButton.isSingleClick()){
       if(customers[currentScannedIndex].manager) {
-        done = true;
         currentSetting = 0;
         currentScreen = 2;
         updateScreen= true;
