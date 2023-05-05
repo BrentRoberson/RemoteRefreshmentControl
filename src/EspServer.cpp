@@ -1,11 +1,7 @@
 #include <EspServer.h>
 
-const char* routerSsid = "The Dawg House";
-const char* routerPassword = "kodabear";
-const char* accessPointSSID = "BarBox Wifi";
-const char* accessPointPassword = "brentiepoo";
-
 AsyncWebServer server(80);
+AsyncWebSocket ws("/ws");
 
 void handlePostCustomer(AsyncWebServerRequest *request) {
   String body = request->arg("plain");
@@ -41,8 +37,6 @@ void handlePostCustomer(AsyncWebServerRequest *request) {
   Serial.println(balance);
   Serial.println(manager);
   Serial.println(name);
-
-  
   request->send(200);
 }
 
@@ -162,13 +156,11 @@ void handlePostSettings(AsyncWebServerRequest *request) {
   lcd.print("Oz Left: ");
   lcd.print(totalQuarts*32.0);
   lcd.print("oz");
-
-   request->send(200);
-;
+  request->send(200);
 }
 
 void handleGetSettings(AsyncWebServerRequest *request) {
-  Serial.print("got customer");
+  Serial.print("got settings");
   DynamicJsonDocument jsonDoc(1024);
   String jsonStr;
 
@@ -180,9 +172,24 @@ void handleGetSettings(AsyncWebServerRequest *request) {
   request->send(200, "application/json", jsonStr);
 }
 
+//for Websockets
+void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len) {
+  if (type == WS_EVT_CONNECT) {
+    Serial.printf("WebSocket client #%u connected\n", client->id());
+  } else if (type == WS_EVT_DISCONNECT) {
+    Serial.printf("WebSocket client #%u disconnected\n", client->id());
+  } else if (type == WS_EVT_DATA) {
+    AwsFrameInfo *info = (AwsFrameInfo*)arg;
+    if (info->opcode == WS_TEXT) {
+      Serial.printf("WebSocket client #%u said: %s\n", client->id(), data);
+      ws.textAll((const char*)data);
+    }
+  }
+}
+
 void setupServer() {
   // Set up the ESP32 as an access point
-  WiFi.begin(routerSsid, routerPassword);
+  WiFi.begin(routerSSID, routerPassword);
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
     Serial.println("Connecting to WiFi...");
@@ -193,9 +200,18 @@ void setupServer() {
   Serial.print("Access point IP address: ");
   Serial.println(WiFi.softAPIP());
 
+  // Set up the WebSocket server
+  ws.onEvent(onEvent);
+  server.addHandler(&ws);
+
+  // Set up the web server
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
+    request->send(200, "text/html", "<html><body><h1>Hello World!</h1></body></html>");
+  });
+
   // Set up the API routes
-  server.on("/customer", HTTP_POST, [](AsyncWebServerRequest *request) {handlePostCustomer(request);});
-  server.on("/customer", HTTP_GET, [](AsyncWebServerRequest *request) {handleGetCustomer(request);});
+  server.on("/postCustomer", HTTP_POST, [](AsyncWebServerRequest *request) {handlePostCustomer(request);});
+  server.on("/getCustomer", HTTP_GET, [](AsyncWebServerRequest *request) {handleGetCustomer(request);});
   server.on("/editCustomer", HTTP_POST, [](AsyncWebServerRequest *request) {handleEditCustomer(request);});
   server.on("/allCustomers", HTTP_GET, [](AsyncWebServerRequest *request) {handleGetAllCustomers(request);});
   server.on("/removeCustomers", HTTP_POST, [](AsyncWebServerRequest *request) {handleRemoveCustomers(request);});
@@ -206,3 +222,5 @@ void setupServer() {
   // Start the server
   server.begin();
 }
+
+

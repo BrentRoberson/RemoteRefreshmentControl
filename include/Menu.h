@@ -14,6 +14,7 @@
 #include <Jug.h>
 #include <Rainbow.h>
 #include <EspServer.h>
+#include <EspClient.h>
 class Menu {
   public:
 

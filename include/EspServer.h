@@ -9,6 +9,7 @@
 #include <WiFiAP.h>
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
+#include <AsyncWebSocket.h>
 
 void setupServer();
 void handlePostCustomer(AsyncWebServerRequest *request);
