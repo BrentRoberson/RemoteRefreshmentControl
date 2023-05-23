@@ -16,6 +16,6 @@ void handlePostCustomer(AsyncWebServerRequest *request);
 void handleGetCustomer(AsyncWebServerRequest *request);
 void handleGetAllCustomers(AsyncWebServerRequest *request);
 void handleEditCustomer(AsyncWebServerRequest *request);
-
+void handleCheckUpdates(AsyncWebServerRequest *request);
 
 #endif

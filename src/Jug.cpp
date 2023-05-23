@@ -28,7 +28,7 @@ void dispense() {
   float subtractFromBalance = 0;
 
   // reference to the customer object so it affects both server and client customers
-  Customer & currentCustomer = isServer ? customers[currentScannedIndex] : clientCustomer;
+  Customer & currentCustomer = customers[currentScannedIndex];
 
   lcd.clear();
   lcd.setCursor(0,0);
@@ -73,14 +73,10 @@ void dispense() {
     currentCustomer.balance = 0.00;
   }
   totalQuarts -= (totalOz/32.0);
-  if(isServer){
-    SdData.addOrUpdateCustomer(customers[currentScannedIndex]);
-    SdData.updateSettings();
-  }
-  else{
-    postSettings();
-    postCustomerData(currentCustomer);
-  }
+  
+  SdData.addOrUpdateCustomer(currentCustomer);
+  SdData.updateSettings();
+  
   Serial.println(totalOz);
   Serial.println();
   lcd.clear();
@@ -94,7 +90,7 @@ void dispense() {
   lcd.print(String(totalOz*pricePerOunce));
   lcd.setCursor(0,3);
   lcd.print("New Balance: $");
-  lcd.print(String(customers[currentScannedIndex].balance));
+  lcd.print(String(currentCustomer.balance));
   Serial.println();
   Serial.println(totalOz);
   Serial.println();

@@ -268,40 +268,17 @@ void Menu:: waitScreen(){
     Serial.print("ID SCANNED: ");
     Serial.println(readTag);
     //Server device
-    if(isServer){
-      int customerIndex = customers.search(readTag);
-      if(customerIndex>-1)
-      {
-        rfidGoodTap();
-        currentScannedIndex = customerIndex;
-        currentScreen = 1; //dispense
-        knownID = true;
-        updateScreen = true;
-      }
-      else{
-        rfidBadTap();
-      } 
+    int customerIndex = customers.search(readTag);
+    if(customerIndex>-1)
+    {
+      rfidGoodTap();
+      currentScannedIndex = customerIndex;
+      currentScreen = 1; //dispense
+      knownID = true;
+      updateScreen = true;
     }
-    //Client device
     else{
-      // updateSettings();
-      Customer temp = requestCustomerData(readTag);
-      if(temp.ID!="NOT FOUND"){
-        rfidGoodTap();
-        Serial.print("CUSTOMER FOUND: ");
-        Serial.println(temp.ID);
-        clientCustomer = temp;
-        currentScreen = 1; //dispense
-        knownID = true;
-        updateScreen = true;
-      }
-      else{
-        rfidBadTap();
-      }
-
-    }
-    //print unknown if ID is unknown in either client or Server
-    if(!knownID){
+      rfidBadTap();
       lcd.clear();
       lcd.setCursor(0,0);
       lcd.print("Unknown ID");
@@ -312,31 +289,25 @@ void Menu:: waitScreen(){
       //wait until NFC card leaves
       while(rfidScan(500)!=""){}
       updateScreen = true;
+    } 
 
-    }
-    lcd.clear();
-    lcd.setCursor(0,0);
-    
   }
+  lcd.clear();
+  lcd.setCursor(0,0);
+    
 }
 
 void Menu:: dispenseScreen(){
   updateScreen = true;
   do{
     if(updateScreen){
-      if(isServer){
-        customers[currentScannedIndex].lcdPrint();
-      }
-      else{
-        clientCustomer.lcdPrint();
-      }
+      customers[currentScannedIndex].lcdPrint();
       updateScreen = false;
       changeColor(random(255),random(100,255),random(255));
     }
     encoderButton.update();
     if(encoderButton.isSingleClick()){
-      bool isManager = isServer ? customers[currentScannedIndex].manager : clientCustomer.manager;
-      if(isManager) {
+      if(customers[currentScannedIndex].manager) {
         currentSetting = 0;
         currentScreen = 2;
         updateScreen= true;

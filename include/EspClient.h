@@ -5,9 +5,11 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <Globals.h>
+#include <AsyncTCP.h>
 
 Customer requestCustomerData(String id);
 void postCustomerData(Customer & customer);
+
 void updateSettings();
 void setupClient();
 void postSettings();

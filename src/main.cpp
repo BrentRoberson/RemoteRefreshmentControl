@@ -97,7 +97,6 @@ void setup() {
   }
   else{
     setupClient();
-    updateSettings();
   }
   Serial.println("initialization done.");
   menu.printLcdWelcome();

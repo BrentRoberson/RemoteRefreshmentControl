@@ -1,7 +1,6 @@
 #include <EspServer.h>
 
 AsyncWebServer server(80);
-AsyncWebSocket ws("/ws");
 
 void handlePostCustomer(AsyncWebServerRequest *request) {
   String body = request->arg("plain");
@@ -64,7 +63,6 @@ void handleEditCustomer(AsyncWebServerRequest *request){
   } 
   SdData.addOrUpdateCustomer(customers[customerIndex]);
    request->send(200);
-;
 
 }
 
@@ -172,19 +170,8 @@ void handleGetSettings(AsyncWebServerRequest *request) {
   request->send(200, "application/json", jsonStr);
 }
 
-//for Websockets
-void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len) {
-  if (type == WS_EVT_CONNECT) {
-    Serial.printf("WebSocket client #%u connected\n", client->id());
-  } else if (type == WS_EVT_DISCONNECT) {
-    Serial.printf("WebSocket client #%u disconnected\n", client->id());
-  } else if (type == WS_EVT_DATA) {
-    AwsFrameInfo *info = (AwsFrameInfo*)arg;
-    if (info->opcode == WS_TEXT) {
-      Serial.printf("WebSocket client #%u said: %s\n", client->id(), data);
-      ws.textAll((const char*)data);
-    }
-  }
+void handleCheckUpdates(AsyncWebServerRequest *request){
+
 }
 
 void setupServer() {
@@ -200,16 +187,8 @@ void setupServer() {
   Serial.print("Access point IP address: ");
   Serial.println(WiFi.softAPIP());
 
-  // Set up the WebSocket server
-  ws.onEvent(onEvent);
-  server.addHandler(&ws);
-
-  // Set up the web server
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
-    request->send(200, "text/html", "<html><body><h1>Hello World!</h1></body></html>");
-  });
-
   // Set up the API routes
+  server.on("/updateCheck", HTTP_GET, [](AsyncWebServerRequest *request) {handleCheckUpdates(request);});
   server.on("/postCustomer", HTTP_POST, [](AsyncWebServerRequest *request) {handlePostCustomer(request);});
   server.on("/getCustomer", HTTP_GET, [](AsyncWebServerRequest *request) {handleGetCustomer(request);});
   server.on("/editCustomer", HTTP_POST, [](AsyncWebServerRequest *request) {handleEditCustomer(request);});
