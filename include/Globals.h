@@ -18,7 +18,7 @@
 #define CLK 2 // CLK ENCODER
 #define DT 4 // DT ENCODER
 #define CS_SD 5
-#define PUMP 13
+#define PUMP_OR_SOLENOID 13
 #define DOOR_LOCK 25
 #define SENSOR 27
 #define CD_SD 14

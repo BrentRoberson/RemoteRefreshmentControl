@@ -56,10 +56,10 @@ void setup() {
   Serial.begin(115200);
   pinMode(DISPENSE_BUTTON, INPUT_PULLUP);
   pinMode(DOOR_LOCK, OUTPUT);
-  pinMode(PUMP, OUTPUT);
+  pinMode(PUMP_OR_SOLENOID, OUTPUT);
   pinMode(BUZZER_PIN, OUTPUT);
   pinMode(SENSOR, INPUT_PULLUP);
-  digitalWrite(PUMP,LOW);
+  digitalWrite(PUMP_OR_SOLENOID,LOW);
   digitalWrite(DOOR_LOCK,LOW);
   pinMode(CS_SD, OUTPUT);
 

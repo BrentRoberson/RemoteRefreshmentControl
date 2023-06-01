@@ -42,29 +42,28 @@ void dispense() {
   lcd.setCursor(0,3);
   lcd.print("Balance: $");
   lcd.print(String(currentCustomer.balance));
+  //checks for both conditions whether using a pump or a solenoid
+  while ((usingPump && digitalRead(DISPENSE_BUTTON) == LOW) || (!usingPump && rfidScan(1000) != "") && currentCustomer.balance > totalOz * pricePerOunce) {
+  digitalWrite(PUMP_OR_SOLENOID, HIGH);
+  rainbowCycle(20);
 
-  while(digitalRead(DISPENSE_BUTTON)==LOW && currentCustomer.balance>totalOz*pricePerOunce){
-    digitalWrite(PUMP,HIGH);
-    rainbowCycle(15);
-
-    if(dispenseTime+250<millis())
-    {
-      if(totalOz>10){
-        displayOz = (totalOz - 10)*.5+ totalOz;
-      }
-      lcd.setCursor(4,1);
-      lcd.print(String(displayOz));
-      lcd.setCursor(7,2);
-      lcd.print(String(displayOz*pricePerOunce));
-      dispenseTime = millis();
-      totalOz += pulseCount/calibrationFactor/toOz;
-      displayOz = totalOz;
-      pulseCount=0;
+  if (dispenseTime + 250 < millis()) {
+    if (totalOz > 10) {
+      displayOz = (totalOz - 10) * 0.5 + totalOz;
     }
-
+    lcd.setCursor(4, 1);
+    lcd.print(String(displayOz));
+    lcd.setCursor(7, 2);
+    lcd.print(String(displayOz * pricePerOunce));
+    dispenseTime = millis();
+    totalOz += pulseCount / calibrationFactor / toOz;
+    displayOz = totalOz;
+    pulseCount = 0;
   }
+}
 
-  digitalWrite(PUMP,LOW);
+
+  digitalWrite(PUMP_OR_SOLENOID,LOW);
   
   subtractFromBalance = totalOz * pricePerOunce;
   currentCustomer.balance -= subtractFromBalance;
@@ -94,5 +93,6 @@ void dispense() {
   Serial.println();
   Serial.println(totalOz);
   Serial.println();
-  delay(500);
+  //during this delay in future, update any other customers
+  delay(2000);
 }

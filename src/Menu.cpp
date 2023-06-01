@@ -1,4 +1,3 @@
-
 #include <Menu.h>
 
 
@@ -292,41 +291,49 @@ void Menu:: waitScreen(){
     } 
 
   }
+
     
 }
 
 void Menu:: dispenseScreen(){
   updateScreen = true;
-  do{
-    if(updateScreen){
-      customers[currentScannedIndex].lcdPrint();
-      updateScreen = false;
-      changeColor(random(255),random(100,255),random(255));
-    }
-    encoderButton.update();
-    if(encoderButton.isSingleClick()){
-      if(customers[currentScannedIndex].manager) {
-        currentSetting = 0;
-        currentScreen = 2;
-        updateScreen= true;
-        return;
+  if(!usingPump){
+    dispense();
+    currentScreen = 0;
+    updateScreen = true;
+  }
+  else{
+    do{
+      if(updateScreen){
+        customers[currentScannedIndex].lcdPrint();
+        updateScreen = false;
+        changeColor(random(255),random(100,255),random(255));
       }
-      else {
-        lcd.clear();
-        lcd.setCursor(0,1);
-        lcd.print("Manager Not Found");
-        delay(2000);
-        updateScreen = true;
+      encoderButton.update();
+      if(encoderButton.isSingleClick()){
+        if(customers[currentScannedIndex].manager) {
+          currentSetting = 0;
+          currentScreen = 2;
+          updateScreen= true;
+          return;
+        }
+        else {
+          lcd.clear();
+          lcd.setCursor(0,1);
+          lcd.print("Manager Not Found");
+          delay(2000);
+          updateScreen = true;
+        }
       }
-    }
 
-    if(digitalRead(DISPENSE_BUTTON)==LOW){
-      dispense();
-    }
-  } while(rfidScan(1000)!="");
-  currentScreen = 0;
-  updateScreen = true;
-  delay(100);
+      if(digitalRead(DISPENSE_BUTTON)==LOW){
+        dispense();
+      }
+    } while(rfidScan(1000)!="");
+    currentScreen = 0;
+    updateScreen = true;
+    delay(100);
+  }
 
 }
 
