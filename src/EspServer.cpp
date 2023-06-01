@@ -1,14 +1,18 @@
-#include <EspServer.h>
 
+#include <EspServer.h>
 const char* routerSsid = "The Dawg House";
 const char* routerPassword = "kodabear";
 const char* accessPointSSID = "BarBox Wifi";
 const char* accessPointPassword = "brentiepoo";
-
 AsyncWebServer server(80);
 
-void handlePostCustomer(AsyncWebServerRequest *request) {
-  String body = request->arg("plain");
+void handlePostCustomer(AsyncWebServerRequest * request, uint8_t *data, size_t len, size_t index, size_t total) {
+  String body;
+  for (size_t i = 0; i < len; i++) {
+        Serial.write(data[i]);
+        body += static_cast<char>(data[i]);
+      }
+  Serial.print("Here is the body:");
   Serial.print(body);
   Serial.println("POSTED");
   DynamicJsonDocument jsonDoc(1024);
@@ -41,43 +45,16 @@ void handlePostCustomer(AsyncWebServerRequest *request) {
   Serial.println(balance);
   Serial.println(manager);
   Serial.println(name);
-
-  
   request->send(200);
 }
 
-//pass an existing customer in the body of the post request. If it is found, it will convert 
-//all member variables to the ones passed in
-void handleEditCustomer(AsyncWebServerRequest *request){
-  String body = request->arg("plain");
-  DynamicJsonDocument jsonDoc(1024);
-  deserializeJson(jsonDoc, body);
-  String id = jsonDoc["ID"];
-  float balance = jsonDoc["B"].as<float>();
-  float ouncesDrank = jsonDoc["OD"].as<float>();
-  bool manager = jsonDoc["M"].as<bool>();
-  String name = jsonDoc["N"];
-  int customerIndex = customers.search(id);
-  if(customerIndex>-1)
-  {
-      customers[customerIndex].balance = balance;
-      customers[customerIndex].manager = manager;
-      customers[customerIndex].name = name;
-      customers[customerIndex].ouncesDrank = ouncesDrank;
-  }
-  else{
-    Serial.print("CUSTOMER NOT FOUND");
-  } 
-  SdData.addOrUpdateCustomer(customers[customerIndex]);
-   request->send(200);
-;
 
-}
 
 void handleGetCustomer(AsyncWebServerRequest *request) {
   Serial.print("got customer");
   String id = request->arg("id");
   int customerIndex = customers.search(id);
+  
   DynamicJsonDocument jsonDoc(1024);
   String jsonStr;
 
@@ -115,8 +92,12 @@ void handleGetAllCustomers(AsyncWebServerRequest *request) {
 }
 
 
-void handleRemoveCustomers(AsyncWebServerRequest *request) {
-  String body = request->arg("plain");
+void handleRemoveCustomers(AsyncWebServerRequest * request, uint8_t *data, size_t len, size_t index, size_t total) {
+  String body;
+  for (size_t i = 0; i < len; i++) {
+        Serial.write(data[i]);
+        body += static_cast<char>(data[i]);
+      }
   DynamicJsonDocument jsonDoc(1024);
   deserializeJson(jsonDoc, body);
   String id = jsonDoc["ID"];
@@ -127,27 +108,32 @@ void handleRemoveCustomers(AsyncWebServerRequest *request) {
     customers.deleteAt(idx);
     Serial.print("Customer Deleted!");
      request->send(200);
-
   }
   else {
     Serial.print("Customer deletion error!!");
      request->send(100);
 
   }
-
 }
 
-void handlePostSettings(AsyncWebServerRequest *request) {
-  String body = request->arg("plain");
-  Serial.print(body);
+void handlePostSettings(AsyncWebServerRequest * request, uint8_t *data, size_t len, size_t index, size_t total) {
+  String body;
+  for (size_t i = 0; i < len; i++) {
+        Serial.write(data[i]);
+        body += static_cast<char>(data[i]);
+      }
+  Serial.print("Here is the body:");
+  Serial.println(body);
   Serial.println("POSTED Settings\n");
   DynamicJsonDocument jsonDoc(1024);
   deserializeJson(jsonDoc, body);
+  Serial.print(body);
   pricePerOunce = jsonDoc["pricePerOunce"].as<float>();
   totalQuarts = jsonDoc["totalQuarts"].as<float>();
   maxOunces = jsonDoc["maxOunces"].as<float>();
   SdData.updateSettings();
-
+  Serial.print("<-Body     settings posted-> ");
+  Serial.println(pricePerOunce);
 
   Serial.println("New Settings Found!");
   lcd.clear();
@@ -162,13 +148,13 @@ void handlePostSettings(AsyncWebServerRequest *request) {
   lcd.print("Oz Left: ");
   lcd.print(totalQuarts*32.0);
   lcd.print("oz");
-
-   request->send(200);
-;
+  request->send(200);
 }
 
+
 void handleGetSettings(AsyncWebServerRequest *request) {
-  Serial.print("got customer");
+
+  Serial.print("got settings");
   DynamicJsonDocument jsonDoc(1024);
   String jsonStr;
 
@@ -180,6 +166,9 @@ void handleGetSettings(AsyncWebServerRequest *request) {
   request->send(200, "application/json", jsonStr);
 }
 
+
+
+
 void setupServer() {
   // Set up the ESP32 as an access point
   WiFi.begin(routerSsid, routerPassword);
@@ -188,21 +177,23 @@ void setupServer() {
     Serial.println("Connecting to WiFi...");
   }
   Serial.println("Connected to WiFi!");
-  WiFi.softAP(accessPointSSID, accessPointPassword);
-  // Print the IP address of the access point
-  Serial.print("Access point IP address: ");
-  Serial.println(WiFi.softAPIP());
+  // WiFi.softAP(accessPointSSID, accessPointPassword);
+  // // Print the IP address of the access point
+  // Serial.print("Access point IP address: ");
+  // Serial.println(WiFi.softAPIP());
 
   // Set up the API routes
-  server.on("/customer", HTTP_POST, [](AsyncWebServerRequest *request) {handlePostCustomer(request);});
-  server.on("/customer", HTTP_GET, [](AsyncWebServerRequest *request) {handleGetCustomer(request);});
-  server.on("/editCustomer", HTTP_POST, [](AsyncWebServerRequest *request) {handleEditCustomer(request);});
+  server.on("/postCustomer", HTTP_POST, [](AsyncWebServerRequest *request){}, NULL, [](AsyncWebServerRequest * request, uint8_t *data, size_t len, size_t index, size_t total) {handlePostCustomer(request, data, len, index, total);});
+  server.on("/getCustomer", HTTP_GET, [](AsyncWebServerRequest *request) {handleGetCustomer(request);});
   server.on("/allCustomers", HTTP_GET, [](AsyncWebServerRequest *request) {handleGetAllCustomers(request);});
-  server.on("/removeCustomers", HTTP_POST, [](AsyncWebServerRequest *request) {handleRemoveCustomers(request);});
-  server.on("/settings", HTTP_GET, [](AsyncWebServerRequest *request) {handleGetSettings(request);});
-  server.on("/settings", HTTP_POST, [](AsyncWebServerRequest *request) {handlePostSettings(request);});
+  server.on("/removeCustomers", HTTP_POST, [](AsyncWebServerRequest *request){}, NULL, [](AsyncWebServerRequest * request, uint8_t *data, size_t len, size_t index, size_t total) {handleRemoveCustomers(request, data, len, index, total);});
+  server.on("/getSettings", HTTP_GET, [](AsyncWebServerRequest *request) {handleGetSettings(request);});
+  server.on("/postSettings", HTTP_POST, [](AsyncWebServerRequest *request){}, NULL, [](AsyncWebServerRequest * request, uint8_t *data, size_t len, size_t index, size_t total) {handlePostSettings(request, data, len, index, total);});
   Serial.println(WiFi.localIP());
 
   // Start the server
   server.begin();
 }
+
+
+
