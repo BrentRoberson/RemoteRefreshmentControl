@@ -51,27 +51,29 @@ SCL - 22
 */
 class SDCard;
 class Customer;
-extern float pricePerOunce; // = .40;
-extern float totalQuarts; // = 640;
-extern int maxOunces; // 
+extern float pricePerOunce;
+extern float totalQuarts; 
+extern uint8_t maxOunces; 
 extern float refund_amount;
 extern bool register_sent;
 extern bool refund_received;
 extern bool bal_received;
 extern float returned_balance;
 extern bool new_sd_data;
-extern Customer curr_cust;
 extern LiquidCrystal_I2C lcd;
 extern SPIClass spi;
 extern ESP32Encoder encoder;
 extern DynamicArray<Customer> customers;
-extern int currentScannedIndex;
+extern uint16_t currentScannedIndex;
 extern PinButton encoderButton;
 extern PinButton sendButton;
 extern SDCard SdData;
 extern bool isServer;
-extern const char* routerSsid;
+extern bool usingAP;
+extern const char* routerSSID;
 extern const char* routerPassword;
 extern const char* accessPointSSID;
 extern const char* accessPointPassword;
+extern const char* serverIP;
+
 #endif 

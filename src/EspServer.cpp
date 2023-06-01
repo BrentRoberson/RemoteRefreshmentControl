@@ -1,9 +1,6 @@
 
 #include <EspServer.h>
-const char* routerSsid = "The Dawg House";
-const char* routerPassword = "kodabear";
-const char* accessPointSSID = "BarBox Wifi";
-const char* accessPointPassword = "brentiepoo";
+
 AsyncWebServer server(80);
 
 void handlePostCustomer(AsyncWebServerRequest * request, uint8_t *data, size_t len, size_t index, size_t total) {
@@ -153,7 +150,6 @@ void handlePostSettings(AsyncWebServerRequest * request, uint8_t *data, size_t l
 
 
 void handleGetSettings(AsyncWebServerRequest *request) {
-
   Serial.print("got settings");
   DynamicJsonDocument jsonDoc(1024);
   String jsonStr;
@@ -171,7 +167,7 @@ void handleGetSettings(AsyncWebServerRequest *request) {
 
 void setupServer() {
   // Set up the ESP32 as an access point
-  WiFi.begin(routerSsid, routerPassword);
+  WiFi.begin(routerSSID, routerPassword);
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
     Serial.println("Connecting to WiFi...");

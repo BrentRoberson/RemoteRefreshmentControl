@@ -26,6 +26,10 @@ void dispense() {
   float displayOz = 0;
   unsigned int dispenseTime = 0;
   float subtractFromBalance = 0;
+
+  // reference to the customer object so it affects both server and client customers
+  Customer & currentCustomer = customers[currentScannedIndex];
+
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("Dispensed amount: ");
@@ -37,8 +41,9 @@ void dispense() {
   lcd.print(String(totalOz/pricePerOunce));
   lcd.setCursor(0,3);
   lcd.print("Balance: $");
-  lcd.print(String(customers[currentScannedIndex].balance));
-  while(digitalRead(DISPENSE_BUTTON)==LOW && customers[currentScannedIndex].balance>totalOz*pricePerOunce){
+  lcd.print(String(currentCustomer.balance));
+
+  while(digitalRead(DISPENSE_BUTTON)==LOW && currentCustomer.balance>totalOz*pricePerOunce){
     digitalWrite(PUMP,HIGH);
     rainbowCycle(15);
 
@@ -62,13 +67,16 @@ void dispense() {
   digitalWrite(PUMP,LOW);
   
   subtractFromBalance = totalOz * pricePerOunce;
-  customers[currentScannedIndex].balance -=subtractFromBalance;
-  customers[currentScannedIndex].ouncesDrank +=totalOz;
-  if (customers[currentScannedIndex].balance<0){
-    customers[currentScannedIndex].balance = 0.00;
+  currentCustomer.balance -= subtractFromBalance;
+  currentCustomer.ouncesDrank += totalOz;
+  if (currentCustomer.balance<0){
+    currentCustomer.balance = 0.00;
   }
   totalQuarts -= (totalOz/32.0);
-  SdData.addOrUpdateCustomer(customers[currentScannedIndex]);
+  
+  SdData.addOrUpdateCustomer(currentCustomer);
+  SdData.updateSettings();
+  
   Serial.println(totalOz);
   Serial.println();
   lcd.clear();
@@ -82,7 +90,7 @@ void dispense() {
   lcd.print(String(totalOz*pricePerOunce));
   lcd.setCursor(0,3);
   lcd.print("New Balance: $");
-  lcd.print(String(customers[currentScannedIndex].balance));
+  lcd.print(String(currentCustomer.balance));
   Serial.println();
   Serial.println(totalOz);
   Serial.println();

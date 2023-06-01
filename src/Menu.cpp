@@ -98,7 +98,7 @@ void Menu:: editCustOnSwipe(String title, String action, std::function<void()> o
     printSettingTitle();
     if(customerIndex>-1)
     {
-      addedTap();
+      rfidGoodTap();
       currentScannedIndex = customerIndex;
       onSwipe();
       lcd.print("Customer ");
@@ -106,7 +106,7 @@ void Menu:: editCustOnSwipe(String title, String action, std::function<void()> o
       lcd.print(action); //Made Manager! or Removed!
     }
     else{
-      newAddedTap();
+      rfidGoodTap();
       lcd.print("New Card");
       customers.push_back(Customer(readTag, 0));
       currentScannedIndex = -1;
@@ -149,7 +149,7 @@ void Menu:: addOrSetMoneyOnSwipe(bool setAmount){
     printSettingTitle();
     if(customerIndex>-1)
     {
-      addedTap();
+      rfidGoodTap();
       currentScannedIndex = customerIndex;
       lcd.print("Customer ");
       lcd.setCursor(0,1);
@@ -168,7 +168,7 @@ void Menu:: addOrSetMoneyOnSwipe(bool setAmount){
       
     }
     else{
-      newAddedTap();
+      rfidGoodTap();
       lcd.print("New Card");
       lcd.print("Given $");
       lcd.print(addAmount);
@@ -261,44 +261,46 @@ void Menu:: waitScreen(){
     updateScreen = false;
     printLcdWelcome();
   }
-  //check for website updates
   readTag = rfidScan();
 
   if(readTag!=""){
-    rfidTriggerTime = millis();
-    newTap = true;
+    bool knownID = false;
+    Serial.print("ID SCANNED: ");
+    Serial.println(readTag);
+    //Server device
     int customerIndex = customers.search(readTag);
-    lcd.clear();
-    lcd.setCursor(0,0);
     if(customerIndex>-1)
     {
       rfidGoodTap();
       currentScannedIndex = customerIndex;
-      newTap = false;
       currentScreen = 1; //dispense
+      knownID = true;
       updateScreen = true;
     }
     else{
       rfidBadTap();
+      lcd.clear();
+      lcd.setCursor(0,0);
       lcd.print("Unknown ID");
       lcd.setCursor(0,1);
       lcd.print("Please check in");
       Serial.print("Customer not added");
       changeColor(0,255,0);
-      while(rfidScan(500)!=""){
-
-      }
+      //wait until NFC card leaves
+      while(rfidScan(500)!=""){}
       updateScreen = true;
     } 
+
   }
+  lcd.clear();
+  lcd.setCursor(0,0);
+    
 }
 
 void Menu:: dispenseScreen(){
   updateScreen = true;
-  while(rfidScan(1000)!=""){
-    //check for website updates
+  do{
     if(updateScreen){
-      delay(100);
       customers[currentScannedIndex].lcdPrint();
       updateScreen = false;
       changeColor(random(255),random(100,255),random(255));
@@ -319,11 +321,11 @@ void Menu:: dispenseScreen(){
         updateScreen = true;
       }
     }
-    //may need to change to low later, check limit switch functionality
+
     if(digitalRead(DISPENSE_BUTTON)==LOW){
       dispense();
     }
-  }
+  } while(rfidScan(1000)!="");
   currentScreen = 0;
   updateScreen = true;
   delay(100);
