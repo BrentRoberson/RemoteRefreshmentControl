@@ -292,8 +292,6 @@ void Menu:: waitScreen(){
     } 
 
   }
-  lcd.clear();
-  lcd.setCursor(0,0);
     
 }
 

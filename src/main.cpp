@@ -27,7 +27,6 @@ PinButton encoderButton(ENCODER_BUTTON);
 float pricePerOunce;
 float totalQuarts;
 uint8_t maxOunces;
-bool isServer = true;
 ESP32Encoder encoder;
 bool readError;
 Customer clientCustomer = Customer();
@@ -40,6 +39,8 @@ Menu menu;
 
 //eventually read in this data to settings on the sd card
 bool usingAP;
+bool isServer;
+bool usingPump;
 const char* serverIP;
 const char* routerSSID;
 const char* routerPassword;
@@ -84,14 +85,15 @@ void setup() {
     return;
   }
   SdData.readInSD();
-  isServer= false;
+  isServer= true;
   serverIP = "192.168.1.40";
   usingAP = false;
+  usingPump = false;
   routerSSID = "The Dawg House";
   routerPassword = "kodabear";
   accessPointSSID = "BarBox Wifi";
   accessPointPassword = "brentiepoo";
-
+  
   if(isServer){
     setupServer();
   }

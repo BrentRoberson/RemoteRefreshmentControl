@@ -116,24 +116,22 @@ void SDCard::readInSD() {
     //put wifi info here for both server and clients to use
     
 
-    if(isServer){
-      // Read the settings object from the JSON data
-      JsonObject settings = doc["settings"];//settings
-      pricePerOunce = settings["pricePerOunce"].as<float>();
-      totalQuarts = settings["totalQuarts"].as<float>();
-      maxOunces = settings["maxOunces"].as<int>();
-      // Extract the JsonArray from the JSON data
-      JsonArray jsonCustomers = doc["customers"];
+    // Read the settings object from the JSON data
+    JsonObject settings = doc["settings"];//settings
+    pricePerOunce = settings["pricePerOunce"].as<float>();
+    totalQuarts = settings["totalQuarts"].as<float>();
+    maxOunces = settings["maxOunces"].as<int>();
+    // Extract the JsonArray from the JSON data
+    JsonArray jsonCustomers = doc["customers"];
 
-      // Loop over each JsonObject in the JsonArray and create a new Customer object for each one
-      for (JsonVariant jsonCustomer : jsonCustomers) {
-        String id = jsonCustomer["ID"].as<String>();
-        float balance = jsonCustomer["B"].as<float>();
-        float ouncesDrank = jsonCustomer["OD"].as<float>();
-        bool manager = jsonCustomer["M"].as<bool>();
-        String name = jsonCustomer["N"].as<String>();
-        customers.push_back(Customer(id, balance,manager,ouncesDrank, name));
-      }
+    // Loop over each JsonObject in the JsonArray and create a new Customer object for each one
+    for (JsonVariant jsonCustomer : jsonCustomers) {
+      String id = jsonCustomer["ID"].as<String>();
+      float balance = jsonCustomer["B"].as<float>();
+      float ouncesDrank = jsonCustomer["OD"].as<float>();
+      bool manager = jsonCustomer["M"].as<bool>();
+      String name = jsonCustomer["N"].as<String>();
+      customers.push_back(Customer(id, balance,manager,ouncesDrank, name));
     }
 
   } else {
