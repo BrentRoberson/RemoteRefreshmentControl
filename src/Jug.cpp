@@ -20,7 +20,7 @@ void openDoor(){
 
 void dispense() {
   pulseCount = 0;
-  float calibrationFactor = 2;
+  float calibrationFactor = .44;
   float toOz = 29.5735;
   float totalOz = 0; 
   float displayOz = 0;
@@ -48,9 +48,6 @@ void dispense() {
   rainbowCycle(20);
 
   if (dispenseTime + 250 < millis()) {
-    if (totalOz > 10) {
-      displayOz = (totalOz - 10) * 0.5 + totalOz;
-    }
     lcd.setCursor(4, 1);
     lcd.print(String(displayOz));
     lcd.setCursor(7, 2);
@@ -59,6 +56,8 @@ void dispense() {
     totalOz += pulseCount / calibrationFactor / toOz;
     displayOz = totalOz;
     pulseCount = 0;
+    lcd.setCursor(10, 3);
+    lcd.print(String(currentCustomer.balance-totalOz*pricePerOunce)+"   ");
   }
 }
 
@@ -93,6 +92,9 @@ void dispense() {
   Serial.println();
   Serial.println(totalOz);
   Serial.println();
+  // answer to fix the LCD issue found online: I soldered a diode between the solenoid terminals, much better but still some occasional interference.
+  // Then added the snubber (0.1 uF +47 ohm) across the relay contacts, no interference at all.
+  // Thanks everyone for the postings, this issue was bothering me a lot and found the solution here.
   //during this delay in future, update any other customers
-  delay(2000);
+  delay(250);
 }

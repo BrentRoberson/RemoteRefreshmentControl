@@ -20,7 +20,7 @@
 #define CS_SD 5
 #define PUMP_OR_SOLENOID 13
 #define DOOR_LOCK 25
-#define SENSOR 27
+#define SENSOR 15
 #define CD_SD 14
 #define DISPENSE_BUTTON 32
 #define LED_STRIP 26
